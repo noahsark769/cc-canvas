@@ -15,7 +15,7 @@ export class ImageRenderer {
     }
 
     loadImage(filename, width, height) {
-        this.image = new Image(width, height);
+        this.image = new this.Image(width, height);
         this.image.onload = () => {
             this.imageLoaded();
         }

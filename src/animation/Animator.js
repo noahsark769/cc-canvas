@@ -24,7 +24,7 @@ export class Animator {
     // right now, just render in the top right corner. eventually we will need to
     // impelement Viewport, etc.
     renderTile(tile) {
-        tile.render(canvas);
+        tile.render(this.canvas);
     }
 
     renderEntity(entity) {

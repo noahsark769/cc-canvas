@@ -1,6 +1,6 @@
 let { ImageRenderer } = require("./ImageRenderer");
 
-export class CCClasicImageRenderer extends ImageRenderer {
+export class CCClassicImageRenderer extends ImageRenderer {
     constructor(...args) {
         super(...args);
         this.tilesetFilename = "/images/cc-classic-color-tileset.gif";
