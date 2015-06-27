@@ -1,13 +1,9 @@
 require("babelify/polyfill");
 
-class Test {
-  constructor() {
-    this.message = "hello";
-  }
-  say() {
-    console.log(this.message);
-  }
-}
+let { GameEngine } = require("core/GameEngine");
+let { Wall } = require("core/tile/Wall");
 
-let t = new Test();
-t.say();
+var engine = new GameEngine();
+var animator = engine.getAnimator();
+
+animator.renderTile(new Wall());

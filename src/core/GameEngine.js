@@ -1,5 +1,12 @@
-export class GameEngine {
+let SINGLETON_INSTANCE = null;
 
+export class GameEngine {
+    constructor() {
+        if (SINGLETON_INSTANCE !== null) {
+            return SINGLETON_INSTANCE;
+        }
+        SINGLETON_INSTANCE = this;
+    }
 }
 
 /**
