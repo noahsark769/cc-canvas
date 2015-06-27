@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/noahsark769/cc-canvas",
   "devDependencies": {
+    "app-root-path": "^1.0.0",
     "babelify": "^6.1.0",
     "chai": "^3.0.0",
     "grunt": "^0.4.5",
