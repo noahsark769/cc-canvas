@@ -5,15 +5,23 @@
  * etc.
  */
 export class DocumentInterface {
-    constructor() {}
+    /**
+     * Construct the document interface instance with a reference to the
+     * document. We pass this in here instead of assuming a global document
+     * in order to make testing easier. Dependency injection!
+     */
+    constructor(document) {
+        this.document = document;
+    }
 
     /**
      * Return the canvas object, or null if it does not exist.
+     * @param {Document} the document element
      * @return {Element} the canvas
      */
-    getCanvas() {
+    getCanvas(document) {
         if (this.canvas) { return this.canvas; }
-        this.canvas = document.getElementById("main-canvas");
+        this.canvas = this.document.getElementById("main-canvas");
         return this.canvas;
     }
 }

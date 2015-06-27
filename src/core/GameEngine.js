@@ -37,8 +37,9 @@ let TICK_INTERVAL = 300;
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
-    constructor() {
-        this.documentInterface = new DocumentInterface();
+    constructor(document) {
+        this.documentInterface = new DocumentInterface(document);
+        this.animator = new Animator(this.documentInterface.getCanvas());
         SINGLETON_INSTANCE = this;
     }
 }
@@ -48,10 +49,10 @@ export class GameEngine {
  * if none already exists.
  * @return {GameEngine} the singleton engine
  */
-GameEngine.getInstance = () => {
+GameEngine.getInstance = (document) => {
     if (SINGLETON_INSTANCE !== null) {
         return SINGLETON_INSTANCE;
     }
-    SINGLETON_INSTANCE = new GameEngine();
+    SINGLETON_INSTANCE = new GameEngine(document);
     return SINGLETON_INSTANCE;
 };

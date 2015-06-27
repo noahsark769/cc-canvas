@@ -1,6 +1,8 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
+let sinon = require("sinon");
 let { GameEngine } = reqlib("/src/core/GameEngine");
+let { getMockDocument } = reqlib("/testing/utils");
 
 describe("GameEngine", () => {
     it("should be available via import", () => {});
@@ -8,9 +10,9 @@ describe("GameEngine", () => {
         expect(1).to.equal(1);
     });
     it("should be singleton", () => {
-        let engine1 = GameEngine.getInstance();
+        let engine1 = GameEngine.getInstance(getMockDocument());
         engine1.someProperty = true;
-        let engine2 = GameEngine.getInstance();
+        let engine2 = GameEngine.getInstance(getMockDocument());
         expect(engine2.someProperty).to.be.true;
     });
 });
