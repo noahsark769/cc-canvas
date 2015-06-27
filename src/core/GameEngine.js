@@ -1,13 +1,13 @@
-let SINGLETON_INSTANCE = null;
+let {Animator} = require("../animation/Animator");
+let {DocumentInterface} = require("../core/DocumentInterface");
 
-export class GameEngine {
-    constructor() {
-        if (SINGLETON_INSTANCE !== null) {
-            return SINGLETON_INSTANCE;
-        }
-        SINGLETON_INSTANCE = this;
-    }
-}
+/**
+ * GameEngine is a singleton class. This is the instance of the class, or
+ * null if no GameEngine has yet been established. This will be set by the
+ * GameEngine constructor when the first (and only) instance is constructed.
+ * @type {GameEngine|null}
+ */
+let SINGLETON_INSTANCE = null;
 
 /**
  * The number of milliseconds between ticks in the game engine.
@@ -24,4 +24,34 @@ export class GameEngine {
  * will happen at a reasonable rate.
  * @type {Number}
  */
-GameEngine.TICK_INTERVAL = 300;
+let TICK_INTERVAL = 300;
+
+
+/**
+ * GameEngine is the main class which organizies all aspects of the game. Though
+ * sometimes only a proxy to other methods of Animator, GameState, etc, the
+ * GameEngine is the top level of the object hierarchy that represents the
+ * game currently running.
+ *
+ * GameEngine is a singleton - there can only ever be one GameEngine per page
+ * load. As such, it should only be accessed with GameEngine.getInstance().
+ */
+export class GameEngine {
+    constructor() {
+        this.documentInterface = new DocumentInterface();
+        SINGLETON_INSTANCE = this;
+    }
+}
+
+/**
+ * Return the singleton instance of the GameEngine, or create one and return it
+ * if none already exists.
+ * @return {GameEngine} the singleton engine
+ */
+GameEngine.getInstance = () => {
+    if (SINGLETON_INSTANCE !== null) {
+        return SINGLETON_INSTANCE;
+    }
+    SINGLETON_INSTANCE = new GameEngine();
+    return SINGLETON_INSTANCE;
+};

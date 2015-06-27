@@ -8,9 +8,9 @@ describe("GameEngine", () => {
         expect(1).to.equal(1);
     });
     it("should be singleton", () => {
-        let engine1 = new GameEngine();
+        let engine1 = GameEngine.getInstance();
         engine1.someProperty = true;
-        let engine2 = new GameEngine();
+        let engine2 = GameEngine.getInstance();
         expect(engine2.someProperty).to.be.true;
     });
 });
