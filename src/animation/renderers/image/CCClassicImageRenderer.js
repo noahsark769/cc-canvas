@@ -1,7 +1,21 @@
 let { ImageRenderer } = require("./ImageRenderer");
 let { Coordinate } = require("../../../core/2d/Coordinate");
 
+/**
+ * CCClassicImageRenderer represents a renderer for the game engine that renders
+ * tiles and entities with the graphics from the Chip's Challenge game distributed
+ * with Windows.
+ *
+ * Basically, it knows about a spritesheet that contains all the tiles used for the
+ * Windows graphics, and it knows how to render a certain portion of that spritesheet
+ * when asked to render a certain tile at a certain coordinate. Pretty cool actually.
+ */
 export class CCClassicImageRenderer extends ImageRenderer {
+    /**
+     * Initialize the classic renderer with the tilesetFilename, and establish things
+     * about it like the length of the tiles. Then load the image and build the sprite
+     * map (see below).
+     */
     constructor(...args) {
         super(...args);
         this.tilesetFilename = "/images/cc-classic-color-tileset.gif";
@@ -14,6 +28,16 @@ export class CCClassicImageRenderer extends ImageRenderer {
         this.buildSpriteMap();
     }
 
+    /**
+     * Construct a mapping of tile type => spritesheet coordinate and save it in
+     * this.spriteMap. Note that the spritesheet coordinate here means the TILE
+     * coordinate, not the pixel coordinate. The spritesheet is organized into tiles,
+     * so we reference them exactly like we do coordinates in the actual game engine levels:
+     * (0, 0) is top left, x grows right and y grows down.
+     *
+     * Note that these names correspond exactly to the "name" proprerty of the Tile object
+     * (and its subclasses).
+     */
     buildSpriteMap() {
         if (this.spriteMap !== null) { return; }
         this.spriteMap = new Map();
@@ -72,6 +96,15 @@ export class CCClassicImageRenderer extends ImageRenderer {
 
     }
 
+    /**
+     * Render a given tile on the given canvas at the given level coordinate.
+     * @param {Element} the canvas element to use
+     * @param {Tile} the tile to render
+     * @param {Coordinte} the canvas coordinate to render at. Note that this
+     *     Coordinate value may not represent the actual Coordinate that the
+     *     tile exists at in the level, but here we only care about where on
+     *     the actual canvas we have to render it.
+     */
     renderTile(canvas, tile, coordinate) {
         if (!this.ready) {
             return false;

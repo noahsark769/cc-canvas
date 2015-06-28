@@ -1,9 +1,10 @@
 let sinon = require("sinon");
 
 /**
- * Return a sinon spy representing the intrface of the DOM document
+ * Return an object representing the intrface of the DOM document
  * object, for all the purposes we need it for. Useful for testing the
  * DocumentInterface object.
+ * @return {object} the mock object
  */
 export function getMockDocument() {
     return {
@@ -11,6 +12,11 @@ export function getMockDocument() {
     };
 }
 
+/**
+ * Return an object representing the interface of the DOM canvas element,
+ * at least insofar as we need it for testing the Animator.
+ * @return {object} the mock object
+ */
 export function getMockCanvas(spy = null) {
     if (spy === null) { spy = sinon.spy(); }
     return {
