@@ -33,9 +33,9 @@ describe("LevelBuilder", () => {
     });
     it("should support resetting", () => {
         let builder = new LevelBuilder(10, 10);
-        builder.addTileAt(5, 5);
+        builder.addTileAt(5, 5, "wall");
         builder.reset();
-        expect(builder.tileMap.get(5, 5)).to.be.undefined;
+        expect(builder.tileMap.has(5, 5)).to.be.false;
     });
     describe.skip("chaining support", () => {
         let builder = new LevelBuilder(10, 10);
