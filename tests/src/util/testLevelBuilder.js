@@ -9,20 +9,20 @@ describe("LevelBuilder", () => {
         expect(builder.width).to.equal(4);
         expect(builder.height).to.equal(3);
     });
-    it.skip("should support adding tiles", () => {
+    it("should support adding tiles", () => {
         let builder = new LevelBuilder(10, 10);
         builder.addTileAt(0, 0, "wall");
         builder.addTileAt(1, 1, "wall");
         expect(builder.tileMap.get(0, 0).name).to.equal("wall");
         expect(builder.tileMap.get(1, 1).name).to.equal("wall");
     });
-    it.skip("should support building a Level", () => {
+    it("should support building a Level", () => {
         let builder = new LevelBuilder(10, 10);
         builder.addTileAt(0, 0, "wall");
         let level = builder.generateLevel();
         expect(level.tileMap.get(0, 0).name).to.equal("wall");
     });
-    it.skip("should support resetting", () => {
+    it("should support resetting", () => {
         let builder = new LevelBuilder(10, 10);
         builder.addTileAt(5, 5);
         builder.reset();
