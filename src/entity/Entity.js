@@ -4,7 +4,7 @@ const EAST = "east";
 const WEST = "west";
 
 export class Entity {
-    constructor(renderer, direction = UP) {
+    constructor(renderer, direction = SOUTH) {
         this.renderer = renderer;
         this.direction = direction;
     }

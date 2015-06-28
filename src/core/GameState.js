@@ -5,6 +5,8 @@ export class GameState {
     constructor() {
         this.playerPosition = null;
         this.tileMap = new CoordinateTileMap();
+        // exact proxy to the level, nothing else
+        this.entityMap = new CoordinateTileMap();
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
     }
@@ -26,6 +28,7 @@ export class GameState {
 
     setLevel(level) {
         this.level = level;
+        this.entityMap = this.level.entityMap;
     }
 
     tick() {

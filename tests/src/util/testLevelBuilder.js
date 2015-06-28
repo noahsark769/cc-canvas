@@ -26,6 +26,12 @@ describe("LevelBuilder", () => {
         expect(builder.tileMap.get(0, 0).name).to.equal("wall");
         expect(builder.tileMap.get(1, 1).name).to.equal("wall");
     });
+    it("should support adding player", () => {
+        let builder = new LevelBuilder(10, 10);
+        builder.addEntityAt(1, 1, "player");
+        let level = builder.generateLevel();
+        expect(level.entityMap.get(1, 1).name).to.equal("player");
+    });
     it("should support building a Level", () => {
         let builder = new LevelBuilder(10, 10);
         builder.addTileAt(0, 0, "wall");

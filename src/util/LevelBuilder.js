@@ -41,12 +41,12 @@ export class LevelBuilder {
         this.height = height;
         this.renderer = null;
         this.tileMap = new CoordinateTileMap(this.renderer);
-        this.entityMap = new CoordinateMap();
+        this.entityMap = new CoordinateTileMap(this.renderer);
         this.defaultTileType = defaultTileType;
     }
     reset() {
         this.tileMap = new CoordinateTileMap(this.renderer);
-        this.entityMap = new CoordinateMap();
+        this.entityMap = new CoordinateTileMap(this.renderer);
     }
     setRenderer(renderer) {
         this.renderer = renderer;
@@ -80,6 +80,9 @@ export class LevelBuilder {
         context.tileName = tileName;
         context.coordinate = new Coordinate(x, y);
         return context;
+    }
+    addEntityAt(x, y, entityName) {
+        this.entityMap.setEntityByName(x, y, entityName);
     }
     hasTileAt(x, y) {
         if (this.isOutOfBounds(x, y)) {

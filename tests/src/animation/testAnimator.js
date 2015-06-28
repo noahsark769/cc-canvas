@@ -28,6 +28,10 @@ describe("Animator", () => {
                 tileMap: {
                     has: function() { return true; },
                     get: function() { return tile; }
+                },
+                entityMap: {
+                    has: function () { return false; },
+                    get: function() { return; }
                 }
             };
             animator.renderViewport(Viewport.constructFromSideLength(new Coordinate(0, 0), 5), mockGameState);

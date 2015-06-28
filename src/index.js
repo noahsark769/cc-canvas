@@ -13,8 +13,8 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
     builder.addTileAt(0, 0, "wall").addTileRight().addTileRight().addTileRight()
         .addTileDown().addTileDown().addTileDown()
         .addTileLeft().addTileLeft().addTileLeft()
-        .addTileUp().addTileUp();
-        // .addEntityAt(1, 1, "player");
+        .addTileUp().addTileUp()
+        .addEntityAt(1, 1, "player");
     let simpleLevel = builder.generateLevel();
     engine.startGameplay();
 });

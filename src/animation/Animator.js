@@ -27,8 +27,8 @@ export class Animator {
         tile.render(this.canvas, coordinate);
     }
 
-    renderEntity(entity) {
-
+    renderEntity(entity, coordinate) {
+        entity.render(this.canvas, coordinate)
     }
 
     renderViewport(viewport, gameState) {
@@ -37,9 +37,11 @@ export class Animator {
                 let tile = gameState.tileMap.get(coordinate.x, coordinate.y);
                 this.renderTile(tile, coordinate);
             }
+            // right now, entities will entirely superseed tiles
+            if (gameState.entityMap.has(coordinate.x, coordinate.y)) {
+                let tile = gameState.entityMap.get(coordinate.x, coordinate.y);
+                this.renderEntity(tile, coordinate);
+            }
         }
-        // for every coordinate in the viewport:
-        // .... if gameState.hasEntityAt(coordinate): gameState.getEntityAt(coordinate).render(canvas)
-        // .... else: gameState.tileAt(coordinate).render(this.canvas)
     }
 }
