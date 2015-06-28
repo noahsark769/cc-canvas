@@ -57,6 +57,9 @@ export class GameState {
         return this.level.tileMap.has(x, y);
     }
 
+    hasEntityAt(x, y) { return this.entityMap.has(x, y); }
+    getEntityAt(x, y) { return this.entityMap.get(x, y); }
+
     getTileAt(x, y) {
         if (this.tileMap.has(x, y)) {
             return this.tileMap.get(x, y);

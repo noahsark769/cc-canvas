@@ -8,7 +8,8 @@ let sinon = require("sinon");
  */
 export function getMockDocument() {
     return {
-        getElementById: sinon.spy()
+        getElementById: sinon.spy(),
+        addEventListener: sinon.spy()
     };
 }
 

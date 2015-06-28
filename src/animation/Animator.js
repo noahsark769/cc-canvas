@@ -37,13 +37,13 @@ export class Animator {
 
     renderViewport(viewport, gameState) {
         for (let coordinate of viewport.coordinatesInBounds()) {
-            if (gameState.tileMap.has(coordinate.x, coordinate.y)) {
-                let tile = gameState.tileMap.get(coordinate.x, coordinate.y);
+            if (gameState.hasTileAt(coordinate.x, coordinate.y)) {
+                let tile = gameState.getTileAt(coordinate.x, coordinate.y);
                 this.renderTile(tile, coordinate);
             }
             // right now, entities will entirely superseed tiles
-            if (gameState.entityMap.has(coordinate.x, coordinate.y)) {
-                let entity = gameState.entityMap.get(coordinate.x, coordinate.y);
+            if (gameState.hasEntityAt(coordinate.x, coordinate.y)) {
+                let entity = gameState.getEntityAt(coordinate.x, coordinate.y);
                 this.renderEntity(entity, coordinate);
             }
         }

@@ -52,7 +52,6 @@ export class GameEngine {
     tick() {
         if (this.paused) { return; }
         this.gameState.tick();
-        console.log("tick");
         if (this.animator !== null && this.gameState.level !== null) {
             this.animator.clear();
             this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
