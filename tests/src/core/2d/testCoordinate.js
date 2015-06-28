@@ -20,4 +20,35 @@ describe("Coordinate", () => {
         expect(c.x).to.equal(4);
         expect(c.y).to.equal(5);
     });
+    describe("relative constructions", () => {
+        var c;
+        beforeEach(() => {
+            c = new Coordinate(5, 5);
+        });
+
+        let expectToBe = function(coord, x, y) {
+            expect(coord.x).to.equal(x);
+            expect(coord.y).to.equal(y);
+        };
+
+        it("should support .downFrom()", () => {
+            let newCoord = c.downFrom();
+            expectToBe(newCoord, 5, 6);
+        });
+
+        it("should support .upFrom()", () => {
+            let newCoord = c.upFrom();
+            expectToBe(newCoord, 5, 4);
+        });
+
+        it("should support .leftFrom()", () => {
+            let newCoord = c.leftFrom();
+            expectToBe(newCoord, 4, 5);
+        });
+
+        it("should support .rightFrom()", () => {
+            let right = c.rightFrom();
+            expectToBe(right, 6, 5);
+        });
+    });
 });
