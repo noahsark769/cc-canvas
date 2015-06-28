@@ -38,12 +38,17 @@ describe("GameState", () => {
     });
     it("should support simple player machanics", () => {
         let state = new GameState();
-        state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
+        let builder = new LevelBuilder(4, 4, "floor");
+        builder.addEntityAt(1, 1, "player");
         state.setPlayerPosition(1, 1);
+        state.setLevel(builder.generateLevel());
         state.movePlayerUp();
         let [x, y] = state.getPlayerPosition().asArray();
         expect(x).to.equal(1);
         expect(y).to.equal(0);
+        expect(state.entityMap.has(1, 1)).to.be.false;
+        expect(state.entityMap.has(1, 0)).to.be.true;
+        expect(state.entityMap.get(1, 0).name).to.equal("player");
     });
     it("should support getting viewport", () => {
         let state = new GameState();

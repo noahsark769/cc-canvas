@@ -24,4 +24,27 @@ export class DocumentInterface {
         this.canvas = this.document.getElementById("main-canvas");
         return this.canvas;
     }
+
+    registerKeypresses(document, gameEngine) {
+        document.addEventListener("keydown", (e) => {
+            if (e.keyCode) {
+                switch(e.keyCode) {
+                    case 37: // left
+                        gameEngine.gameState.movePlayerLeft();
+                        break;
+                    case 38: // up
+                        gameEngine.gameState.movePlayerUp();
+                        break;
+                    case 39: // right
+                        gameEngine.gameState.movePlayerRight();
+                        break;
+                    case 40: // down
+                        gameEngine.gameState.movePlayerDown();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
 }

@@ -14,11 +14,18 @@ export class GameState {
         return this.playerPosition;
     }
     setPlayerPosition(x, y) {
-        this.playerPosition = new Coordinate(x, y);
+        let newCoord = new Coordinate(x, y);
+        if (this.playerPosition !== null) {
+            let player = this.entityMap.get(...this.playerPosition.asArray());
+            this.entityMap.delete(...this.playerPosition.asArray());
+            this.entityMap.set(newCoord.x, newCoord.y, player);
+        }
+        this.playerPosition = newCoord;
     }
 
     movePlayerByTransform(functionName) {
-        this.playerPosition = this.playerPosition[functionName]();
+        let newCoord = this.playerPosition[functionName]();
+        this.setPlayerPosition(...newCoord.asArray());
     }
 
     movePlayerDown() { return this.movePlayerByTransform("downFrom"); }

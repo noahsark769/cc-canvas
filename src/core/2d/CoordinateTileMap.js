@@ -18,7 +18,7 @@ export class CoordinateTileMap extends CoordinateMap {
         return tileInstance;
     }
     setTileByName(x, y, tileName, renderer = null) {
-        if (renderer !== null) {
+        if (renderer === null) {
             renderer = this.renderer;
         }
         let tileInstance = this.newTileInstanceByName(tileName, renderer);
@@ -26,7 +26,7 @@ export class CoordinateTileMap extends CoordinateMap {
         return tileInstance;
     }
     setEntityByName(x, y, entityName, renderer = null) {
-        if (renderer !== null) {
+        if (renderer === null) {
             renderer = this.renderer;
         }
         let entityInstance = this.newEntityInstanceByName(entityName, renderer);

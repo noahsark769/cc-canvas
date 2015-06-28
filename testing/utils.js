@@ -27,3 +27,10 @@ export function getMockCanvas(spy = null) {
         }
     }
 }
+
+export function stopTickingDebugger() {
+    if (window) {
+        window.GameEngine.getInstance().stopTicking();
+        debugger;
+    }
+}

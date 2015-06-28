@@ -50,6 +50,8 @@ export class LevelBuilder {
     }
     setRenderer(renderer) {
         this.renderer = renderer;
+        this.tileMap.renderer = this.renderer;
+        this.entityMap.renderer = this.renderer;
     }
     setDefaultTileType(tileType) {
         this.defaultTileType = tileType;

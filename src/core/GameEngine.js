@@ -40,6 +40,7 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
 export class GameEngine {
     constructor(document) {
         this.documentInterface = new DocumentInterface(document);
+        this.documentInterface.registerKeypresses(document, this);
         this.animator = new Animator(this.documentInterface.getCanvas());
         this.gameState = new GameState();
         this.intervalId = null;
@@ -53,7 +54,8 @@ export class GameEngine {
         this.gameState.tick();
         console.log("tick");
         if (this.animator !== null && this.gameState.level !== null) {
-            this.animator.renderViewport(this.gameState.getViewport(), gameState);
+            this.animator.clear();
+            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
         }
     }
 
@@ -118,3 +120,7 @@ GameEngine.reset = (document) => {
     SINGLETON_INSTANCE = new GameEngine(document);
     return SINGLETON_INSTANCE;
 };
+
+// if (window) {
+//     window.GameEngine = GameEngine;
+// }

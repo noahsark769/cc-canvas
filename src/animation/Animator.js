@@ -17,6 +17,10 @@ export class Animator {
         this.canvas = canvas;
     }
 
+    clear() {
+        this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     renderEntityForTile() {
 
     }
@@ -39,8 +43,8 @@ export class Animator {
             }
             // right now, entities will entirely superseed tiles
             if (gameState.entityMap.has(coordinate.x, coordinate.y)) {
-                let tile = gameState.entityMap.get(coordinate.x, coordinate.y);
-                this.renderEntity(tile, coordinate);
+                let entity = gameState.entityMap.get(coordinate.x, coordinate.y);
+                this.renderEntity(entity, coordinate);
             }
         }
     }
