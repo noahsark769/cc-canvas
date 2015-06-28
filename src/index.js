@@ -14,6 +14,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         .addTileDown().addTileDown().addTileDown()
         .addTileLeft().addTileLeft().addTileLeft()
         .addTileUp().addTileUp();
+        // .addEntityAt(1, 1, "player");
     let simpleLevel = builder.generateLevel();
-    engine.animator.renderViewport(simpleLevel.getDefaultViewport(), simpleLevel);
+    engine.startGameplay();
 });

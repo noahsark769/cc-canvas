@@ -51,6 +51,8 @@ export class GameEngine {
     tick() {
         if (this.paused) { return; }
         this.gameState.tick();
+        console.log("tick");
+        this.animator.renderViewport(this.gameState.getViewport(), gameState);
     }
 
     // for testing purposes only
