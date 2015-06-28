@@ -10,3 +10,14 @@ export function getMockDocument() {
         getElementById: sinon.spy()
     };
 }
+
+export function getMockCanvas(spy = null) {
+    if (spy === null) { spy = sinon.spy(); }
+    return {
+        getContext: function () {
+            return {
+                drawImage: spy
+            }
+        }
+    }
+}

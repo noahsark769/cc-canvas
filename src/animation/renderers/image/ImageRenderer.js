@@ -4,13 +4,13 @@ export class ImageRenderer {
         this.imageLoadedCallback = imageLoadedCallback;
         this.ready = false;
     }
-    renderTile(canvas, tile) {
+    renderTile(canvas, tile, coordinate) {
 
     }
-    renderEntity(canvas, entity) {
+    renderEntity(canvas, entity, coordinate) {
 
     }
-    renderEntityOnTile(canvas, enitity, tile) {
+    renderEntityOnTile(canvas, enitity, tile, coordinate) {
 
     }
 

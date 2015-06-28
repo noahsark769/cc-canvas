@@ -3,8 +3,8 @@ export class Tile {
         this.renderer = renderer;
     }
 
-    render(canvas) {
-        this.renderer.renderTile(canvas, this);
+    render(canvas, coordinate) {
+        this.renderer.renderTile(canvas, this, coordinate);
     }
 
     shouldBlockPlayer(player) {

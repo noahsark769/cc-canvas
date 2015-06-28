@@ -23,8 +23,8 @@ export class Animator {
 
     // right now, just render in the top right corner. eventually we will need to
     // impelement Viewport, etc.
-    renderTile(tile) {
-        tile.render(this.canvas);
+    renderTile(tile, coordinate) {
+        tile.render(this.canvas, coordinate);
     }
 
     renderEntity(entity) {
@@ -32,6 +32,12 @@ export class Animator {
     }
 
     renderViewport(viewport, gameState) {
+        for (let coordinate of viewport.coordinatesInBounds()) {
+            if (gameState.tileMap.has(coordinate.x, coordinate.y)) {
+                let tile = gameState.tileMap.get(coordinate.x, coordinate.y);
+                this.renderTile(tile, coordinate);
+            }
+        }
         // for every coordinate in the viewport:
         // .... if gameState.hasEntityAt(coordinate): gameState.getEntityAt(coordinate).render(canvas)
         // .... else: gameState.tileAt(coordinate).render(this.canvas)

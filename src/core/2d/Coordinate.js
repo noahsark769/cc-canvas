@@ -23,6 +23,10 @@ export class Coordinate {
     rightFrom() {
         return new Coordinate(this.x + 1, this.y)
     }
+
+    asArray() {
+        return [this.x, this.y];
+    }
 }
 
 Coordinate.deserialize = function (serialized) {

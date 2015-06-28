@@ -20,6 +20,10 @@ describe("Coordinate", () => {
         expect(c.x).to.equal(4);
         expect(c.y).to.equal(5);
     });
+    it("should support .asArray", () => {
+        let c = new Coordinate(4, 5);
+        expect(c.asArray()).to.deep.equal([4, 5]);
+    });
     describe("relative constructions", () => {
         var c;
         beforeEach(() => {
