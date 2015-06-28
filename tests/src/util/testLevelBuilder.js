@@ -37,46 +37,45 @@ describe("LevelBuilder", () => {
         builder.reset();
         expect(builder.tileMap.has(5, 5)).to.be.false;
     });
-    describe.skip("chaining support", () => {
+    describe("chaining support", () => {
         let builder = new LevelBuilder(10, 10);
+        beforeEach(() => {
+            builder.reset();
+        });
         it("should support chaining right", () => {
             builder.addTileAt(0, 0, "wall").addTileRight("wall").addTileRight("wall");
             expect(builder.tileMap.get(1, 0).name).to.equal("wall");
             expect(builder.tileMap.get(2, 0).name).to.equal("wall");
-            expect(builder.tileMap.get(3, 0)).to.be.null;
-            expect(builder.tileMap.get(0, 1)).to.be.null;
+            expect(builder.tileMap.has(3, 0)).to.be.false;
+            expect(builder.tileMap.has(0, 1)).to.be.false;
         });
 
-        builder.reset();
         it("should support chaining left", () => {
             builder.addTileAt(9, 0, "wall").addTileLeft("wall").addTileLeft("wall");
-            expect(builder.tileMap.get(9, 0).name).to.equal("wall");
             expect(builder.tileMap.get(8, 0).name).to.equal("wall");
-            expect(builder.tileMap.get(7, 0)).to.be.null;
-            expect(builder.tileMap.get(9, 1)).to.be.null;
+            expect(builder.tileMap.get(7, 0).name).to.equal("wall");
+            expect(builder.tileMap.has(6, 0)).to.be.false;
+            expect(builder.tileMap.has(9, 1)).to.be.false;
         });
 
-        builder.reset();
         it("should support chaining down", () => {
             builder.addTileAt(0, 0, "wall").addTileDown("wall").addTileDown("wall");
-            expect(builder.tileMap.get(0, 0).name).to.equal("wall");
             expect(builder.tileMap.get(0, 1).name).to.equal("wall");
-            expect(builder.tileMap.get(0, 2)).to.be.null;
-            expect(builder.tileMap.get(1, 0)).to.be.null;
+            expect(builder.tileMap.get(0, 2).name).to.equal("wall");
+            expect(builder.tileMap.has(0, 3)).to.be.false;
+            expect(builder.tileMap.has(1, 0)).to.be.false;
         });
 
-        builder.reset();
         it("should support chaining up", () => {
             builder.addTileAt(9, 9, "wall").addTileUp("wall").addTileUp("wall");
-            expect(builder.tileMap.get(9, 9).name).to.equal("wall");
             expect(builder.tileMap.get(9, 8).name).to.equal("wall");
-            expect(builder.tileMap.get(9, 7)).to.be.null;
-            expect(builder.tileMap.get(8, 9)).to.be.null;
+            expect(builder.tileMap.get(9, 7).name).to.equal("wall");
+            expect(builder.tileMap.has(9, 6)).to.be.false;
+            expect(builder.tileMap.has(8, 9)).to.be.false;
         });
 
-        builder.reset();
         it("should support chaining with implied tile types", () => {
-            builder.addtileAt(0, 0, "wall").addTileRight().addTileRight("floor").addTileRight();
+            builder.addTileAt(0, 0, "wall").addTileRight().addTileRight("floor").addTileRight();
             expect(builder.tileMap.get(0, 0).name).to.equal("wall");
             expect(builder.tileMap.get(1, 0).name).to.equal("wall");
             expect(builder.tileMap.get(2, 0).name).to.equal("floor");
