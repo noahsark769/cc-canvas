@@ -1,4 +1,5 @@
 let {Animator} = require("../animation/Animator");
+let {GameState} = require("./GameState");
 let {DocumentInterface} = require("../core/DocumentInterface");
 
 /**
@@ -24,7 +25,7 @@ let SINGLETON_INSTANCE = null;
  * will happen at a reasonable rate.
  * @type {Number}
  */
-let TICK_INTERVAL = 300;
+let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/faq/cache/86.html
 
 
 /**
@@ -40,7 +41,59 @@ export class GameEngine {
     constructor(document) {
         this.documentInterface = new DocumentInterface(document);
         this.animator = new Animator(this.documentInterface.getCanvas());
+        this.gameState = new GameState();
+        this.intervalId = null;
+        this.started = false;
+        this.paused = false;
         SINGLETON_INSTANCE = this;
+    }
+
+    tick() {
+        if (this.paused) { return; }
+        this.gameState.tick();
+    }
+
+    // for testing purposes only
+    step() {
+        this.tick();
+        this.tick();
+    }
+
+    pause(shouldStopTicking = false) {
+        if (shouldStopTicking) {
+            this.stopTicking();
+        }
+        this.paused = true;
+    }
+
+    unpause(shouldStartTicking = false) {
+        if (shouldStartTicking) {
+            this.startTicking();
+        }
+        this.paused = false;
+    }
+
+    togglePause(toggleTicking = false) {
+        if (this.paused) {
+            this.unpause(toggleTicking);
+        } else {
+            this.pause(toggleTicking);
+        }
+    }
+
+    startTicking() {
+        this.intervalId = setInterval(() => {
+            this.tick();
+        }, TICK_INTERVAL);
+    }
+
+    stopTicking() {
+        clearInterval(this.intervalId);
+    }
+
+    startGameplay() {
+        this.startTicking();
+        this.started = true;
     }
 }
 
@@ -53,6 +106,11 @@ GameEngine.getInstance = (document) => {
     if (SINGLETON_INSTANCE !== null) {
         return SINGLETON_INSTANCE;
     }
+    SINGLETON_INSTANCE = new GameEngine(document);
+    return SINGLETON_INSTANCE;
+};
+
+GameEngine.reset = (document) => {
     SINGLETON_INSTANCE = new GameEngine(document);
     return SINGLETON_INSTANCE;
 };
