@@ -128,4 +128,8 @@ export class CCClassicImageRenderer extends ImageRenderer {
             this.tileSideLength
         );
     }
+
+    renderEntity(canvas, entity, coordinate) {
+        
+    }
 }

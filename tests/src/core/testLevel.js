@@ -18,4 +18,7 @@ describe("Level", () => {
         let level = new Level(4, 3);
         level.getDefaultViewport();
     });
+    it.skip("should have default viewport centered on player", () => {
+
+    });
 });

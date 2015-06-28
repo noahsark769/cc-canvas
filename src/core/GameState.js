@@ -1,4 +1,4 @@
-let { CoordinateMap } = require("./2d/CoordinateMap");
+let { Coordinate } = require("./2d/Coordinate");
 let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
 
 export class GameState {
@@ -8,6 +8,21 @@ export class GameState {
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
     }
+    getPlayerPosition() {
+        return this.playerPosition;
+    }
+    setPlayerPosition(x, y) {
+        this.playerPosition = new Coordinate(x, y);
+    }
+
+    movePlayerByTransform(functionName) {
+        this.playerPosition = this.playerPosition[functionName]();
+    }
+
+    movePlayerDown() { return this.movePlayerByTransform("downFrom"); }
+    movePlayerUp() { return this.movePlayerByTransform("upFrom"); }
+    movePlayerLeft() { return this.movePlayerByTransform("leftFrom"); }
+    movePlayerRight() { return this.movePlayerByTransform("rightFrom"); }
 
     setLevel(level) {
         this.level = level;
@@ -37,5 +52,10 @@ export class GameState {
             return this.tileMap.get(x, y);
         }
         return this.level.tileMap.get(x, y);
+    }
+
+    // for now, just return default viewport from level
+    getViewport() {
+        return this.level.getDefaultViewport();
     }
 }

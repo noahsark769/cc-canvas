@@ -1,6 +1,7 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let { GameState } = reqlib("/src/core/GameState");
+let { Viewport } = reqlib("/src/core/2d/Viewport");
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 
 describe("GameState", () => {
@@ -23,15 +24,6 @@ describe("GameState", () => {
         expect(state.hasTileAt(1, 1), "1, 1").to.be.true;
         expect(state.getTileAt(1, 1).name).to.equal("wall");
     });
-    it.skip("should support simple player machanics", () => {
-        let state = new GameState();
-        state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
-        state.setPlayerPosition(1, 1);
-        state.getPlayer().moveUp();
-        let [x, y] = state.getPlayerPosition().asArray();
-        expect(x).to.equal(1);
-        expect(y).to.equal(0);
-    });
     it("should know about parity of ticks", () => {
         let state = new GameState();
         expect(state.currentTicks).to.equal(0);
@@ -44,4 +36,21 @@ describe("GameState", () => {
         expect(state.even()).to.be.ok;
         expect(state.odd()).to.not.be.ok;
     });
+    it("should support simple player machanics", () => {
+        let state = new GameState();
+        state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
+        state.setPlayerPosition(1, 1);
+        state.movePlayerUp();
+        let [x, y] = state.getPlayerPosition().asArray();
+        expect(x).to.equal(1);
+        expect(y).to.equal(0);
+    });
+    it("should support getting viewport", () => {
+        let state = new GameState();
+        state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
+        let viewport = state.getViewport();
+        expect(viewport).to.be.instanceof(Viewport);
+    });
+    it.skip("should have viewport follow player", () => {});
+    it.skip("should have viewport stop at bounds of level", () => {});
 });
