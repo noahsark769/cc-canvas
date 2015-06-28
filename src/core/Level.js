@@ -1,4 +1,6 @@
 let { CoordinateMap } = require("../core/2d/CoordinateMap");
+let { Viewport } = require("../core/2d/Viewport");
+let { Coordinate } = require("../core/2d/Coordinate");
 
 export class Level {
     constructor(width, height) {

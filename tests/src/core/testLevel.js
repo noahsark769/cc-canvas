@@ -14,4 +14,8 @@ describe("Level", () => {
         expect(level.tileMap.size).to.equal(0);
         expect(level.entityMap.size).to.equal(0);
     });
+    it("should not error when getting default viewport", () => {
+        let level = new Level(4, 3);
+        level.getDefaultViewport();
+    });
 });
