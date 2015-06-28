@@ -15,4 +15,5 @@ export class LevelBuilder {
         level.entityMap = this.entityMap;
         return level;
     }
+    reset() {}
 }
