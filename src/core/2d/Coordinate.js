@@ -7,6 +7,22 @@ export class Coordinate {
     serialize() {
         return "" + this.x + "," + this.y;
     }
+
+    downFrom() {
+        return new Coordinate(this.x, this.y + 1);
+    }
+
+    upFrom() {
+        return new Coordinate(this.x, this.y - 1);
+    }
+
+    leftFrom() {
+        return new Coordinate(this.x - 1, this.y)
+    }
+
+    rightFrom() {
+        return new Coordinate(this.x + 1, this.y)
+    }
 }
 
 Coordinate.deserialize = function (serialized) {
