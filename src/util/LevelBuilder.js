@@ -1,7 +1,7 @@
 let { Level } = require("../core/Level");
 let { CoordinateMap } = require("../core/2d/CoordinateMap");
+let { CoordinateTileMap } = require("../core/2d/CoordinateTileMap");
 let { Coordinate } = require("../core/2d/Coordinate");
-let { TileManager } = require("../tile/TileManager");
 
 class TileContext {
     constructor(levelBuilder) {
@@ -36,13 +36,17 @@ class TileContext {
 }
 
 export class LevelBuilder {
-    constructor(width, height) {
+    constructor(width, height, defaultTileType = null) {
         this.width = width;
         this.height = height;
-        this.tileMap = new CoordinateMap();
-        this.entityMap = new CoordinateMap();
         this.renderer = null;
-        this.defaultTileType = null;
+        this.tileMap = new CoordinateTileMap(this.renderer);
+        this.entityMap = new CoordinateMap();
+        this.defaultTileType = defaultTileType;
+    }
+    reset() {
+        this.tileMap = new CoordinateTileMap(this.renderer);
+        this.entityMap = new CoordinateMap();
     }
     setRenderer(renderer) {
         this.renderer = renderer;
@@ -60,28 +64,18 @@ export class LevelBuilder {
                 for (let j = 0; j < this.height; j++) {
                     if (!level.tileMap.has(i, j)) {
                         // populate with default tile type
-                        level.tileMap.set(i, j, this.newTileInstanceByName(this.defaultTileType))
+                        level.tileMap.setTileByName(i, j, this.defaultTileType, this.renderer);
                     }
                 }
             }
         }
         return level;
     }
-    reset() {
-        this.tileMap = new CoordinateMap();
-        this.entityMap = new CoordinateMap();
-    }
     isOutOfBounds(x, y) {
         return x < 0 || y < 0 || x >= this.width || y >= this.height;
     }
-    newTileInstanceByName(tileName) {
-        let tileClass = TileManager.getInstance().tileClassByName(tileName);
-        let tileInstance = new tileClass(this.renderer);
-        return tileInstance;
-    }
     addTileAt(x, y, tileName) {
-        let tileInstance = this.newTileInstanceByName(tileName);
-        this.tileMap.set(x, y, tileInstance);
+        this.tileMap.setTileByName(x, y, tileName);
         let context = new TileContext(this);
         context.tileName = tileName;
         context.coordinate = new Coordinate(x, y);
@@ -98,8 +92,16 @@ export class LevelBuilder {
     }
     getTileAt(x, y) {
         if (!this.isOutOfBounds(x, y) && !this.tileMap.has(x, y) && this.defaultTileType !== null) {
-            return this.newTileInstanceByName(this.defaultTileType);
+            return this.tileMap.newTileInstanceByName(this.defaultTileType);
         }
         return this.tileMap.get(x, y);
     }
 }
+
+LevelBuilder.generateEmptyLevel = function(width, height, defaultTileType, renderer = null) {
+    let builder = new LevelBuilder(width, height, defaultTileType);
+    if (renderer !== null) {
+        builder.setRenderer(renderer);
+    }
+    return builder.generateLevel();
+};

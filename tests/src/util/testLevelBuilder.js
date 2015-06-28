@@ -2,6 +2,7 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let sinon = require("sinon");
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
+let { Level } = reqlib("/src/core/Level");
 
 describe("LevelBuilder", () => {
     it("should import correctly", () => {});
@@ -37,38 +38,52 @@ describe("LevelBuilder", () => {
         builder.reset();
         expect(builder.tileMap.has(5, 5)).to.be.false;
     });
-    it("should support default tiles", () => {
-        let builder = new LevelBuilder(10, 10);
-        builder.setDefaultTileType("floor");
-        expect(builder.hasTileAt(0, 0)).to.be.true;
-        expect(builder.getTileAt(0, 0).name).to.equal("floor");
 
-        builder.addTileAt(0, 0, "wall");
-        expect(builder.hasTileAt(0, 0)).to.be.true;
-        expect(builder.getTileAt(0, 0).name).to.equal("wall");
+    describe("default tile support", () => {
+        it("should support default tiles", () => {
+            let builder = new LevelBuilder(10, 10);
+            builder.setDefaultTileType("floor");
+            expect(builder.hasTileAt(0, 0)).to.be.true;
+            expect(builder.getTileAt(0, 0).name).to.equal("floor");
 
-        // out of bounds tiles should still return false
-        expect(builder.hasTileAt(9, 10)).to.be.false;
-        expect(builder.hasTileAt(10, 9)).to.be.false;
-        expect(builder.hasTileAt(100, 100)).to.be.false;
-    });
-    it("should export default tiles to level", () => {
-        let builder = new LevelBuilder(3, 3);
-        builder.setDefaultTileType("floor");
-        builder.addTileAt(0, 0, "wall").addTileRight().addTileRight().addTileRight()
-            .addTileDown().addTileDown().addTileDown()
-            .addTileLeft().addTileLeft().addTileLeft()
-            .addTileUp().addTileUp();
-        let level = builder.generateLevel();
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if ([1, 2].indexOf(i) !== -1 && [1, 2].indexOf(j) !== -1) {
-                    expect(level.tileMap.get(i, j).name, i + ", " + j).to.equal("floor");
-                } else {
-                    expect(level.tileMap.get(i, j).name, i + ", " + j).to.equal("wall");
+            builder.addTileAt(0, 0, "wall");
+            expect(builder.hasTileAt(0, 0)).to.be.true;
+            expect(builder.getTileAt(0, 0).name).to.equal("wall");
+
+            // out of bounds tiles should still return false
+            expect(builder.hasTileAt(9, 10)).to.be.false;
+            expect(builder.hasTileAt(10, 9)).to.be.false;
+            expect(builder.hasTileAt(100, 100)).to.be.false;
+        });
+        it("should support default tile type in constructor", () => {
+            let builder = new LevelBuilder(10, 10, "floor");
+            expect(builder.hasTileAt(0, 0)).to.be.true;
+            expect(builder.getTileAt(0, 0).name).to.equal("floor");
+        });
+        it("should support default construction of empty level", () => {
+            let level = LevelBuilder.generateEmptyLevel(4, 4, "floor");
+            expect(level).to.be.an.instanceof(Level);
+            expect(level.tileMap.has(0, 0)).to.be.true;
+            expect(level.tileMap.has(3, 3)).to.be.true;
+        });
+        it("should export default tiles to level", () => {
+            let builder = new LevelBuilder(3, 3);
+            builder.setDefaultTileType("floor");
+            builder.addTileAt(0, 0, "wall").addTileRight().addTileRight().addTileRight()
+                .addTileDown().addTileDown().addTileDown()
+                .addTileLeft().addTileLeft().addTileLeft()
+                .addTileUp().addTileUp();
+            let level = builder.generateLevel();
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if ([1, 2].indexOf(i) !== -1 && [1, 2].indexOf(j) !== -1) {
+                        expect(level.tileMap.get(i, j).name, i + ", " + j).to.equal("floor");
+                    } else {
+                        expect(level.tileMap.get(i, j).name, i + ", " + j).to.equal("wall");
+                    }
                 }
             }
-        }
+        });
     });
     describe("chaining support", () => {
         let builder = new LevelBuilder(10, 10);

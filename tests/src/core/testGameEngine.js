@@ -15,4 +15,30 @@ describe("GameEngine", () => {
         let engine2 = GameEngine.getInstance(getMockDocument());
         expect(engine2.someProperty).to.be.true;
     });
+    it.skip("should pause correctly", () => {
+        let engine = GameEngine.getInstance(getMockDocument());
+        expect(engine.gameState.currentTicks).to.equal(0);
+        engine.tick();
+        expect(engine.gameState.currentTicks).to.equal(1);
+        engine.pause();
+        expect(engine.gameState.currentTicks).to.equal(1);
+        engine.tick();
+        expect(engine.gameState.currentTicks).to.equal(1);
+        engine.unPause();
+        engine.tick();
+        expect(engine.gameState.currentTicks).to.equal(2);
+
+        engine.togglePause(); // now paused
+        engine.tick();
+        expect(engine.gameState.currentTicks).to.equal(2);
+        engine.togglePause();
+        engine.tick();
+        expect(engine.gameState.currentTicks).to.equal(3);
+    });
+    it.skip("should map two ticks to one step", () => {
+        let engine = GameEngine.getInstance(getMockDocument());
+        expect(engine.gameState.currentTicks).to.equal(0);
+        engine.step();
+        expect(engine.gameState.currentTicks).to.equal(2);
+    });
 });
