@@ -25,6 +25,9 @@ export class GameState {
 
     movePlayerByTransform(functionName) {
         let newCoord = this.playerPosition[functionName]();
+        if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= this.level.width || newCoord.y >= this.level.height) {
+            return;
+        }
         this.setPlayerPosition(...newCoord.asArray());
     }
 

@@ -4,6 +4,27 @@ let { GameState } = reqlib("/src/core/GameState");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 
+function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY) {
+    let state = new GameState();
+    let builder = new LevelBuilder(width, height, defaultTile);
+    builder.addEntityAt(playerX, playerY, "player");
+    state.setPlayerPosition(playerX, playerY);
+    let level = builder.generateLevel();
+    state.setLevel(level);
+    return [state, level];
+}
+
+function expectNoEntityAt(state, x, y) {
+    expect(state.hasEntityAt(x, y), "found entity at " + x + ", " + y).to.be.false;
+}
+function expectEntityAt(state, x, y, name) {
+    expect(state.hasEntityAt(x, y), "no " + name + " at " + x + ", " + y).to.be.true;
+    expect(state.getEntityAt(x, y).name).to.equal(name);
+}
+function expectPlayerAt(state, x, y) {
+    expectEntityAt(state, x, y, "player");
+}
+
 describe("GameState", () => {
     it("should import correctly", () => {});
     it("should tick correctly", () => {
@@ -36,20 +57,39 @@ describe("GameState", () => {
         expect(state.even()).to.be.ok;
         expect(state.odd()).to.not.be.ok;
     });
-    it("should support simple player machanics", () => {
-        let state = new GameState();
-        let builder = new LevelBuilder(4, 4, "floor");
-        builder.addEntityAt(1, 1, "player");
-        state.setPlayerPosition(1, 1);
-        state.setLevel(builder.generateLevel());
-        state.movePlayerUp();
-        let [x, y] = state.getPlayerPosition().asArray();
-        expect(x).to.equal(1);
-        expect(y).to.equal(0);
-        expect(state.entityMap.has(1, 1)).to.be.false;
-        expect(state.entityMap.has(1, 0)).to.be.true;
-        expect(state.entityMap.get(1, 0).name).to.equal("player");
+
+    describe("player mechanics", () => {
+        it("should support simple player machanics", () => {
+            let [state, level] = buildSimpleLevelWithPlayerAt(4, 4, "floor", 1, 1);
+            state.movePlayerUp();
+            let [x, y] = state.getPlayerPosition().asArray();
+            expect(x).to.equal(1);
+            expect(y).to.equal(0);
+            expectNoEntityAt(state, 1, 1);
+            expectPlayerAt(state, 1, 0);
+        });
+        it("should not allow the player to move outside of level", () => {
+            let [state, level] = buildSimpleLevelWithPlayerAt(3, 3, "floor", 1, 1);
+            state.movePlayerLeft();
+            state.movePlayerLeft();
+            expectNoEntityAt(state, 1, 1);
+            expectPlayerAt(state, 0, 1);
+            state.movePlayerUp();
+            expectPlayerAt(state, 0, 0);
+            state.movePlayerUp();
+            state.movePlayerLeft();
+            expectPlayerAt(state, 0, 0);
+            state.movePlayerRight();
+            state.movePlayerRight();
+            state.movePlayerRight();
+            expectPlayerAt(state, 2, 0);
+            state.movePlayerDown();
+            state.movePlayerDown();
+            state.movePlayerDown();
+            expectPlayerAt(state, 2, 2);
+        });
     });
+
     it("should support getting viewport", () => {
         let state = new GameState();
         state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
