@@ -13,6 +13,9 @@ export default function expectations(expect) {
         },
         expectPlayerAt: function(state, x, y) {
             this.expectEntityAt(state, x, y, "player");
+        },
+        expectPlayerAndViewportCenterToMatch: function(state, viewport) {
+            expect(state.getPlayerPosition().asArray()).to.deep.equals(viewport.getCenter().asArray());
         }
     };
 }

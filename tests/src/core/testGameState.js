@@ -99,10 +99,26 @@ describe("GameState", () => {
             // move to the corners. Make sure it's centered in the corners as far as it should go
             state.movePlayer("DDRRRRRRRRRRRRRRRR");
             expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 18]);
+            expect(state.getViewport().getCenter())
             state.movePlayer("DDDDDDDDDDDDDD");
             expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 27]);
             state.movePlayer("UUUUUUUUUUUUUUUUUUUUUUUUUUU");
             expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 4]);
+        });
+        it("should not let viewport get offset from player location", () => {
+            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            state.movePlayer("RRRRRRRRRRRRRRRR");
+            state.movePlayer("LLLLLLLLLLLLLLLL");
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            state.movePlayer("LLLLLLLLLLLLLLLL");
+            state.movePlayer("RRRRRRRRRRRRRRRR");
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            state.movePlayer("DDDDDDDDDDDDDDDD");
+            state.movePlayer("UUUUUUUUUUUUUUUU");
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            state.movePlayer("UUUUUUUUUUUUUUUU");
+            state.movePlayer("DDDDDDDDDDDDDDDD");
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
         });
     });
 });

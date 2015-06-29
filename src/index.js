@@ -16,11 +16,11 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         ..W...W.W...W..
         ..W...W.W...W..
         WWWWWWWWWWWWWWW
-        W...W.....W...W
+        W.............W
         W...W.....W...W
         WWWWW..P..WWWWW
-        W...W.....W...W
-        W...W.....W...W
+        W.........W...W
+        W...W.........W
         WWWWWWWWWWWWWWW
         ....W..W..W....
         ....W..W..W....

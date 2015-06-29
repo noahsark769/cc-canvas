@@ -30,7 +30,7 @@ export class GameState {
         this.playerPosition = newCoord;
     }
 
-    movePlayerByTransform(functionName, viewportFunctionName, viewportBound) {
+    movePlayerByTransform(functionName) {
         let newCoord = this.playerPosition[functionName]();
         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= this.level.width || newCoord.y >= this.level.height) {
             return;
@@ -38,19 +38,37 @@ export class GameState {
         if (this.hasTileAt(...newCoord.asArray())) {
             let nextTile = this.getTileAt(...newCoord.asArray());
             if (nextTile.shouldBlockPlayer()) {
-                return;
+                return false;
             }
         }
         this.setPlayerPosition(...newCoord.asArray());
-        if (viewportFunctionName) {
-            this.viewport[viewportFunctionName](1, viewportBound)
-        }
+        return true;
     }
 
-    movePlayerDown() { return this.movePlayerByTransform("downFrom", "shiftDownBounded", this.level.height); }
-    movePlayerUp() { return this.movePlayerByTransform("upFrom", "shiftUpBounded", -1); }
-    movePlayerLeft() { return this.movePlayerByTransform("leftFrom", "shiftLeftBounded", -1); }
-    movePlayerRight() { return this.movePlayerByTransform("rightFrom", "shiftRightBounded", this.level.width); }
+    movePlayerDown() {
+        let prevPlayerPosition = this.playerPosition;
+        if (this.movePlayerByTransform("downFrom") && prevPlayerPosition.y >= this.viewport.getCenter().y) {
+            this.viewport.shiftDownBounded(1, this.level.height);
+        }
+    }
+    movePlayerUp() {
+        let prevPlayerPosition = this.playerPosition;
+        if (this.movePlayerByTransform("upFrom") && prevPlayerPosition.y <= this.viewport.getCenter().y) {
+            this.viewport.shiftUpBounded(1, -1);
+        }
+    }
+    movePlayerLeft() {
+        let prevPlayerPosition = this.playerPosition;
+        if (this.movePlayerByTransform("leftFrom") && prevPlayerPosition.x <= this.viewport.getCenter().x) {
+            this.viewport.shiftLeftBounded(1, -1);
+        }
+    }
+    movePlayerRight() {
+        let prevPlayerPosition = this.playerPosition;
+        if (this.movePlayerByTransform("rightFrom") && prevPlayerPosition.x >= this.viewport.getCenter().x) {
+            this.viewport.shiftRightBounded(1, this.level.width);
+        }
+    }
     movePlayer(controlString) {
         for (let char of controlString) {
             switch (char) {
