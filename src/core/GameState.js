@@ -1,5 +1,6 @@
 let { Coordinate } = require("./2d/Coordinate");
 let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
+let { Viewport } = require("./2d/Viewport");
 
 export class GameState {
     constructor() {
@@ -9,6 +10,7 @@ export class GameState {
         this.entityMap = new CoordinateTileMap();
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
+        this.viewport = null;
     }
 
     getPlayerPosition() {
@@ -22,10 +24,13 @@ export class GameState {
             this.entityMap.delete(...this.playerPosition.asArray());
             this.entityMap.set(newCoord.x, newCoord.y, player);
         }
+        if (this.playerPosition === null && this.level !== null) {
+            this.viewport = Viewport.constructFromPlayerPosition(newCoord, this.level.width, this.level.height);
+        }
         this.playerPosition = newCoord;
     }
 
-    movePlayerByTransform(functionName) {
+    movePlayerByTransform(functionName, viewportFunctionName, viewportBound) {
         let newCoord = this.playerPosition[functionName]();
         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= this.level.width || newCoord.y >= this.level.height) {
             return;
@@ -37,12 +42,15 @@ export class GameState {
             }
         }
         this.setPlayerPosition(...newCoord.asArray());
+        if (viewportFunctionName) {
+            this.viewport[viewportFunctionName](1, viewportBound)
+        }
     }
 
-    movePlayerDown() { return this.movePlayerByTransform("downFrom"); }
-    movePlayerUp() { return this.movePlayerByTransform("upFrom"); }
-    movePlayerLeft() { return this.movePlayerByTransform("leftFrom"); }
-    movePlayerRight() { return this.movePlayerByTransform("rightFrom"); }
+    movePlayerDown() { return this.movePlayerByTransform("downFrom", "shiftDownBounded", this.level.height); }
+    movePlayerUp() { return this.movePlayerByTransform("upFrom", "shiftUpBounded", -1); }
+    movePlayerLeft() { return this.movePlayerByTransform("leftFrom", "shiftLeftBounded", -1); }
+    movePlayerRight() { return this.movePlayerByTransform("rightFrom", "shiftRightBounded", this.level.width); }
     movePlayer(controlString) {
         for (let char of controlString) {
             switch (char) {
@@ -69,6 +77,7 @@ export class GameState {
         if (this.level.getInitialPlayerPosition() !== null) {
             this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
         }
+        this.viewport = this.level.getDefaultViewport();
     }
 
     tick() {
@@ -102,6 +111,6 @@ export class GameState {
 
     // for now, just return default viewport from level
     getViewport() {
-        return this.level.getDefaultViewport();
+        return this.viewport;
     }
 }

@@ -1,3 +1,4 @@
+let {Coordinate} = require("../core/2d/Coordinate");
 /**
  * The Animator class is responsible for drawing tiles, entities, level, etc to
  * the canvas and updating the display as the GameState changes. Usually, the
@@ -39,12 +40,12 @@ export class Animator {
         for (let coordinate of viewport.coordinatesInBounds()) {
             if (gameState.hasTileAt(coordinate.x, coordinate.y)) {
                 let tile = gameState.getTileAt(coordinate.x, coordinate.y);
-                this.renderTile(tile, coordinate);
+                this.renderTile(tile, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
             }
             // right now, entities will entirely superseed tiles
             if (gameState.hasEntityAt(coordinate.x, coordinate.y)) {
                 let entity = gameState.getEntityAt(coordinate.x, coordinate.y);
-                this.renderEntity(entity, coordinate);
+                this.renderEntity(entity, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
             }
         }
     }

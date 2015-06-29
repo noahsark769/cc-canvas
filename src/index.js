@@ -7,16 +7,26 @@ let { LevelBuilder } = require("./util/LevelBuilder");
 
 let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
     let engine = GameEngine.getInstance(document);
-    let builder = new LevelBuilder(4, 4);
-    builder.setRenderer(renderer);
-    builder.setDefaultTileType("floor");
-    builder.addTileAt(0, 0, "wall").addTileRight().addTileRight().addTileRight()
-        .addTileDown().addTileDown().addTileDown()
-        .addTileLeft().addTileLeft().addTileLeft()
-        .addTileUp().addTileUp();
-    builder.addEntityAt(1, 1, "player");
-    let simpleLevel = builder.generateLevel();
+    let simpleLevel = LevelBuilder.generateFromSchematic(`
+        . tile floor
+        W tile wall
+        P entity player
+        ===
+        ..WWWWW.WWWWW..
+        ..W...W.W...W..
+        ..W...W.W...W..
+        WWWWWWWWWWWWWWW
+        W...W.....W...W
+        W...W.....W...W
+        WWWWW..P..WWWWW
+        W...W.....W...W
+        W...W.....W...W
+        WWWWWWWWWWWWWWW
+        ....W..W..W....
+        ....W..W..W....
+        ....W..W..W....
+        ....W..W..W....
+    `, renderer);
     engine.gameState.setLevel(simpleLevel);
-    engine.gameState.setPlayerPosition(1, 1);
     engine.startGameplay();
 });

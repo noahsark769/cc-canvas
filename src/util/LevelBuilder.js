@@ -115,8 +115,9 @@ LevelBuilder.generateEmptyLevel = function(width, height, defaultTileType, rende
     return builder.generateLevel();
 };
 
-LevelBuilder.buildFromSchematic = function(schematic) {
+LevelBuilder.buildFromSchematic = function(schematic, renderer = null) {
     let builder = new LevelBuilder(0, 0);
+    builder.setRenderer(renderer);
     let [frontmatter, levelSchematic] = schematic.split("===");
     frontmatter = frontmatter.split("\n").filter((item) => { return item.length > 0; });
     frontmatter = frontmatter.map((value) => { return value.trim(); });
@@ -156,7 +157,7 @@ LevelBuilder.buildFromSchematic = function(schematic) {
     return builder;
 }
 
-LevelBuilder.generateFromSchematic = function(schematic) {
-    let builder = LevelBuilder.buildFromSchematic(schematic);
+LevelBuilder.generateFromSchematic = function(schematic, renderer = null) {
+    let builder = LevelBuilder.buildFromSchematic(schematic, renderer);
     return builder.generateLevel();
 }

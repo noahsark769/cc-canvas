@@ -16,12 +16,7 @@ export class Level {
 
     // will eventually render differently based on player position. for now, just render upper left.
     getDefaultViewport() {
-        return Viewport.constructFromBounds(
-            new Coordinate(0, 0),
-            new Coordinate(8, 0),
-            new Coordinate(8, 8),
-            new Coordinate(0, 8)
-        );
+        return Viewport.constructFromPlayerPosition(this.initialPlayerPosition, this.width, this.height);
     }
 
     setInitialPlayerPosition(position) {

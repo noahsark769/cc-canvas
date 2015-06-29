@@ -9,9 +9,9 @@ function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playe
     let state = new GameState();
     let builder = new LevelBuilder(width, height, defaultTile);
     builder.addEntityAt(playerX, playerY, "player");
-    state.setPlayerPosition(playerX, playerY);
     let level = builder.generateLevel();
     state.setLevel(level);
+    state.setPlayerPosition(playerX, playerY);
     return [state, level];
 }
 
@@ -80,12 +80,29 @@ describe("GameState", () => {
         });
     });
 
-    it("should support getting viewport", () => {
-        let state = new GameState();
-        state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
-        let viewport = state.getViewport();
-        expect(viewport).to.be.instanceof(Viewport);
+    describe("viewport", () => {
+        it("should support getting viewport", () => {
+            let state = new GameState();
+            state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
+            let viewport = state.getViewport();
+            expect(viewport).to.be.instanceof(Viewport);
+        });
+        it("should have viewport follow player", () => {
+            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            // player is at 16, 16. go down down, right right and make sure the viewport
+            // is still centered on player
+            state.movePlayer("DDRR");
+            expect(state.getViewport().getCenter().asArray()).to.deep.equals([18, 18]);
+        });
+        it("should have viewport stop at bounds of level", () => {
+            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            // move to the corners. Make sure it's centered in the corners as far as it should go
+            state.movePlayer("DDRRRRRRRRRRRRRRRR");
+            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 18]);
+            state.movePlayer("DDDDDDDDDDDDDD");
+            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 27]);
+            state.movePlayer("UUUUUUUUUUUUUUUUUUUUUUUUUUU");
+            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 4]);
+        });
     });
-    it.skip("should have viewport follow player", () => {});
-    it.skip("should have viewport stop at bounds of level", () => {});
 });
