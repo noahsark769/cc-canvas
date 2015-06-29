@@ -7,7 +7,7 @@ let { LevelBuilder } = require("./util/LevelBuilder");
 
 let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
     let engine = GameEngine.getInstance(document);
-    let builder = new LevelBuilder(3, 3);
+    let builder = new LevelBuilder(4, 4);
     builder.setRenderer(renderer);
     builder.setDefaultTileType("floor");
     builder.addTileAt(0, 0, "wall").addTileRight().addTileRight().addTileRight()
