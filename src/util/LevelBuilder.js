@@ -43,6 +43,7 @@ export class LevelBuilder {
         this.tileMap = new CoordinateTileMap(this.renderer);
         this.entityMap = new CoordinateTileMap(this.renderer);
         this.defaultTileType = defaultTileType;
+        this.playerPosition = null;
     }
     reset() {
         this.tileMap = new CoordinateTileMap(this.renderer);
@@ -70,6 +71,9 @@ export class LevelBuilder {
                     }
                 }
             }
+        }
+        if (this.playerPosition !== null) {
+            level.setInitialPlayerPosition(this.playerPosition);
         }
         return level;
     }
@@ -110,3 +114,49 @@ LevelBuilder.generateEmptyLevel = function(width, height, defaultTileType, rende
     }
     return builder.generateLevel();
 };
+
+LevelBuilder.buildFromSchematic = function(schematic) {
+    let builder = new LevelBuilder(0, 0);
+    let [frontmatter, levelSchematic] = schematic.split("===");
+    frontmatter = frontmatter.split("\n").filter((item) => { return item.length > 0; });
+    frontmatter = frontmatter.map((value) => { return value.trim(); });
+
+    let charToTileType = new Map();
+    let charToEntityType = new Map()
+    for (let definition of frontmatter) {
+        let [char, type, name] = definition.split(" ").filter((item) => { return item.length > 0; });
+        if (type == "tile") {
+            charToTileType.set(char, name);
+        } else {
+            charToEntityType.set(char, name);
+        }
+    }
+
+    let rows = levelSchematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; })
+    let maxX = 0, maxY = 0;
+    for (let j in rows) {
+        let line = rows[j];
+        for (let i in line) {
+            maxX = Math.max(maxX, i);
+            maxY = Math.max(maxY, j);
+            let char = rows[j][i];
+            if (charToTileType.has(char)) {
+                builder.addTileAt(i, j, charToTileType.get(char));
+            }
+            if (charToEntityType.has(char)) {
+                builder.addEntityAt(i, j, charToEntityType.get(char));
+                if (charToEntityType.get(char) == "player") {
+                    builder.playerPosition = new Coordinate(i, j);
+                }
+            }
+        };
+    };
+    builder.width = maxX + 1;
+    builder.height = maxY + 1;
+    return builder;
+}
+
+LevelBuilder.generateFromSchematic = function(schematic) {
+    let builder = LevelBuilder.buildFromSchematic(schematic);
+    return builder.generateLevel();
+}

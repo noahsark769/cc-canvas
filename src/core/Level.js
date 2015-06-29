@@ -11,6 +11,7 @@ export class Level {
         this.height = height;
         this.tileMap = new CoordinateTileMap();
         this.entityMap = new CoordinateMap();
+        this.initialPlayerPosition = null;
     }
 
     // will eventually render differently based on player position. for now, just render upper left.
@@ -21,5 +22,13 @@ export class Level {
             new Coordinate(8, 8),
             new Coordinate(0, 8)
         );
+    }
+
+    setInitialPlayerPosition(position) {
+        this.initialPlayerPosition = position;
+    }
+
+    getInitialPlayerPosition() {
+        return this.initialPlayerPosition;
     }
 }

@@ -2,14 +2,13 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { Wall } = reqlib("/src/tile/Wall");
+let { GameState } = reqlib("/src/core/GameState");
+let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 
 function buildLevelFromSchematic(schematic) {
     let state = new GameState();
-    let builder = LevelBuilder.fromSchematic(schematic);
+    let builder = LevelBuilder.buildFromSchematic(schematic);
     let level = builder.generateLevel();
-    if (builder.hasPlayer()) {
-        state.setPlayerPosition(...builder.getPlayerPosition().asArray());
-    }
     state.setLevel(level);
     return [state, level];
 }
@@ -17,11 +16,11 @@ function buildLevelFromSchematic(schematic) {
 describe("Wall", () => {
     it("should import correctly", () => {});
     it("should block player progress", () => {
-        let [state, level] = buildLevelfromSchematic(`
+        let [state, level] = buildLevelFromSchematic(`
             . tile floor
             W tile wall
             P entity player
-            ==================
+            ===
             ...
             .WP
             ...

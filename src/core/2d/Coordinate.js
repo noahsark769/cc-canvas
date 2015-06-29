@@ -1,7 +1,7 @@
 export class Coordinate {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = parseInt(x);
+        this.y = parseInt(y);
     }
 
     serialize() {

@@ -1,8 +1,10 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let sinon = require("sinon");
+let expectations = reqlib("/testing/expectations")(expect);
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { Level } = reqlib("/src/core/Level");
+let { GameState } = reqlib("/src/core/GameState");
 
 describe("LevelBuilder", () => {
     it("should import correctly", () => {});
@@ -157,6 +159,59 @@ describe("LevelBuilder", () => {
             expect(builder.tileMap.get(1, 0).name).to.equal("wall");
             expect(builder.tileMap.get(2, 0).name).to.equal("floor");
             expect(builder.tileMap.get(3, 0).name).to.equal("floor");
+        });
+    });
+
+    describe("schematics", () => {
+        it("should build level from schematic", () => {
+            let builder = LevelBuilder.buildFromSchematic(`
+                . tile floor
+                ===
+                ...
+                ...
+                ...
+                ...
+            `);
+            let level = builder.generateLevel();
+            expect(level.width).to.equal(3);
+            expect(level.height).to.equal(4);
+
+            let state = new GameState();
+            state.setLevel(level);
+
+            for (let i of [0, 1, 2]) {
+                for (let j of [0, 1, 2, 3]) {
+                    expectations.expectTileAt(state, i, j, "floor");
+                }
+            }
+        });
+        it("should support multiple tile types", () => {
+            let level = LevelBuilder.generateFromSchematic(`
+                . tile floor
+                W tile wall
+                ===
+                ..W.
+                .W..
+            `);
+            let state = new GameState();
+            state.setLevel(level);
+            expectations.expectTileAt(state, 0, 0, "floor");
+            expectations.expectTileAt(state, 2, 0, "wall");
+            expectations.expectTileAt(state, 1, 1, "wall");
+        });
+        it("should support autosetting player location", () => {
+            let level = LevelBuilder.generateFromSchematic(`
+                . tile floor
+                W tile wall
+                P entity player
+                ===
+                ....
+                .WP.
+                ....
+            `);
+            let state = new GameState();
+            state.setLevel(level);
+            expectations.expectPlayerAt(state, 2, 1);
         });
     });
 });

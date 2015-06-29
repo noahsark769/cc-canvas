@@ -10,9 +10,11 @@ export class GameState {
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
     }
+
     getPlayerPosition() {
         return this.playerPosition;
     }
+
     setPlayerPosition(x, y) {
         let newCoord = new Coordinate(x, y);
         if (this.playerPosition !== null) {
@@ -28,6 +30,12 @@ export class GameState {
         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= this.level.width || newCoord.y >= this.level.height) {
             return;
         }
+        if (this.hasTileAt(...newCoord.asArray())) {
+            let nextTile = this.getTileAt(...newCoord.asArray());
+            if (nextTile.shouldBlockPlayer()) {
+                return;
+            }
+        }
         this.setPlayerPosition(...newCoord.asArray());
     }
 
@@ -35,10 +43,32 @@ export class GameState {
     movePlayerUp() { return this.movePlayerByTransform("upFrom"); }
     movePlayerLeft() { return this.movePlayerByTransform("leftFrom"); }
     movePlayerRight() { return this.movePlayerByTransform("rightFrom"); }
+    movePlayer(controlString) {
+        for (let char of controlString) {
+            switch (char) {
+                case "U":
+                    this.movePlayerUp();
+                    break;
+                case "R":
+                    this.movePlayerRight();
+                    break;
+                case "L":
+                    this.movePlayerLeft();
+                    break;
+                case "D":
+                    this.movePlayerDown();
+                    break;
+                default:
+            }
+        }
+    }
 
     setLevel(level) {
         this.level = level;
         this.entityMap = this.level.entityMap;
+        if (this.level.getInitialPlayerPosition() !== null) {
+            this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
+        }
     }
 
     tick() {
