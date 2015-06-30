@@ -38,24 +38,46 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
-    constructor(document) {
+    constructor(document, canvas = null) {
         this.documentInterface = new DocumentInterface(document);
+        if (canvas === null) {
+            canvas = this.documentInterface.getCanvas()
+        }
         this.documentInterface.registerKeypresses(document, this);
-        this.animator = new Animator(this.documentInterface.getCanvas());
+        this.animator = new Animator(canvas);
         this.gameState = new GameState();
         this.intervalId = null;
         this.started = false;
         this.paused = false;
         SINGLETON_INSTANCE = this;
+
+        this.pendingPlayerMovement = null;
+        this.playerMovedOnLastTick = false;
+    }
+
+    enqueuePlayerMovement(movement) {
+        this.pendingPlayerMovement = movement;
     }
 
     tick() {
         if (this.paused) { return; }
-        this.gameState.tick();
+        if (this.pendingPlayerMovement === null) {
+            this.playerMovedOnLastTick = false;
+        } else {
+            if (this.pendingPlayerMovement !== null && !this.playerMovedOnLastTick) {
+                this.gameState["movePlayer" + this.pendingPlayerMovement.charAt(0).toUpperCase() + this.pendingPlayerMovement.slice(1)]();
+                this.pendingPlayerMovement = null;
+                this.playerMovedOnLastTick = true;
+            } else {
+                this.playerMovedOnLastTick = false;
+            }
+        }
+        // rerender the canvas
         if (this.animator !== null && this.gameState.level !== null) {
             this.animator.clear();
             this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
         }
+        this.gameState.tick();
     }
 
     // for testing purposes only
@@ -107,16 +129,17 @@ export class GameEngine {
  * if none already exists.
  * @return {GameEngine} the singleton engine
  */
-GameEngine.getInstance = (document) => {
+GameEngine.getInstance = (document, canvas = null) => {
     if (SINGLETON_INSTANCE !== null) {
         return SINGLETON_INSTANCE;
     }
-    SINGLETON_INSTANCE = new GameEngine(document);
+    console.log("CANVAS 1: " + canvas);
+    SINGLETON_INSTANCE = new GameEngine(document, canvas);
     return SINGLETON_INSTANCE;
 };
 
-GameEngine.reset = (document) => {
-    SINGLETON_INSTANCE = new GameEngine(document);
+GameEngine.reset = (document, canvas = null) => {
+    SINGLETON_INSTANCE = new GameEngine(document, canvas);
     return SINGLETON_INSTANCE;
 };
 

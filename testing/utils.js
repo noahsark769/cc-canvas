@@ -1,4 +1,8 @@
+let reqlib = require("app-root-path").require;
 let sinon = require("sinon");
+let {GameState} = reqlib("/src/core/GameState");
+let {LevelBuilder} = reqlib("/src/util/LevelBuilder");
+let {CCClassicImageRenderer} = reqlib("/src/animation/renderers/image/CCClassicImageRenderer");
 
 /**
  * Return an object representing the intrface of the DOM document
@@ -23,7 +27,8 @@ export function getMockCanvas(spy = null) {
     return {
         getContext: function () {
             return {
-                drawImage: spy
+                drawImage: spy,
+                clearRect: sinon.spy()
             }
         }
     }
@@ -34,4 +39,16 @@ export function stopTickingDebugger() {
         window.GameEngine.getInstance().stopTicking();
         debugger;
     }
+}
+
+export function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY, maybeState, maybeRenderer) {
+    let state = maybeState || new GameState();
+    let renderer = maybeRenderer || new CCClassicImageRenderer(sinon.spy(), function() {});
+    let builder = new LevelBuilder(width, height, defaultTile);
+    builder.setRenderer(renderer);
+    builder.addEntityAt(playerX, playerY, "player");
+    let level = builder.generateLevel();
+    state.setLevel(level);
+    state.setPlayerPosition(playerX, playerY);
+    return [state, level];
 }

@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 
    grunt.loadNpmTasks("grunt-browserify");
    grunt.loadNpmTasks("grunt-contrib-watch");
+   grunt.loadNpmTasks('grunt-mocha-test');
 
    grunt.registerTask("default", ["build", "watch"]);
    grunt.registerTask("build", ["browserify"]);

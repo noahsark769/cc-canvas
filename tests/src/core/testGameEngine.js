@@ -1,12 +1,14 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let sinon = require("sinon");
+let expectations = reqlib("/testing/expectations")(expect);
 let { GameEngine } = reqlib("/src/core/GameEngine");
-let { getMockDocument } = reqlib("/testing/utils");
+let { getMockDocument, getMockCanvas } = reqlib("/testing/utils");
+let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
 describe("GameEngine", () => {
     beforeEach(() => {
-        GameEngine.reset(getMockDocument());
+        GameEngine.reset(getMockDocument(), getMockCanvas());
     });
     it("should be available via import", () => {});
     it("should work with appRootPath imports and chai", () => {
@@ -47,5 +49,41 @@ describe("GameEngine", () => {
         expect(engine.gameState.currentTicks).to.equal(0);
         engine.step();
         expect(engine.gameState.currentTicks).to.equal(2);
+    });
+    it("should only move player at steps", () => {
+        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16, engine.gameState);
+        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("down");
+        // first tick, player will move immediately
+        engine.tick();
+        expectations.expectPlayerAt(state, 16, 17);
+        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("down");
+        // second tick, player will not move, only moves on even ticks
+        engine.tick();
+        expectations.expectPlayerAt(state, 16, 17);
+        // third tick, player will now move
+        engine.tick();
+        expectations.expectPlayerAt(state, 16, 18);
+    });
+    it("should support player moving in odd step", () => {
+        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16, engine.gameState);
+        engine.tick();
+        engine.enqueuePlayerMovement("down");
+        // since the player was not moving before, it should move now.
+        engine.tick();
+        expectations.expectPlayerAt(state, 16, 17);
+        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("down");
+        engine.tick();
+        // just moved, so should not have moved again
+        expectations.expectPlayerAt(state, 16, 17);
+        engine.tick();
+        // now should have moved again
+        expectations.expectPlayerAt(state, 16, 18);
     });
 });

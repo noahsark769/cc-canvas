@@ -30,16 +30,16 @@ export class DocumentInterface {
             if (e.keyCode) {
                 switch(e.keyCode) {
                     case 37: // left
-                        gameEngine.gameState.movePlayerLeft();
+                        gameEngine.enqueuePlayerMovement("left");
                         break;
                     case 38: // up
-                        gameEngine.gameState.movePlayerUp();
+                        gameEngine.enqueuePlayerMovement("up");
                         break;
                     case 39: // right
-                        gameEngine.gameState.movePlayerRight();
+                        gameEngine.enqueuePlayerMovement("right");
                         break;
                     case 40: // down
-                        gameEngine.gameState.movePlayerDown();
+                        gameEngine.enqueuePlayerMovement("down");
                         break;
                     default:
                         break;

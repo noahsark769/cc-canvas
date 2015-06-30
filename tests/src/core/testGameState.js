@@ -4,16 +4,7 @@ let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
-
-function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY) {
-    let state = new GameState();
-    let builder = new LevelBuilder(width, height, defaultTile);
-    builder.addEntityAt(playerX, playerY, "player");
-    let level = builder.generateLevel();
-    state.setLevel(level);
-    state.setPlayerPosition(playerX, playerY);
-    return [state, level];
-}
+let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
 describe("GameState", () => {
     it("should import correctly", () => {});
