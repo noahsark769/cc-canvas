@@ -1,6 +1,7 @@
 let { Coordinate } = require("./2d/Coordinate");
 let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
 let { Viewport } = require("./2d/Viewport");
+let {NORTH, SOUTH, EAST, WEST} = require("./2d/directions");
 
 export class GameState {
     constructor() {
@@ -11,6 +12,7 @@ export class GameState {
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
         this.viewport = null;
+        this.chipsLeft = 0;
     }
 
     getPlayerPosition() {
@@ -50,11 +52,17 @@ export class GameState {
         if (this.movePlayerByTransform("downFrom") && prevPlayerPosition.y >= this.viewport.getCenter().y) {
             this.viewport.shiftDownBounded(1, this.level.height);
         }
+        if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", SOUTH, this, this.playerPosition);
+        }
     }
     movePlayerUp() {
         let prevPlayerPosition = this.playerPosition;
         if (this.movePlayerByTransform("upFrom") && prevPlayerPosition.y <= this.viewport.getCenter().y) {
             this.viewport.shiftUpBounded(1, -1);
+        }
+        if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", NORTH, this, this.playerPosition);
         }
     }
     movePlayerLeft() {
@@ -62,11 +70,17 @@ export class GameState {
         if (this.movePlayerByTransform("leftFrom") && prevPlayerPosition.x <= this.viewport.getCenter().x) {
             this.viewport.shiftLeftBounded(1, -1);
         }
+        if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", WEST, this, this.playerPosition);
+        }
     }
     movePlayerRight() {
         let prevPlayerPosition = this.playerPosition;
         if (this.movePlayerByTransform("rightFrom") && prevPlayerPosition.x >= this.viewport.getCenter().x) {
             this.viewport.shiftRightBounded(1, this.level.width);
+        }
+        if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", EAST, this, this.playerPosition);
         }
     }
     movePlayer(controlString) {
@@ -96,6 +110,7 @@ export class GameState {
             this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
         }
         this.viewport = this.level.getDefaultViewport();
+        this.chipsLeft = this.level.chipsNeeded;
     }
 
     tick() {

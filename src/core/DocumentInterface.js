@@ -12,6 +12,7 @@ export class DocumentInterface {
      */
     constructor(document) {
         this.document = document;
+        this.chipsLeft = -1;
     }
 
     /**
@@ -46,5 +47,11 @@ export class DocumentInterface {
                 }
             }
         });
+    }
+    updateChipsLeft(chipsLeft) {
+        if (chipsLeft !== this.chipsLeft) {
+            this.chipsLeft = chipsLeft;
+            this.document.getElementById("chips-left").innerHTML = this.chipsLeft;
+        }
     }
 }

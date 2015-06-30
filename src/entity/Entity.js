@@ -1,7 +1,4 @@
-const NORTH = "north";
-const SOUTH = "south";
-const EAST = "east";
-const WEST = "west";
+let {NORTH, SOUTH, EAST, WEST} = require("../core/2d/directions");
 
 export class Entity {
     constructor(renderer, direction = SOUTH) {

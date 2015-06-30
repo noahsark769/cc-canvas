@@ -44,6 +44,7 @@ export class LevelBuilder {
         this.entityMap = new CoordinateTileMap(this.renderer);
         this.defaultTileType = defaultTileType;
         this.playerPosition = null;
+        this.chips = 0;
     }
     reset() {
         this.tileMap = new CoordinateTileMap(this.renderer);
@@ -61,6 +62,8 @@ export class LevelBuilder {
         let level = new Level(this.width, this.height);
         level.tileMap = this.tileMap;
         level.entityMap = this.entityMap;
+        level.chips = this.chips;
+        level.chipsNeeded = this.chips;
 
         if (this.defaultTileType !== null) {
             for (let i = 0; i < this.width; i++) {
@@ -82,6 +85,9 @@ export class LevelBuilder {
     }
     addTileAt(x, y, tileName) {
         this.tileMap.setTileByName(x, y, tileName);
+        if (tileName === "chip") {
+            this.chips++;
+        }
         let context = new TileContext(this);
         context.tileName = tileName;
         context.coordinate = new Coordinate(x, y);
@@ -89,6 +95,9 @@ export class LevelBuilder {
     }
     addEntityAt(x, y, entityName) {
         this.entityMap.setEntityByName(x, y, entityName);
+        if (entityName === "player") {
+            this.playerPosition = new Coordinate(x, y);
+        }
     }
     hasTileAt(x, y) {
         if (this.isOutOfBounds(x, y)) {
@@ -146,9 +155,6 @@ LevelBuilder.buildFromSchematic = function(schematic, renderer = null) {
             }
             if (charToEntityType.has(char)) {
                 builder.addEntityAt(i, j, charToEntityType.get(char));
-                if (charToEntityType.get(char) == "player") {
-                    builder.playerPosition = new Coordinate(i, j);
-                }
             }
         };
     };

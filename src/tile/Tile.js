@@ -14,4 +14,11 @@ export class Tile {
     shouldBlockEntity(entity) {
         return false;
     }
+
+    /**
+     * Will be called when the entity moves into this tile.
+     */
+    entityWillOccupy(entity, dir, gameState, coordinate) {
+
+    }
 }

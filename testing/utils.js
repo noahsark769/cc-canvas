@@ -12,7 +12,7 @@ let {CCClassicImageRenderer} = reqlib("/src/animation/renderers/image/CCClassicI
  */
 export function getMockDocument() {
     return {
-        getElementById: sinon.spy(),
+        getElementById: sinon.stub().returns({}),
         addEventListener: sinon.spy()
     };
 }

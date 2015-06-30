@@ -78,6 +78,7 @@ export class GameEngine {
             this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
         }
         this.gameState.tick();
+        this.documentInterface.updateChipsLeft(this.gameState.chipsLeft);
     }
 
     // for testing purposes only

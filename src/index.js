@@ -11,16 +11,17 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         . tile floor
         W tile wall
         P entity player
+        C tile chip
         ===
         ..WWWWW.WWWWW..
         ..W...W.W...W..
         ..W...W.W...W..
         WWWWWWWWWWWWWWW
-        W.............W
+        WC...........CW
         W...W.....W...W
         WWWWW..P..WWWWW
         W.........W...W
-        W...W.........W
+        W...W.CCC.....W
         WWWWWWWWWWWWWWW
         ....W..W..W....
         ....W..W..W....

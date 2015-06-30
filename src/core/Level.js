@@ -12,6 +12,8 @@ export class Level {
         this.tileMap = new CoordinateTileMap();
         this.entityMap = new CoordinateMap();
         this.initialPlayerPosition = null;
+        this.chips = 0;
+        this.chipsNeeded = 0;
     }
 
     // will eventually render differently based on player position. for now, just render upper left.
