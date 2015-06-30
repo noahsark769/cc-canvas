@@ -154,6 +154,9 @@ LevelBuilder.buildFromSchematic = function(schematic, renderer = null) {
                 builder.addTileAt(i, j, charToTileType.get(char));
             }
             if (charToEntityType.has(char)) {
+                if (charToEntityType.get(char) === "player") {
+                    builder.addTileAt(i, j, "floor");
+                }
                 builder.addEntityAt(i, j, charToEntityType.get(char));
             }
         };

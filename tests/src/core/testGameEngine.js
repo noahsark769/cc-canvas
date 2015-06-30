@@ -2,7 +2,9 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
-let { GameEngine } = reqlib("/src/core/GameEngine");
+let { GameEngine, LEVEL_READY, LEVEL_ACTIVE } = reqlib("/src/core/GameEngine");
+let { LevelSet } = reqlib("/src/core/LevelSet");
+let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { getMockDocument, getMockCanvas } = reqlib("/testing/utils");
 let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
@@ -85,5 +87,73 @@ describe("GameEngine", () => {
         engine.tick();
         // now should have moved again
         expectations.expectPlayerAt(state, 16, 18);
+    });
+    it("should support level sets and loading next levels", () => {
+        let set = new LevelSet();
+        let level1 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            ===
+            ...P.
+            .....
+        `);
+        level1.name = "level1";
+        let level2 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            ===
+            ..P..
+            .....
+        `);
+        level2.name = "level2";
+        set.addLevel(level1);
+        set.addLevel(level2);
+        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        engine.loadLevelSet(set);
+        // should autoload first level
+        expect(engine.gameState.level.name).to.equal("level1");
+        engine.loadNextLevel();
+        expect(engine.gameState.level.name).to.equal("level2");
+    });
+    it("should be active after receiving command", () => {
+        let set = LevelSet.fromLevel(LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            ===
+            ...P.
+            .....
+        `));
+        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        engine.loadLevelSet(set);
+        expect(engine.state).to.equal(LEVEL_READY);
+        engine.enqueuePlayerMovement("down");
+        expect(engine.state).to.equal(LEVEL_ACTIVE);
+    });
+    it.skip("should move onto the next level after escape", () => {
+        let set = new LevelSet();
+        let level1 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            E tile escape
+            ===
+            ...P.
+            ....E
+        `);
+        level1.name = "level1";
+        let level2 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            E tile escape
+            ===
+            ..P..
+            ....E
+        `);
+        level2.name = "level2";
+        set.addLevel(level1);
+        set.addLevel(level2);
+        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        engine.loadLevelSet(set);
+        engine.tick(); // get it started
+        engine.gameState.movePlayer("DR");
     });
 });

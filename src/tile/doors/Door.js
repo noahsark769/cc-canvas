@@ -1,12 +1,11 @@
-let { Tile } = require("./Tile");
+let { Tile } = require("../Tile");
 
-export class Chip extends Tile {
+export class Door extends Tile {
     constructor(...args) {
         super(...args);
-        this.name = "chip";
     }
-    shouldBlockPlayer(player) {
-        return false;
+    shouldBlockPlayer(player, gameState) {
+        return gameState[this.color + "Keys"] == 0;
     }
     shouldBlockEntity(entity) {
         return true;
@@ -18,8 +17,9 @@ export class Chip extends Tile {
      */
     entityWillOccupy(entityName, dir, gameState, coordinate) {
         if (entityName === "player") {
-            gameState.chipsLeft--;
             gameState.tileMap.setTileByName(coordinate.x, coordinate.y, "floor", this.renderer);
+            if (this.color === "green") return;
+            gameState[this.color + "Keys"]--;
         }
     }
 }

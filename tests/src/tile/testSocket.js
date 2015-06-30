@@ -12,24 +12,24 @@ function buildLevelFromSchematic(schematic) {
     return [state, level];
 }
 
-describe("Chip", () => {
+describe("Socket", () => {
     it("should import correctly", () => {});
-    it("should be collectable by player", () => {
+    it("should block player until all chips collected", () => {
         let [state, level] = buildLevelFromSchematic(`
             . tile floor
             W tile wall
             P entity player
             C tile chip
+            S tile socket
             ===
             C..
             .WP
-            C..
+            C.S
         `);
-        expect(state.chipsLeft).to.equal(2);
-        state.movePlayer("ULL");
-        expect(state.chipsLeft).to.equal(1);
-        state.movePlayer("DD");
-        expect(state.chipsLeft).to.equal(0);
-        expect(state.tileMap.get(0, 0).name).to.equal("floor");
+        state.movePlayer("D");
+        expectations.expectPlayerAt(state, 2, 1); // should have blocked
+        state.movePlayer("ULLDDRRU");
+        expectations.expectPlayerAt(state, 2, 1);
+        expect(state.tileMap.get(2, 2).name).to.equal("floor");
     });
 });

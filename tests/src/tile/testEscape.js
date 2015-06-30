@@ -12,24 +12,24 @@ function buildLevelFromSchematic(schematic) {
     return [state, level];
 }
 
-describe("Chip", () => {
+describe("Escape", () => {
     it("should import correctly", () => {});
-    it("should be collectable by player", () => {
+    it("should end game on step", () => {
         let [state, level] = buildLevelFromSchematic(`
             . tile floor
             W tile wall
             P entity player
-            C tile chip
+            E tile escape
             ===
-            C..
-            .WP
-            C..
+            ...
+            E.P
+            ...
         `);
-        expect(state.chipsLeft).to.equal(2);
-        state.movePlayer("ULL");
-        expect(state.chipsLeft).to.equal(1);
-        state.movePlayer("DD");
-        expect(state.chipsLeft).to.equal(0);
-        expect(state.tileMap.get(0, 0).name).to.equal("floor");
+        expect(state.isWin).to.be.false;
+        expect(state.isOver).to.be.false;
+        state.movePlayer("LL");
+        expect(state.isWin).to.be.true;
+        expect(state.isOver).to.be.true;
+        expect(state.isLoss).to.be.false;
     });
 });

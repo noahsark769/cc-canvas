@@ -54,4 +54,13 @@ export class DocumentInterface {
             this.document.getElementById("chips-left").innerHTML = this.chipsLeft;
         }
     }
+    updateTicks(ticks) {
+        this.document.getElementById("engine-ticks").innerHTML = ticks;
+    }
+    updateEngineState(state) {
+        this.document.getElementById("engine-state").innerHTML = state;
+    }
+    showWin() {
+        console.log("WIN!!");
+    }
 }

@@ -103,7 +103,7 @@ export class CCClassicImageRenderer extends ImageRenderer {
         this.spriteMap.set("NONE", new Coordinate(3, 7));
         this.spriteMap.set("NONE", new Coordinate(3, 8));
         this.spriteMap.set("player-normal-win", new Coordinate(3, 9));
-        this.spriteMap.set("escape-inverted", new Coordinate(3, 10));
+        this.spriteMap.set("escape-normal", new Coordinate(3, 10));
         this.spriteMap.set("escape-normal", new Coordinate(3, 11));
         this.spriteMap.set("player-swim-north", new Coordinate(3, 12));
         this.spriteMap.set("player-swim-west", new Coordinate(3, 13));
@@ -148,14 +148,14 @@ export class CCClassicImageRenderer extends ImageRenderer {
         this.spriteMap.set("paramecium-normal-west", new Coordinate(6, 1));
         this.spriteMap.set("paramecium-normal-south", new Coordinate(6, 2));
         this.spriteMap.set("paramecium-normal-east", new Coordinate(6, 3));
-        this.spriteMap.set("key_blue-normal", new Coordinate(6, 4));
-        this.spriteMap.set("key_red-normal", new Coordinate(6, 5));
-        this.spriteMap.set("key_green-normal", new Coordinate(6, 6));
-        this.spriteMap.set("key_yellow-normal", new Coordinate(6, 7));
-        this.spriteMap.set("boots_water-normal", new Coordinate(6, 8));
-        this.spriteMap.set("boots_fire-normal", new Coordinate(6, 9));
-        this.spriteMap.set("boots_ice-normal", new Coordinate(6, 10));
-        this.spriteMap.set("boots_force-normal", new Coordinate(6, 11));
+        this.spriteMap.set("key_blue", new Coordinate(6, 4));
+        this.spriteMap.set("key_red", new Coordinate(6, 5));
+        this.spriteMap.set("key_green", new Coordinate(6, 6));
+        this.spriteMap.set("key_yellow", new Coordinate(6, 7));
+        this.spriteMap.set("boots_water", new Coordinate(6, 8));
+        this.spriteMap.set("boots_fire", new Coordinate(6, 9));
+        this.spriteMap.set("boots_ice", new Coordinate(6, 10));
+        this.spriteMap.set("boots_force", new Coordinate(6, 11));
         this.spriteMap.set("player-normal-north", new Coordinate(6, 12));
         this.spriteMap.set("player-normal-west", new Coordinate(6, 13));
         this.spriteMap.set("player-normal-south", new Coordinate(6, 14));
@@ -281,6 +281,9 @@ export class CCClassicImageRenderer extends ImageRenderer {
         }
         this.buildSpriteMap();
         let sprite = this.spriteMap.get(tile.name);
+        if (sprite === undefined) {
+            console.log("Could not find " + tile.name);
+        }
         let context = canvas.getContext("2d");
         context.drawImage(
             this.image,
@@ -305,6 +308,9 @@ export class CCClassicImageRenderer extends ImageRenderer {
         }
         this.buildSpriteMap();
         let sprite = this.spriteMap.get(entity.name + "-" + entity.state + "-" + entity.direction);
+        if (sprite === undefined) {
+            console.log("Could not find " + tile.name);
+        }
         let context = canvas.getContext("2d");
         context.drawImage(
             this.image,

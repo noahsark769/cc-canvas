@@ -5,12 +5,22 @@
     <title>CC Canvas</title>
   </head>
   <body>
-      <div class="container">
-          <canvas id="main-canvas" width="500" height="500" style="border: 1px solid black">
-              Sorry, your browser doesn't support HTML5 canvas. Unfortunately, you won't be able to play the game.
-          </canvas>
+      <div class="container" style="width: 900px; margin: 50px auto 0 auto;">
+          <div class="canvas" style="display: inline-block; vertical-align: top">
+              <canvas id="main-canvas" width="500" height="500" style="border: 1px solid black">
+                  Sorry, your browser doesn't support HTML5 canvas. Unfortunately, you won't be able to play the game.
+              </canvas>
+          </div>
+          <div class="stats" style="display: inline-block; vertical-align: top">
+              <p>Chips left: <span class="chips-left" id="chips-left"></span></p>
+              <p>
+                  Ticks: <span id="engine-ticks"></span>
+              </p>
+              <p>
+                  Engine state: <span id="engine-state"></span>
+              </p>
+          </div>
       </div>
-      <div class="chips-left" id="chips-left"></div>
       <script src="build/index.js" charset="utf-8"></script>
   </body>
 </html>

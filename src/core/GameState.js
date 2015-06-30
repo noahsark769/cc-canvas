@@ -5,6 +5,10 @@ let {NORTH, SOUTH, EAST, WEST} = require("./2d/directions");
 
 export class GameState {
     constructor() {
+        this.reset();
+    }
+
+    reset() {
         this.playerPosition = null;
         this.tileMap = new CoordinateTileMap();
         // exact proxy to the level, nothing else
@@ -13,6 +17,15 @@ export class GameState {
         this.currentTicks = 0; // the number of ticks since the currently playing level began
         this.viewport = null;
         this.chipsLeft = 0;
+
+        this.isWin = false;
+        this.isLoss = false;
+        this.isOver = false;
+
+        this.redKeys = 0;
+        this.blueKeys = 0;
+        this.yellowKeys = 0;
+        this.greenKeys = 0;
     }
 
     getPlayerPosition() {
@@ -39,7 +52,7 @@ export class GameState {
         }
         if (this.hasTileAt(...newCoord.asArray())) {
             let nextTile = this.getTileAt(...newCoord.asArray());
-            if (nextTile.shouldBlockPlayer()) {
+            if (nextTile.shouldBlockPlayer(undefined, this)) { // TODO: pass in player
                 return false;
             }
         }

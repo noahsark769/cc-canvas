@@ -14,6 +14,10 @@ export class Level {
         this.initialPlayerPosition = null;
         this.chips = 0;
         this.chipsNeeded = 0;
+        this.title = "";
+        this.hint = "";
+        this.password = "";
+        this.timeLimit = 0;
     }
 
     // will eventually render differently based on player position. for now, just render upper left.

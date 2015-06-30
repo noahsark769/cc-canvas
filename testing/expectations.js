@@ -12,7 +12,8 @@ export default function expectations(expect) {
             expect(state.getTileAt(x, y).name).to.equal(name);
         },
         expectPlayerAt: function(state, x, y) {
-            this.expectEntityAt(state, x, y, "player");
+            expect(state.hasEntityAt(x, y), "no player at " + x + ", " + y + ", instead was at " + state.getPlayerPosition().serialize()).to.be.true;
+            expect(state.getEntityAt(x, y).name, "no player at " + x + ", " + y + ", instead was at " + state.getPlayerPosition().serialize()).to.equal("player");
         },
         expectPlayerAndViewportCenterToMatch: function(state, viewport) {
             expect(state.getPlayerPosition().asArray()).to.deep.equals(viewport.getCenter().asArray());

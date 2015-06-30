@@ -29,11 +29,15 @@ export class Animator {
     // right now, just render in the top right corner. eventually we will need to
     // impelement Viewport, etc.
     renderTile(tile, coordinate) {
-        tile.render(this.canvas, coordinate);
+        if (tile.renderer !== null) {
+            tile.render(this.canvas, coordinate);
+        }
     }
 
     renderEntity(entity, coordinate) {
-        entity.render(this.canvas, coordinate)
+        if (entity.renderer !== null) {
+            entity.render(this.canvas, coordinate)
+        }
     }
 
     renderViewport(viewport, gameState) {

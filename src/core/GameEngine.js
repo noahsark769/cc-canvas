@@ -2,6 +2,14 @@ let {Animator} = require("../animation/Animator");
 let {GameState} = require("./GameState");
 let {DocumentInterface} = require("../core/DocumentInterface");
 
+// game engine states
+export const IDLE = "idle"; // no levelset has yet been loaded
+export const LEVEL_SET_COMPLETE = "level-set-complete"; // the player won the entire game.
+export const PAUSED = "paused"; // the game is paused
+export const LEVEL_ACTIVE = "level-active"; // the game is currently being played.
+export const LEVEL_COMPLETE = "level-complete"; // the player just completed a level or died from a level
+export const LEVEL_READY = "level-ready"; // the level and level set are loaded but the player has not started the level
+
 /**
  * GameEngine is a singleton class. This is the instance of the class, or
  * null if no GameEngine has yet been established. This will be set by the
@@ -38,7 +46,9 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
-    constructor(document, canvas = null) {
+    constructor(document, canvas = null, useIntervals = false) {
+        this.useIntervals = useIntervals;
+        this.state = IDLE;
         this.documentInterface = new DocumentInterface(document);
         if (canvas === null) {
             canvas = this.documentInterface.getCanvas()
@@ -47,38 +57,104 @@ export class GameEngine {
         this.animator = new Animator(canvas);
         this.gameState = new GameState();
         this.intervalId = null;
-        this.started = false;
-        this.paused = false;
         SINGLETON_INSTANCE = this;
 
         this.pendingPlayerMovement = null;
         this.playerMovedOnLastTick = false;
+
+        this.levelSet = null;
+        this.currentLevelInSet = 0;
+    }
+
+    loadLevelSet(levelSet) {
+        this.levelSet = levelSet;
+        this.stopTicking();
+        this.gameState.reset();
+        if (this.levelSet.numLevels === 0) {
+            console.warn("Trying to input a levelSet with 0 levels");
+        }
+        this.gameState.setLevel(this.levelSet.levels[0]);
+        this.currentLevelInSet = 0;
+        this.state = LEVEL_READY;
+        if (this.animator) {
+            this.animator.clear();
+            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+        }
+        this.documentInterface.updateTicks(this.gameState.currentTicks);
+        this.documentInterface.updateEngineState(this.state);
+    }
+
+    loadNextLevel() {
+        this.stopTicking();
+        if (this.currentLevelInSet + 1 >= this.levelSet.numLevels) {
+            this.state = LEVEL_SET_COMPLETE;
+        } else {
+            this.gameState.reset();
+            this.currentLevelInSet++;
+            this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
+            this.state = LEVEL_READY;
+            if (this.animator) {
+                this.animator.clear();
+                this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+            }
+        }
+        this.documentInterface.updateTicks(this.gameState.currentTicks);
+        this.documentInterface.updateEngineState(this.state);
+    }
+
+    reloadCurrentLevel() {
+        this.gameState.reset();
+        this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
+        this.state = LEVEL_READY;
+        this.documentInterface.updateTicks(this.gameState.currentTicks);
+        this.documentInterface.updateEngineState(this.state);
     }
 
     enqueuePlayerMovement(movement) {
         this.pendingPlayerMovement = movement;
+        if (this.state === LEVEL_READY) {
+            this.state = LEVEL_ACTIVE;
+            this.startTicking();
+        }
     }
 
     tick() {
-        if (this.paused) { return; }
-        if (this.pendingPlayerMovement === null) {
-            this.playerMovedOnLastTick = false;
-        } else {
-            if (this.pendingPlayerMovement !== null && !this.playerMovedOnLastTick) {
-                this.gameState["movePlayer" + this.pendingPlayerMovement.charAt(0).toUpperCase() + this.pendingPlayerMovement.slice(1)]();
-                this.pendingPlayerMovement = null;
-                this.playerMovedOnLastTick = true;
+        // for tests, if we're idle and we tick, then we make ourselves LEVEL_ACTIVE
+        if (this.state === IDLE) { this.state = LEVEL_ACTIVE; }
+        this.documentInterface.updateTicks(this.gameState.currentTicks);
+        if (this.gameState.isOver) {
+            this.stopTicking();
+            this.state = LEVEL_COMPLETE;
+            if (this.gameState.isWin) {
+                console.log("win");
+                this.documentInterface.showWin();
+                this.loadNextLevel();
             } else {
-                this.playerMovedOnLastTick = false;
+                console.log("lose");
+                this.resetCurrentLevel();
             }
         }
-        // rerender the canvas
-        if (this.animator !== null && this.gameState.level !== null) {
-            this.animator.clear();
-            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+        if (this.state === LEVEL_ACTIVE) {
+            if (this.pendingPlayerMovement === null) {
+                this.playerMovedOnLastTick = false;
+            } else {
+                if (this.pendingPlayerMovement !== null && !this.playerMovedOnLastTick) {
+                    this.gameState["movePlayer" + this.pendingPlayerMovement.charAt(0).toUpperCase() + this.pendingPlayerMovement.slice(1)]();
+                    this.pendingPlayerMovement = null;
+                    this.playerMovedOnLastTick = true;
+                } else {
+                    this.playerMovedOnLastTick = false;
+                }
+            }
+            // rerender the canvas
+            if (this.animator !== null && this.gameState.level !== null) {
+                this.animator.clear();
+                this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+            }
+            this.gameState.tick();
+            this.documentInterface.updateChipsLeft(this.gameState.chipsLeft);
         }
-        this.gameState.tick();
-        this.documentInterface.updateChipsLeft(this.gameState.chipsLeft);
+        this.documentInterface.updateEngineState(this.state);
     }
 
     // for testing purposes only
@@ -91,18 +167,20 @@ export class GameEngine {
         if (shouldStopTicking) {
             this.stopTicking();
         }
-        this.paused = true;
+        this.state = PAUSED;
     }
 
     unpause(shouldStartTicking = false) {
         if (shouldStartTicking) {
             this.startTicking();
         }
-        this.paused = false;
+        // note: here we assume you can only pause from a level active state.
+        // may need to change this later.
+        this.state = LEVEL_ACTIVE;
     }
 
     togglePause(toggleTicking = false) {
-        if (this.paused) {
+        if (this.state === PAUSED) {
             this.unpause(toggleTicking);
         } else {
             this.pause(toggleTicking);
@@ -110,18 +188,17 @@ export class GameEngine {
     }
 
     startTicking() {
-        this.intervalId = setInterval(() => {
-            this.tick();
-        }, TICK_INTERVAL);
+        if (this.useIntervals) {
+            this.intervalId = setInterval(() => {
+                this.tick();
+            }, TICK_INTERVAL);
+        }
     }
 
     stopTicking() {
-        clearInterval(this.intervalId);
-    }
-
-    startGameplay() {
-        this.startTicking();
-        this.started = true;
+        if (this.useIntervals) {
+            clearInterval(this.intervalId);
+        }
     }
 }
 
@@ -130,17 +207,16 @@ export class GameEngine {
  * if none already exists.
  * @return {GameEngine} the singleton engine
  */
-GameEngine.getInstance = (document, canvas = null) => {
+GameEngine.getInstance = (document, canvas = null, useIntervals = false) => {
     if (SINGLETON_INSTANCE !== null) {
         return SINGLETON_INSTANCE;
     }
-    console.log("CANVAS 1: " + canvas);
-    SINGLETON_INSTANCE = new GameEngine(document, canvas);
+    SINGLETON_INSTANCE = new GameEngine(document, canvas, useIntervals);
     return SINGLETON_INSTANCE;
 };
 
-GameEngine.reset = (document, canvas = null) => {
-    SINGLETON_INSTANCE = new GameEngine(document, canvas);
+GameEngine.reset = (document, canvas = null, useIntervals = false) => {
+    SINGLETON_INSTANCE = new GameEngine(document, canvas, useIntervals);
     return SINGLETON_INSTANCE;
 };
 
