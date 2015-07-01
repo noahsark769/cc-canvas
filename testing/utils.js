@@ -42,11 +42,9 @@ export function stopTickingDebugger() {
     }
 }
 
-export function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY, maybeState, maybeRenderer) {
+export function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY, maybeState) {
     let state = maybeState || new GameState();
-    let renderer = maybeRenderer || new CCClassicImageRenderer(sinon.spy(), function() {});
     let builder = new LevelBuilder(width, height, defaultTile);
-    builder.setRenderer(renderer);
     builder.addEntityAt(playerX, playerY, "player");
     let level = builder.generateLevel();
     state.setLevel(level);

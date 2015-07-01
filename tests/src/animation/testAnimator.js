@@ -35,26 +35,22 @@ describe("Animator", () => {
         expect(stub.callCount).to.equal(4);
     });
     describe("integrations with renderers", () => {
-        let drawImageSpy, canvas, tile, animator;
-        beforeEach(() => {
-            drawImageSpy = sinon.spy();
-            canvas = getMockCanvas(drawImageSpy);
-            tile = new Wall(new CCClassicImageRenderer(sinon.spy(), function () {}));
-            animator = new Animator(canvas);
-        });
         it("should call canvas drawImage with ImageRenderer", () => {
+            let drawImageSpy = sinon.spy();
+            let canvas = getMockCanvas(drawImageSpy);
+            let animator = new Animator(canvas, new CCClassicImageRenderer(sinon.spy(), function () {}));
+            let tile = new Wall();
             animator.renderTile(tile, new Coordinate(0, 0));
             expect(drawImageSpy).to.have.been.called;
         });
         it("should call canvas drawImage with renderViewport", () => {
+            let drawImageSpy = sinon.spy();
+            let canvas = getMockCanvas(drawImageSpy);
+            let animator = new Animator(canvas, new CCClassicImageRenderer(sinon.spy(), function () {}));
             let gameState = new GameState();
             gameState.setLevel(LevelBuilder.generateEmptyLevel(5, 5, "floor"));
-            sinon.stub(animator, "renderTile");
-            sinon.stub(animator, "renderEntity");
-            animator.renderViewport(gameState.level.getDefaultViewport(), gameState);
+            animator.renderViewport(gameState.getViewport(), gameState);
             expect(drawImageSpy).to.have.been.called;
-            // doesn't pass for some reason but I think it works:
-            // expect(drawImageSpy.callCount).to.equal(25);
         });
     });
 });

@@ -10,26 +10,26 @@ let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
 describe("GameEngine", () => {
     beforeEach(() => {
-        GameEngine.reset(getMockDocument(), getMockCanvas());
+        GameEngine.reset(false);
     });
     it("should be available via import", () => {});
     it("should work with appRootPath imports and chai", () => {
         expect(1).to.equal(1);
     });
     it("should be singleton", () => {
-        let engine1 = GameEngine.getInstance(getMockDocument());
+        let engine1 = GameEngine.getInstance();
         engine1.someProperty = true;
-        let engine2 = GameEngine.getInstance(getMockDocument());
+        let engine2 = GameEngine.getInstance();
         expect(engine2.someProperty).to.be.true;
     });
     it("should tick correctly", () => {
-        let engine = GameEngine.getInstance(getMockDocument());
+        let engine = GameEngine.getInstance();
         expect(engine.gameState.currentTicks).to.equal(0);
         engine.tick();
         expect(engine.gameState.currentTicks).to.equal(1);
     });
     it("should pause correctly", () => {
-        let engine = GameEngine.getInstance(getMockDocument());
+        let engine = GameEngine.getInstance();
         engine.tick();
         engine.pause();
         expect(engine.gameState.currentTicks).to.equal(1);
@@ -47,13 +47,13 @@ describe("GameEngine", () => {
         expect(engine.gameState.currentTicks).to.equal(3);
     });
     it("should map two ticks to one step", () => {
-        let engine = GameEngine.getInstance(getMockDocument());
+        let engine = GameEngine.getInstance();
         expect(engine.gameState.currentTicks).to.equal(0);
         engine.step();
         expect(engine.gameState.currentTicks).to.equal(2);
     });
     it("should only move player at steps", () => {
-        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        let engine = GameEngine.getInstance();
         let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16, engine.gameState);
         engine.enqueuePlayerMovement("down");
         engine.enqueuePlayerMovement("down");

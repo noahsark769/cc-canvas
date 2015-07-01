@@ -1,10 +1,8 @@
 export class Tile {
-    constructor(renderer) {
-        this.renderer = renderer;
-    }
+    constructor() {}
 
-    render(canvas, coordinate) {
-        this.renderer.renderTile(canvas, this, coordinate);
+    render(canvas, renderer, coordinate) {
+        renderer.renderTile(canvas, this, coordinate);
     }
 
     shouldBlockPlayer(player) {

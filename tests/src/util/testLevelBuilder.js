@@ -13,16 +13,8 @@ describe("LevelBuilder", () => {
         expect(builder.width).to.equal(4);
         expect(builder.height).to.equal(3);
     });
-    it("should support setting renderer", () => {
-        let builder = new LevelBuilder(4, 3);
-        let renderer = sinon.spy();
-        renderer.someProperty = 1;
-        builder.setRenderer(renderer);
-        expect(builder.renderer.someProperty).to.equal(1);
-    });
     it("should support adding tiles", () => {
         let builder = new LevelBuilder(10, 10);
-        builder.setRenderer(sinon.spy());
         builder.addTileAt(0, 0, "wall");
         builder.addTileAt(1, 1, "wall");
         expect(builder.tileMap.get(0, 0).name).to.equal("wall");

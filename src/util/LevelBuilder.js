@@ -39,21 +39,15 @@ export class LevelBuilder {
     constructor(width, height, defaultTileType = null) {
         this.width = width;
         this.height = height;
-        this.renderer = null;
-        this.tileMap = new CoordinateTileMap(this.renderer);
-        this.entityMap = new CoordinateTileMap(this.renderer);
+        this.tileMap = new CoordinateTileMap();
+        this.entityMap = new CoordinateTileMap();
         this.defaultTileType = defaultTileType;
         this.playerPosition = null;
         this.chips = 0;
     }
     reset() {
-        this.tileMap = new CoordinateTileMap(this.renderer);
-        this.entityMap = new CoordinateTileMap(this.renderer);
-    }
-    setRenderer(renderer) {
-        this.renderer = renderer;
-        this.tileMap.renderer = this.renderer;
-        this.entityMap.renderer = this.renderer;
+        this.tileMap = new CoordinateTileMap();
+        this.entityMap = new CoordinateTileMap();
     }
     setDefaultTileType(tileType) {
         this.defaultTileType = tileType;
@@ -70,7 +64,7 @@ export class LevelBuilder {
                 for (let j = 0; j < this.height; j++) {
                     if (!level.tileMap.has(i, j)) {
                         // populate with default tile type
-                        level.tileMap.setTileByName(i, j, this.defaultTileType, this.renderer);
+                        level.tileMap.setTileByName(i, j, this.defaultTileType);
                     }
                 }
             }
@@ -116,17 +110,13 @@ export class LevelBuilder {
     }
 }
 
-LevelBuilder.generateEmptyLevel = function(width, height, defaultTileType, renderer = null) {
+LevelBuilder.generateEmptyLevel = function(width, height, defaultTileType) {
     let builder = new LevelBuilder(width, height, defaultTileType);
-    if (renderer !== null) {
-        builder.setRenderer(renderer);
-    }
     return builder.generateLevel();
 };
 
-LevelBuilder.buildFromSchematic = function(schematic, renderer = null) {
+LevelBuilder.buildFromSchematic = function(schematic) {
     let builder = new LevelBuilder(0, 0);
-    builder.setRenderer(renderer);
     let [frontmatter, levelSchematic] = schematic.split("===");
     frontmatter = frontmatter.split("\n").filter((item) => { return item.length > 0; });
     frontmatter = frontmatter.map((value) => { return value.trim(); });
@@ -166,7 +156,7 @@ LevelBuilder.buildFromSchematic = function(schematic, renderer = null) {
     return builder;
 }
 
-LevelBuilder.generateFromSchematic = function(schematic, renderer = null) {
-    let builder = LevelBuilder.buildFromSchematic(schematic, renderer);
+LevelBuilder.generateFromSchematic = function(schematic) {
+    let builder = LevelBuilder.buildFromSchematic(schematic);
     return builder.generateLevel();
 }

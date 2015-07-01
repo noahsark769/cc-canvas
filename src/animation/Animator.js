@@ -14,8 +14,9 @@ export class Animator {
      * Construct an Animator by passing it the canvas to draw on.
      * @param {Element} the actual canvas. Can be accessed through DocumentInterface
      */
-    constructor(canvas) {
+    constructor(canvas, renderer) {
         this.canvas = canvas;
+        this.renderer = renderer;
     }
 
     clear() {
@@ -29,15 +30,11 @@ export class Animator {
     // right now, just render in the top right corner. eventually we will need to
     // impelement Viewport, etc.
     renderTile(tile, coordinate) {
-        if (tile.renderer !== null) {
-            tile.render(this.canvas, coordinate);
-        }
+        tile.render(this.canvas, this.renderer, coordinate);
     }
 
     renderEntity(entity, coordinate) {
-        if (entity.renderer !== null) {
-            entity.render(this.canvas, coordinate)
-        }
+        entity.render(this.canvas, this.renderer, coordinate)
     }
 
     renderViewport(viewport, gameState) {

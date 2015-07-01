@@ -6,9 +6,9 @@ let { DocumentInterface } = reqlib("/src/core/DocumentInterface");
 describe("DocumentInterface", () => {
     it("should import correctly", () => {});
     it("should use getElementById to find canvas", () => {
-        let document = { getElementById: sinon.mock() };
-        let di = new DocumentInterface(document);
+        let window = {document: { getElementById: sinon.mock() }};
+        let di = new DocumentInterface(window);
         di.getCanvas();
-        expect(document.getElementById).to.have.been.called;
+        expect(window.document.getElementById).to.have.been.called;
     });
 });

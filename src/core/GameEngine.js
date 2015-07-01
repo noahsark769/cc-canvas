@@ -1,6 +1,7 @@
 let {Animator} = require("../animation/Animator");
 let {GameState} = require("./GameState");
 let {DocumentInterface} = require("../core/DocumentInterface");
+let {FileReaderDatParser} = require("../data/FileReaderDatParser");
 
 // game engine states
 export const IDLE = "idle"; // no levelset has yet been loaded
@@ -46,42 +47,60 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
-    constructor(document, canvas = null, useIntervals = false) {
+    constructor(document, useIntervals = false) {
         this.useIntervals = useIntervals;
         this.state = IDLE;
-        this.documentInterface = new DocumentInterface(document);
-        if (canvas === null) {
-            canvas = this.documentInterface.getCanvas()
-        }
-        this.documentInterface.registerKeypresses(document, this);
-        this.animator = new Animator(canvas);
-        this.gameState = new GameState();
+        this.gameState = new GameState(); // exactly one gamestate per engine
         this.intervalId = null;
-        SINGLETON_INSTANCE = this;
 
         this.pendingPlayerMovement = null;
         this.playerMovedOnLastTick = false;
 
         this.levelSet = null;
         this.currentLevelInSet = 0;
+
+        SINGLETON_INSTANCE = this;
+    }
+
+    interface(message) {
+        if (this.documentInterface) {
+            switch (message) {
+                case "update":
+                    this.documentInterface.update(this);
+                    break;
+                case "win":
+                    this.documentInterface.showWin(this);
+                    break;
+                case "loss":
+                    this.documentInterface.showLoss(this);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    drawFrame() {
+        if (this.animator) {
+            this.animator.clear();
+            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+        }
     }
 
     loadLevelSet(levelSet) {
-        this.levelSet = levelSet;
         this.stopTicking();
         this.gameState.reset();
+
+        this.levelSet = levelSet;
         if (this.levelSet.numLevels === 0) {
             console.warn("Trying to input a levelSet with 0 levels");
         }
         this.gameState.setLevel(this.levelSet.levels[0]);
         this.currentLevelInSet = 0;
+
         this.state = LEVEL_READY;
-        if (this.animator) {
-            this.animator.clear();
-            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
-        }
-        this.documentInterface.updateTicks(this.gameState.currentTicks);
-        this.documentInterface.updateEngineState(this.state);
+        this.drawFrame();
+        this.interface("update")
     }
 
     loadNextLevel() {
@@ -93,21 +112,16 @@ export class GameEngine {
             this.currentLevelInSet++;
             this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
             this.state = LEVEL_READY;
-            if (this.animator) {
-                this.animator.clear();
-                this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
-            }
+            this.drawFrame();
         }
-        this.documentInterface.updateTicks(this.gameState.currentTicks);
-        this.documentInterface.updateEngineState(this.state);
+        this.interface("update")
     }
 
     reloadCurrentLevel() {
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.state = LEVEL_READY;
-        this.documentInterface.updateTicks(this.gameState.currentTicks);
-        this.documentInterface.updateEngineState(this.state);
+        this.updateInterface();
     }
 
     enqueuePlayerMovement(movement) {
@@ -121,16 +135,14 @@ export class GameEngine {
     tick() {
         // for tests, if we're idle and we tick, then we make ourselves LEVEL_ACTIVE
         if (this.state === IDLE) { this.state = LEVEL_ACTIVE; }
-        this.documentInterface.updateTicks(this.gameState.currentTicks);
         if (this.gameState.isOver) {
             this.stopTicking();
             this.state = LEVEL_COMPLETE;
             if (this.gameState.isWin) {
-                console.log("win");
-                this.documentInterface.showWin();
+                this.interface("win");
                 this.loadNextLevel();
             } else {
-                console.log("lose");
+                this.interface("loss");
                 this.resetCurrentLevel();
             }
         }
@@ -146,15 +158,10 @@ export class GameEngine {
                     this.playerMovedOnLastTick = false;
                 }
             }
-            // rerender the canvas
-            if (this.animator !== null && this.gameState.level !== null) {
-                this.animator.clear();
-                this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
-            }
+            this.drawFrame();
             this.gameState.tick();
-            this.documentInterface.updateChipsLeft(this.gameState.chipsLeft);
         }
-        this.documentInterface.updateEngineState(this.state);
+        this.interface("update")
     }
 
     // for testing purposes only
@@ -163,27 +170,22 @@ export class GameEngine {
         this.tick();
     }
 
-    pause(shouldStopTicking = false) {
-        if (shouldStopTicking) {
-            this.stopTicking();
-        }
+    pause() {
+        this.stopTicking();
         this.state = PAUSED;
     }
 
-    unpause(shouldStartTicking = false) {
-        if (shouldStartTicking) {
-            this.startTicking();
-        }
+    unpause() {
         // note: here we assume you can only pause from a level active state.
         // may need to change this later.
         this.state = LEVEL_ACTIVE;
     }
 
-    togglePause(toggleTicking = false) {
+    togglePause() {
         if (this.state === PAUSED) {
-            this.unpause(toggleTicking);
+            this.unpause();
         } else {
-            this.pause(toggleTicking);
+            this.pause();
         }
     }
 
@@ -207,19 +209,15 @@ export class GameEngine {
  * if none already exists.
  * @return {GameEngine} the singleton engine
  */
-GameEngine.getInstance = (document, canvas = null, useIntervals = false) => {
+GameEngine.getInstance = (useIntervals = true) => {
     if (SINGLETON_INSTANCE !== null) {
         return SINGLETON_INSTANCE;
     }
-    SINGLETON_INSTANCE = new GameEngine(document, canvas, useIntervals);
+    SINGLETON_INSTANCE = new GameEngine(useIntervals);
     return SINGLETON_INSTANCE;
 };
 
-GameEngine.reset = (document, canvas = null, useIntervals = false) => {
-    SINGLETON_INSTANCE = new GameEngine(document, canvas, useIntervals);
+GameEngine.reset = (useIntervals = true) => {
+    SINGLETON_INSTANCE = new GameEngine(useIntervals);
     return SINGLETON_INSTANCE;
 };
-
-// if (window) {
-//     window.GameEngine = GameEngine;
-// }

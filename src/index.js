@@ -1,13 +1,14 @@
 require("babelify/polyfill");
 
 let { GameEngine } = require("./core/GameEngine");
+let { Animator } = require("./animation/Animator");
 let { Wall } = require("./tile/Wall");
 let { CCClassicImageRenderer } = require("./animation/renderers/image/CCClassicImageRenderer");
 let { LevelBuilder } = require("./util/LevelBuilder");
 let { LevelSet } = require("./core/LevelSet");
 
 let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
-    let engine = GameEngine.getInstance(document, null, true);
+    let engine = GameEngine.getInstance();
     let builder1 = LevelBuilder.buildFromSchematic(`
         . tile floor
         W tile wall
@@ -60,5 +61,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         builder1.generateLevel(),
         builder2.generateLevel()
     ]);
+    let di = new DocumentInterface(window).register(engine);
+    engine.animator = new Animator(di.getCanvas(), renderer);
     engine.loadLevelSet(set);
 });

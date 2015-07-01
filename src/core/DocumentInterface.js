@@ -1,3 +1,5 @@
+let {FileReaderDatParser} = require("../data/FileReaderDatParser");
+
 /**
  * DocumentInterface is a class which represents all the functions that the
  * game needs to know about which relate to processing the DOM. Things like
@@ -10,9 +12,13 @@ export class DocumentInterface {
      * document. We pass this in here instead of assuming a global document
      * in order to make testing easier. Dependency injection!
      */
-    constructor(document) {
-        this.document = document;
+    constructor(window) {
+        this.window = window;
+        this.document = window.document;
         this.chipsLeft = -1;
+        this.cache = new Map();
+        this.cache.set("chipsLeft", -1);
+        this.cache.set("engineState", undefined);
     }
 
     /**
@@ -20,13 +26,26 @@ export class DocumentInterface {
      * @param {Document} the document element
      * @return {Element} the canvas
      */
-    getCanvas(document) {
+    getCanvas() {
         if (this.canvas) { return this.canvas; }
         this.canvas = this.document.getElementById("main-canvas");
         return this.canvas;
     }
 
-    registerKeypresses(document, gameEngine) {
+    register(engine) {
+        this.document.getElementById("levelset-input").addEventListener("change", (event) => {
+            let files = event.currentTarget.files;
+            if (!files || files.length !== 1) {
+                return;
+            }
+            let reader = new this.FileReader();
+            reader.onload = function () {
+                let arrayBuffer = reader.result;
+                let parser = new FileReaderDatParser(arrayBuffer);
+                engine.loadLevelSet(parser.parseToLevelSet());
+            };
+            reader.readAsArrayBuffer(files[0]);
+        });
         document.addEventListener("keydown", (e) => {
             if (e.keyCode) {
                 switch(e.keyCode) {
@@ -47,20 +66,24 @@ export class DocumentInterface {
                 }
             }
         });
+        engine.documentInterface = this;
+        return this;
     }
-    updateChipsLeft(chipsLeft) {
-        if (chipsLeft !== this.chipsLeft) {
-            this.chipsLeft = chipsLeft;
-            this.document.getElementById("chips-left").innerHTML = this.chipsLeft;
+    update(engine) {
+        if (engine.gameState.chipsLeft !== this.cache.get("chipsLeft")) {
+            this.cache.set("chipsLeft", engine.gameState.chipsLeft);
+            this.document.getElementById("chips-left").innerHTML = engine.gameState.chipsLeft;
         }
-    }
-    updateTicks(ticks) {
         this.document.getElementById("engine-ticks").innerHTML = ticks;
-    }
-    updateEngineState(state) {
-        this.document.getElementById("engine-state").innerHTML = state;
+        if (engine.state !== this.cache.get("engineState")) {
+            this.cache.set("engineState", engine.state)
+            this.document.getElementById("engine-state").innerHTML = engine.state;
+        }
     }
     showWin() {
         console.log("WIN!!");
+    }
+    showLoss() {
+        console.log("BUMMER");
     }
 }
