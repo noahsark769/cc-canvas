@@ -10,7 +10,7 @@ export class Level {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
-        this.entityMap = new CoordinateMap();
+        this.entityMap = new CoordinateTileMap();
         this.initialPlayerPosition = null;
         this.chips = 0;
         this.chipsNeeded = 0;
@@ -18,6 +18,7 @@ export class Level {
         this.hint = "";
         this.password = "";
         this.timeLimit = 0;
+        this.levelNumber = 0;
     }
 
     // will eventually render differently based on player position. for now, just render upper left.

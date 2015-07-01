@@ -40,7 +40,10 @@ export class TileManager {
 
     tileClassByName(name) {
         this.buildTileMap();
-        return this.map.get(name);
+        if (this.map.has(name)) {
+            return this.map.get(name);
+        }
+        return false;
     }
 };
 

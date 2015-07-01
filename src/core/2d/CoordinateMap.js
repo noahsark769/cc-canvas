@@ -19,4 +19,9 @@ export class CoordinateMap {
     delete(x, y) {
         return this.map.delete((new Coordinate(x, y)).serialize());
     }
+    *entries() {
+        for (let [key, value] of this.map.entries()) {
+            yield [key, value];
+        }
+    }
 }

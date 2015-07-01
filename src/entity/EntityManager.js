@@ -2,6 +2,10 @@ let { Player } = require("./Player");
 
 let INSTANCE = null;
 
+export const ENTITY_NAME_LIST = [
+    "player"
+];
+
 export class EntityManager {
     constructor() {
         this.map = null;
@@ -16,7 +20,10 @@ export class EntityManager {
 
     entityClassByName(name) {
         this.buildEntityMap();
-        return this.map.get(name);
+        if (this.map.has(name)) {
+            return this.map.get(name);
+        }
+        return false;
     }
 };
 
