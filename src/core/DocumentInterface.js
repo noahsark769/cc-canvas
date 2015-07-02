@@ -87,4 +87,10 @@ export class DocumentInterface {
     showLoss() {
         console.log("BUMMER");
     }
+    showHint(hint) {
+        this.document.getElementById("level-hint").innerHTML = hint;
+    }
+    hideHint() {
+        this.document.getElementById("level-hint").innerHTML = "";
+    }
 }

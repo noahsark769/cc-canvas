@@ -74,6 +74,12 @@ export class GameEngine {
                 case "loss":
                     this.documentInterface.showLoss(this);
                     break;
+                case "showHint":
+                    this.documentInterface.showHint(this.levelSet.levels[this.currentLevelInSet].hint);
+                    break;
+                case "hideHint":
+                    this.documentInterface.hideHint(this.levelSet.levels[this.currentLevelInSet].hint);
+                    break;
                 default:
                     break;
             }
