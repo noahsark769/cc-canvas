@@ -8,6 +8,10 @@ export class Coordinate {
         return "" + this.x + "," + this.y;
     }
 
+    isDifferentFrom(other) {
+        return this.x !== other.x || this.y !== other.y;
+    }
+
     downFrom() {
         return new Coordinate(this.x, this.y + 1);
     }

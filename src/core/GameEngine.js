@@ -140,7 +140,7 @@ export class GameEngine {
 
     tick() {
         // for tests, if we're idle and we tick, then we make ourselves LEVEL_ACTIVE
-        if (this.state === IDLE) { this.state = LEVEL_ACTIVE; }
+        if (this.state === IDLE || this.state == LEVEL_READY) { this.state = LEVEL_ACTIVE; }
         if (this.gameState.isOver) {
             this.stopTicking();
             this.state = LEVEL_COMPLETE;
@@ -163,6 +163,9 @@ export class GameEngine {
                 } else {
                     this.playerMovedOnLastTick = false;
                 }
+            }
+            if (this.gameState.even()) {
+                this.gameState.advanceEntities();
             }
             this.drawFrame();
             this.gameState.tick();

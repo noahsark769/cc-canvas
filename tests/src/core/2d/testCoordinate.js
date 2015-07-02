@@ -24,6 +24,18 @@ describe("Coordinate", () => {
         let c = new Coordinate(4, 5);
         expect(c.asArray()).to.deep.equal([4, 5]);
     });
+    it("should know about differences", () => {
+        let a = new Coordinate(0, 0);
+        let b = new Coordinate(0, 0);
+        let c = new Coordinate(1, 1);
+        let d = new Coordinate(0, 1);
+        let e = new Coordinate(1, 0);
+        expect(a.isDifferentFrom(b)).to.be.false;
+        expect(a.isDifferentFrom(c)).to.be.true;
+        expect(c.isDifferentFrom(b)).to.be.true;
+        expect(a.isDifferentFrom(d)).to.be.true;
+        expect(a.isDifferentFrom(e)).to.be.true;
+    });
     describe("relative constructions", () => {
         var c;
         beforeEach(() => {

@@ -18,16 +18,19 @@ function buildLevelFromSchematic(schematic) {
 
 function expectEntityAtCoordSequence(engine, entity, startCoord, sequence) {
     let coord = startCoord;
-    expecations.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
+    expectations.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
 
     for (let char of sequence) {
         coord = coord[char]();
         engine.step();
-        expecations.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
+        expectations.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
     }
 }
 
 describe("Bug", () => {
+    beforeEach(() => {
+        GameEngine.reset(false);
+    });
     it("should import correctly", () => {});
     it("should should move on step", () => {
         let [nothing, level] = buildLevelFromSchematic(`
@@ -65,14 +68,14 @@ describe("Bug", () => {
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
-        expectEntityAtCoordSequence(engine, "bug", new Coordinate(5, 3), "ulllllddrrrru");
+        expectEntityAtCoordSequence(engine, "bug", new Coordinate(5, 3), "ullllddrrrru");
     });
     it("should follow inside of box it's in", () => {
         let [nothing, level] = buildLevelFromSchematic(`
             . tile floor
             W tile wall
             P entity player
-            B entity bug-normal-north
+            B entity bug-normal-west
             ===
             ..WWWW..
             .W...W..
@@ -83,7 +86,7 @@ describe("Bug", () => {
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
-        expectEntityAtCoordSequence(engine, "bug", new Coordinate(4, 2), "ulldrrulldrr");
+        expectEntityAtCoordSequence(engine, "bug", new Coordinate(4, 2), "llurrdllurrd");
     });
     it("should reverse when faced with only one lane", () => {
         let [nothing, level] = buildLevelFromSchematic(`

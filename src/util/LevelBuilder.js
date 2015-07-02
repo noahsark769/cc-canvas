@@ -1,6 +1,7 @@
 let { Level } = require("../core/Level");
 let { CoordinateMap } = require("../core/2d/CoordinateMap");
 let { CoordinateTileMap } = require("../core/2d/CoordinateTileMap");
+let { CoordinateEntityMap } = require("../core/2d/CoordinateEntityMap");
 let { Coordinate } = require("../core/2d/Coordinate");
 
 class TileContext {
@@ -40,14 +41,14 @@ export class LevelBuilder {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
-        this.entityMap = new CoordinateTileMap();
+        this.entityMap = new CoordinateEntityMap();
         this.defaultTileType = defaultTileType;
         this.playerPosition = null;
         this.chips = 0;
     }
     reset() {
         this.tileMap = new CoordinateTileMap();
-        this.entityMap = new CoordinateTileMap();
+        this.entityMap = new CoordinateEntityMap();
     }
     setDefaultTileType(tileType) {
         this.defaultTileType = tileType;

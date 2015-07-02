@@ -37,7 +37,6 @@ export class AbstractDatParser {
         let numLevels, level;
 
         [numLevels, nextOffset] = this.consumeNumLevels(nextOffset);
-        console.log("NUM LEVEL: " + numLevels);
         for (let i = 0; i < numLevels; i++) {
             [level, nextOffset] = this.consumeLevel(nextOffset);
             this.levelSet.addLevel(level);

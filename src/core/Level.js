@@ -2,6 +2,7 @@ let { CoordinateMap } = require("../core/2d/CoordinateMap");
 let { Viewport } = require("../core/2d/Viewport");
 let { Coordinate } = require("../core/2d/Coordinate");
 let { CoordinateTileMap } = require("../core/2d/CoordinateTileMap");
+let { CoordinateEntityMap } = require("../core/2d/CoordinateEntityMap");
 
 class TrapWiring {}
 
@@ -10,7 +11,7 @@ export class Level {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
-        this.entityMap = new CoordinateTileMap();
+        this.entityMap = new CoordinateEntityMap();
         this.initialPlayerPosition = null;
         this.chips = 0;
         this.chipsNeeded = 0;

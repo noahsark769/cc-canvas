@@ -5,4 +5,7 @@ export class Player extends Entity {
         super(...args);
         this.name = "player";
     }
+    shouldBlockEntity(entity) {
+        return false;
+    }
 };

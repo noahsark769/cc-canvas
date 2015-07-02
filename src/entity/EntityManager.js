@@ -1,9 +1,11 @@
 let { Player } = require("./Player");
+let { Bug } = require("./enemy/Bug");
 
 let INSTANCE = null;
 
 export const ENTITY_NAME_LIST = [
-    "player"
+    "player",
+    "bug"
 ];
 
 export class EntityManager {
@@ -16,6 +18,7 @@ export class EntityManager {
         this.map = new Map();
 
         this.map.set("player", Player);
+        this.map.set("bug", Bug);
     }
 
     entityClassByName(name) {

@@ -25,4 +25,14 @@ export class CoordinateMap {
     delete(x, y, layer = 1) {
         return this.getLayer(layer).delete((new Coordinate(x, y)).serialize());
     }
+    move(x1, y1, x2, y2, layerSource = 1, layerDest = 1) {
+        let source = this.getLayer(layerSource);
+        let dest = this.getLayer(layerDest);
+        if (source.has((new Coordinate(x1, y1)).serialize())) {
+            let obj = source.get((new Coordinate(x1, y1)).serialize());
+            source.delete((new Coordinate(x1, y1)).serialize());
+            // important to set AFTER delete, since source and dest could be the same thing
+            dest.set((new Coordinate(x2, y2)).serialize(), obj);
+        }
+    }
 }
