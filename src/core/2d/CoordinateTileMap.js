@@ -18,16 +18,16 @@ export class CoordinateTileMap extends CoordinateMap {
         let tileInstance = new tileClass();
         return tileInstance;
     }
-    setTileByName(x, y, tileName) {
+    setTileByName(x, y, tileName, layer = 1) {
         let tileInstance = this.newTileInstanceByName(tileName);
         if (tileInstance === false) {
-            console.warn("Could not set tile " + tileName + " into CoordinateTileMap because it was not found in the respective manager.");
+            // console.warn("Could not set tile " + tileName + " into CoordinateTileMap because it was not found in the respective manager.");
             return false;
         }
-        this.set(x, y, tileInstance);
+        this.set(x, y, tileInstance, layer);
         return tileInstance;
     }
-    setEntityByName(x, y, entityName) {
+    setEntityByName(x, y, entityName, layer = 1) {
         let parts = entityName.split("-");
         let entityInstance = this.newEntityInstanceByName(parts[0]);
         if (parts.length >= 2) {
@@ -37,10 +37,10 @@ export class CoordinateTileMap extends CoordinateMap {
             entityInstance.direction = parts[2];
         }
         if (entityInstance === false) {
-            console.warn("Could not set entity " + entityName + " into CoordinateTileMap because it was not found in the respective manager.");
+            // console.warn("Could not set entity " + entityName + " into CoordinateTileMap because it was not found in the respective manager.");
             return false;
         }
-        this.set(x, y, entityInstance);
+        this.set(x, y, entityInstance, layer);
         return entityInstance;
     }
 }

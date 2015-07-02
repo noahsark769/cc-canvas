@@ -81,60 +81,70 @@ export class AbstractDatParser {
         return [this.currentLevel, nextLevelOffset];
     }
 
+    consumeRunLengthEncoding(currentTileMarker, nextOffset, layer) {
+        let repititions, tileCode;
+        [repititions, nextOffset] = this.consumeByteAsNumber(nextOffset);
+        [tileCode, nextOffset] = this.consumeByteAsNumber(nextOffset);
+        currentTileMarker = this.consumeEntity(tileCode, repititions, currentTileMarker, layer);
+        return [currentTileMarker, nextOffset];
+    }
+
+    consumeEntity(tileCode, num, currentTileMarker, layer) {
+        let [isEntity, name] = this.getObjectCodeValue(tileCode);
+        // TODO: add an entity to the level based on name
+        let funcName = isEntity ? "setEntityByName" : "setTileByName";
+        let layerMap = isEntity ? this.currentLevel.entityMap : this.currentLevel.tileMap;
+        let x, y;
+        for (let i = currentTileMarker; i < currentTileMarker + num; i++) {
+            x = i % 32;
+            y = Math.floor(i / 32);
+            layerMap[funcName](
+                x, // x goes across from top right
+                y, // y goes down from top right
+                name,
+                layer
+            );
+            if (name.indexOf("player") !== -1) {
+                this.currentLevel.setInitialPlayerPosition(new Coordinate(x, y));
+            }
+        }
+        currentTileMarker += num;
+        return currentTileMarker;
+    }
+
     consumeLevelMapDetails(offset) {
         let [mapdetail, nextOffset] = this.consumeWordAsNumber(offset);
         if (mapdetail !== 1) {
             console.warn("Map detail (which was 0x" + mapdetail.toString(16) + ") was not 1, it should have been. We don't know what this means.");
         }
 
-        let firstLayerBytes, objCode, tileCode, repititions, name, isEntity, funcName, layerMap, secondLayerBytes, x, y;
+        let firstLayerBytes, objCode, secondLayerBytes, x, y;
 
         [firstLayerBytes, nextOffset] = this.consumeWordAsNumber(nextOffset);
         let endOfFirstLayerOffset = nextOffset + firstLayerBytes;
 
-        // todo: clean this shit up
         let currentTileMarker = 0;
         while (nextOffset < endOfFirstLayerOffset) {
             [objCode, nextOffset] = this.consumeByteAsNumber(nextOffset);
             if (objCode === 0xFF) {
-                [repititions, nextOffset] = this.consumeByteAsNumber(nextOffset);
-                [tileCode, nextOffset] = this.consumeByteAsNumber(nextOffset);
-                [isEntity, name] = this.getObjectCodeValue(tileCode);
-                // TODO: add an entity to the level based on name
-                funcName = isEntity ? "setEntityByName" : "setTileByName";
-                layerMap = isEntity ? this.currentLevel.entityMap : this.currentLevel.tileMap;
-                for (let i = currentTileMarker; i < currentTileMarker + repititions; i++) {
-                    layerMap[funcName](
-                        31 - i % 32, // x goes across from top right
-                        Math.floor(i / 32), // y goes down from top right
-                        name
-                    );
-                }
-                currentTileMarker += repititions;
+                [currentTileMarker, nextOffset] = this.consumeRunLengthEncoding(currentTileMarker, nextOffset, 1);
             } else {
-                [isEntity, name] = this.getObjectCodeValue(objCode);
-                // TODO: add an entity to the level based on name
-                funcName = isEntity ? "setEntityByName" : "setTileByName";
-                layerMap = isEntity ? this.currentLevel.entityMap : this.currentLevel.tileMap;
-                x = 31 - currentTileMarker % 32;
-                y = Math.floor(currentTileMarker / 32);
-                layerMap[funcName](
-                    x, // x goes across from top right
-                    y, // y goes down from top right
-                    name
-                );
-                currentTileMarker++;
-                if (name.indexOf("player") !== -1) {
-                    this.currentLevel.setInitialPlayerPosition(new Coordinate(x, y));
-                }
+                currentTileMarker = this.consumeEntity(objCode, 1, currentTileMarker, 1);
             }
         }
 
         [secondLayerBytes, nextOffset] = this.consumeWordAsNumber(nextOffset);
         let endOfSecondLayerOffset = nextOffset + secondLayerBytes;
+        currentTileMarker = 0;
+        while (nextOffset < endOfSecondLayerOffset) {
+            [objCode, nextOffset] = this.consumeByteAsNumber(nextOffset);
+            if (objCode === 0xFF) {
+                [currentTileMarker, nextOffset] = this.consumeRunLengthEncoding(currentTileMarker, nextOffset, 2);
+            } else {
+                currentTileMarker = this.consumeEntity(objCode, 1, currentTileMarker, 2);
+            }
+        }
 
-        // TODO: we have no support for bottom layer right now
-        nextOffset = endOfSecondLayerOffset;
         return nextOffset;
     }
 

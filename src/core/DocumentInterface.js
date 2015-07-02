@@ -33,12 +33,13 @@ export class DocumentInterface {
     }
 
     register(engine) {
+        this.window.CC_ENGINE = engine;
         this.document.getElementById("levelset-input").addEventListener("change", (event) => {
             let files = event.currentTarget.files;
             if (!files || files.length !== 1) {
                 return;
             }
-            let reader = new this.FileReader();
+            let reader = new this.window.FileReader();
             reader.onload = function () {
                 let arrayBuffer = reader.result;
                 let parser = new FileReaderDatParser(arrayBuffer);
@@ -46,20 +47,20 @@ export class DocumentInterface {
             };
             reader.readAsArrayBuffer(files[0]);
         });
-        document.addEventListener("keydown", (e) => {
+        this.document.addEventListener("keydown", (e) => {
             if (e.keyCode) {
                 switch(e.keyCode) {
                     case 37: // left
-                        gameEngine.enqueuePlayerMovement("left");
+                        engine.enqueuePlayerMovement("left");
                         break;
                     case 38: // up
-                        gameEngine.enqueuePlayerMovement("up");
+                        engine.enqueuePlayerMovement("up");
                         break;
                     case 39: // right
-                        gameEngine.enqueuePlayerMovement("right");
+                        engine.enqueuePlayerMovement("right");
                         break;
                     case 40: // down
-                        gameEngine.enqueuePlayerMovement("down");
+                        engine.enqueuePlayerMovement("down");
                         break;
                     default:
                         break;
@@ -74,7 +75,7 @@ export class DocumentInterface {
             this.cache.set("chipsLeft", engine.gameState.chipsLeft);
             this.document.getElementById("chips-left").innerHTML = engine.gameState.chipsLeft;
         }
-        this.document.getElementById("engine-ticks").innerHTML = ticks;
+        this.document.getElementById("engine-ticks").innerHTML = engine.gameState.currentTicks;
         if (engine.state !== this.cache.get("engineState")) {
             this.cache.set("engineState", engine.state)
             this.document.getElementById("engine-state").innerHTML = engine.state;

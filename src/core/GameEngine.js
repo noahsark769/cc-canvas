@@ -47,7 +47,7 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
-    constructor(document, useIntervals = false) {
+    constructor(useIntervals = true) {
         this.useIntervals = useIntervals;
         this.state = IDLE;
         this.gameState = new GameState(); // exactly one gamestate per engine

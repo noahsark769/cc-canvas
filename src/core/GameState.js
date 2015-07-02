@@ -4,8 +4,9 @@ let { Viewport } = require("./2d/Viewport");
 let {NORTH, SOUTH, EAST, WEST} = require("./2d/directions");
 
 export class GameState {
-    constructor() {
+    constructor(level) {
         this.reset();
+        this.level = level || null;
     }
 
     reset() {
@@ -119,6 +120,7 @@ export class GameState {
     setLevel(level) {
         this.level = level;
         this.entityMap = this.level.entityMap;
+        this.tileMap = this.level.tileMap;
         if (this.level.getInitialPlayerPosition() !== null) {
             this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
         }
@@ -139,20 +141,23 @@ export class GameState {
     }
 
     hasTileAt(x, y) {
-        if (this.tileMap.has(x, y)) {
+        if (this.tileMap.has(x, y, 1)) {
             return true;
         }
-        return this.level.tileMap.has(x, y);
+        if (this.tileMap.has(x, y, 2)) {
+            return true;
+        }
+        return false;
     }
 
     hasEntityAt(x, y) { return this.entityMap.has(x, y); }
     getEntityAt(x, y) { return this.entityMap.get(x, y); }
 
     getTileAt(x, y) {
-        if (this.tileMap.has(x, y)) {
-            return this.tileMap.get(x, y);
+        if (this.tileMap.has(x, y, 1)) {
+            return this.tileMap.get(x, y, 1);
         }
-        return this.level.tileMap.get(x, y);
+        return this.tileMap.get(x, y, 2);
     }
 
     // for now, just return default viewport from level
