@@ -16,7 +16,8 @@ export class Tile {
     /**
      * Will be called when the entity moves into this tile.
      */
-    entityWillOccupy(entity, dir, gameState, coordinate) {
+    entityWillOccupy(entity, dir, gameState, coordinate, engine) {
 
     }
+    entityWillExit(entity, dir, gameState, coordinate, engine) {}
 }

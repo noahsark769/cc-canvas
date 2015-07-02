@@ -3,6 +3,7 @@ let { Wall } = require("./Wall");
 let { Chip } = require("./Chip");
 let { Escape } = require("./Escape");
 let { Socket } = require("./Socket");
+let { Hint } = require("./Hint");
 let { BlueKey } = require("./keys/BlueKey");
 let { RedKey } = require("./keys/RedKey");
 let { YellowKey } = require("./keys/YellowKey");
@@ -28,6 +29,7 @@ export class TileManager {
         this.map.set("chip", Chip);
         this.map.set("escape", Escape);
         this.map.set("socket", Socket);
+        this.map.set("hint", Hint);
         this.map.set("key_blue", BlueKey);
         this.map.set("key_red", RedKey);
         this.map.set("key_yellow", YellowKey);

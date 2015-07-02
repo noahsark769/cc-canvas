@@ -51,9 +51,9 @@ export function buildSpriteMap() {
     spriteMap.set("bomb", new Coordinate(2, 10));
     spriteMap.set("bear_trap", new Coordinate(2, 11));
     spriteMap.set("wall_invisible_appearing", new Coordinate(2, 12));
-    spriteMap.set("gravel", new Coordinate(3, 13));
-    spriteMap.set("cement", new Coordinate(3, 14));
-    spriteMap.set("hint", new Coordinate(3, 15));
+    spriteMap.set("gravel", new Coordinate(2, 13));
+    spriteMap.set("cement", new Coordinate(2, 14));
+    spriteMap.set("hint", new Coordinate(2, 15));
 
     spriteMap.set("thin_lr", new Coordinate(3, 0));
     spriteMap.set("clone_machine", new Coordinate(3, 1));

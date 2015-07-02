@@ -4,9 +4,10 @@ let { Viewport } = require("./2d/Viewport");
 let {NORTH, SOUTH, EAST, WEST} = require("./2d/directions");
 
 export class GameState {
-    constructor(level) {
+    constructor(engine, level) {
         this.reset();
         this.level = level || null;
+        this.engine = engine;
     }
 
     reset() {
@@ -67,7 +68,8 @@ export class GameState {
             this.viewport.shiftDownBounded(1, this.level.height);
         }
         if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
-            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", SOUTH, this, this.playerPosition);
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", SOUTH, this, this.playerPosition, this.engine);
+            this.getTileAt(prevPlayerPosition.x, prevPlayerPosition.y).entityWillExit("player", SOUTH, this, prevPlayerPosition, this.engine);
         }
     }
     movePlayerUp() {
@@ -76,7 +78,8 @@ export class GameState {
             this.viewport.shiftUpBounded(1, -1);
         }
         if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
-            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", NORTH, this, this.playerPosition);
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", NORTH, this, this.playerPosition, this.engine);
+            this.getTileAt(prevPlayerPosition.x, prevPlayerPosition.y).entityWillExit("player", NORTH, this, prevPlayerPosition, this.engine);
         }
     }
     movePlayerLeft() {
@@ -85,7 +88,8 @@ export class GameState {
             this.viewport.shiftLeftBounded(1, -1);
         }
         if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
-            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", WEST, this, this.playerPosition);
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", WEST, this, this.playerPosition, this.engine);
+            this.getTileAt(prevPlayerPosition.x, prevPlayerPosition.y).entityWillExit("player", WEST, this, prevPlayerPosition, this.engine);
         }
     }
     movePlayerRight() {
@@ -94,7 +98,8 @@ export class GameState {
             this.viewport.shiftRightBounded(1, this.level.width);
         }
         if (this.hasTileAt(this.playerPosition.x, this.playerPosition.y)) {
-            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", EAST, this, this.playerPosition);
+            this.getTileAt(this.playerPosition.x, this.playerPosition.y).entityWillOccupy("player", EAST, this, this.playerPosition, this.engine);
+            this.getTileAt(prevPlayerPosition.x, prevPlayerPosition.y).entityWillExit("player", EAST, this, prevPlayerPosition, this.engine);
         }
     }
     movePlayer(controlString) {

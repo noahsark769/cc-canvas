@@ -50,7 +50,7 @@ export class GameEngine {
     constructor(useIntervals = true) {
         this.useIntervals = useIntervals;
         this.state = IDLE;
-        this.gameState = new GameState(); // exactly one gamestate per engine
+        this.gameState = new GameState(this); // exactly one gamestate per engine
         this.intervalId = null;
 
         this.pendingPlayerMovement = null;
