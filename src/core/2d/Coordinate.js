@@ -24,6 +24,16 @@ export class Coordinate {
         return new Coordinate(this.x + 1, this.y)
     }
 
+    right() { return this.rightFrom(); }
+    left() { return this.leftFrom(); }
+    down() { return this.downFrom(); }
+    up() { return this.upFrom(); }
+
+    r() { return this.rightFrom(); }
+    l() { return this.leftFrom(); }
+    d() { return this.downFrom(); }
+    u() { return this.upFrom(); }
+
     asArray() {
         return [this.x, this.y];
     }
