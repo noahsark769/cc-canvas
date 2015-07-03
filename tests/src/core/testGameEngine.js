@@ -108,7 +108,7 @@ describe("GameEngine", () => {
         level2.name = "level2";
         set.addLevel(level1);
         set.addLevel(level2);
-        let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
+        let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(set);
         // should autoload first level
         expect(engine.gameState.level.name).to.equal("level1");
@@ -155,5 +155,23 @@ describe("GameEngine", () => {
         engine.loadLevelSet(set);
         engine.tick(); // get it started
         engine.gameState.movePlayer("DR");
+    });
+    it("should load original entity maps from level after reload", () => {
+        let set = new LevelSet();
+        let level1 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            B entity bug-normal-west
+            ===
+            .....
+            P.B..
+        `);
+        level1.name = "level1";
+        set.addLevel(level1);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(set);
+        engine.resetCurrentLevel();
+        expect(engine.gameState.entityMap.get(0, 1).name).to.equal("player")
+        expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug")
     });
 });

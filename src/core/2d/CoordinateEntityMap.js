@@ -9,6 +9,21 @@ export class CoordinateEntityMap extends CoordinateMap {
         super();
         this.entityList = [];
     }
+
+    // todo: somehow could move this into superclass??
+    clone() {
+        let map = new CoordinateEntityMap();
+        let key, value;
+        for ([key, value] of this.layer1.entries()) {
+            map.layer1.set(key, value);
+        }
+        for ([key, value] of this.layer2.entries()) {
+            map.layer2.set(key, value);
+        }
+        map.entityList = Array.from(this.entityList);
+        return map;
+    }
+
     serialize(entity, x, y) {
         return "" + entity.id + "-" + x + "-" + y;
     }

@@ -127,6 +127,7 @@ export class GameEngine {
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.state = LEVEL_READY;
+        this.drawFrame();
         this.interface("update");
     }
 

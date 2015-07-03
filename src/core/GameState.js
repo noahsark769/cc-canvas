@@ -9,6 +9,7 @@ export class GameState {
         this.reset();
         this.level = level || null;
         this.engine = engine;
+        this.DEBUG = false;
     }
 
     reset() {
@@ -160,8 +161,8 @@ export class GameState {
 
     setLevel(level) {
         this.level = level;
-        this.entityMap = this.level.entityMap;
-        this.tileMap = this.level.tileMap;
+        this.entityMap = this.level.entityMap.clone();
+        this.tileMap = this.level.tileMap.clone();
         if (this.level.getInitialPlayerPosition() !== null) {
             this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
         }

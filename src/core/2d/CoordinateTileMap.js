@@ -6,6 +6,20 @@ export class CoordinateTileMap extends CoordinateMap {
     constructor() {
         super();
     }
+
+    // todo: somehow could move this into superclass??
+    clone() {
+        let map = new CoordinateTileMap();
+        let key, value;
+        for ([key, value] of this.layer1.entries()) {
+            map.layer1.set(key, value);
+        }
+        for ([key, value] of this.layer2.entries()) {
+            map.layer2.set(key, value);
+        }
+        return map;
+    }
+
     newTileInstanceByName(tileName) {
         let tileClass = TileManager.getInstance().tileClassByName(tileName);
         if (tileClass === false) { return false; }

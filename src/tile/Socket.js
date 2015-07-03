@@ -6,6 +6,7 @@ export class Socket extends Tile {
         this.name = "socket";
     }
     shouldBlockPlayer(player, gameState) {
+        if (gameState.DEBUG) { return false; }
         return gameState.chipsLeft !== 0;
     }
     shouldBlockEntity(entity, gameState) {
