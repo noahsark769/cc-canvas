@@ -140,11 +140,17 @@ export class GameState {
                 // ACTUALLY DO IT!
                 this.entityMap.move(coordinate.x, coordinate.y, newCoord.x, newCoord.y);
                 entity.direction = newDir;
-
+                if (this.playerPosition) console.log("Player position is: " + this.playerPosition.serialize());
+                if (this.playerPosition && this.playerPosition.equals(newCoord)) { // we moved onto the player. it's over!
+                    // this is a loss!
+                    this.isOver = true;
+                    this.isLoss = true;
+                    return;
+                }
                 // make sure the tile knows what's occupying it, and kill the entity if needed
                 if (this.tileMap.has(newCoord.x, newCoord.y)) {
                     let isDead = this.tileMap.get(newCoord.x, newCoord.y).entityWillOccupy(entity);
-                    if (isDead) {
+                    if (isDead) { // did the monster die?
                         this.entityMap.delete(newCoord.x, newCoord.y);
                     }
                 }

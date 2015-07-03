@@ -313,9 +313,9 @@ export class CCClassicImageRenderer extends ImageRenderer {
             return false;
         }
         this.buildSpriteMap();
-        let sprite = this.spriteMap.get(entity.name + "-" + entity.state + "-" + entity.direction);
+        let sprite = this.spriteMap.get(entity.name + "-" + entity.state + "-" + entity.direction.toString());
         if (sprite === undefined) {
-            console.log("Could not find " + tile.name);
+            console.log("Could not find " + entity.name);
         }
         let context = canvas.getContext("2d");
         context.drawImage(

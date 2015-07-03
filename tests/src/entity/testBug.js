@@ -122,4 +122,24 @@ describe("Bug", () => {
         engine.loadLevelSet(new LevelSet([level]));
         expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 3), "llluuurrrdddlll");
     });
+    it("should kill player", () => {
+        let [nothing, level] = buildLevelFromSchematic(`
+            . tile floor
+            W tile wall
+            P entity player
+            B entity bug-normal-west
+            ===
+            ....
+            ....
+            ....
+            P..B
+        `);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(new LevelSet([level]));
+        sinon.stub(engine, "resetCurrentLevel");
+        expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 3), "lll");
+        expect(engine.gameState.isOver, "Game was not over").to.be.true;
+        expect(engine.gameState.isLoss, "Game was not a loss!").to.be.true;
+        expect(engine.gameState.isWin, "Game was a win when it should have been a loss").to.be.false;
+    });
 });

@@ -27,4 +27,7 @@ export class Direction {
         }
         return result;
     }
+    toString() {
+        return this.dir;
+    }
 }

@@ -123,11 +123,11 @@ export class GameEngine {
         this.interface("update")
     }
 
-    reloadCurrentLevel() {
+    resetCurrentLevel() {
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.state = LEVEL_READY;
-        this.updateInterface();
+        this.interface("update");
     }
 
     enqueuePlayerMovement(movement) {

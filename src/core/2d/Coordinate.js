@@ -12,6 +12,10 @@ export class Coordinate {
         return this.x !== other.x || this.y !== other.y;
     }
 
+    equals(other) {
+        return !this.isDifferentFrom(other);
+    }
+
     downFrom() {
         return new Coordinate(this.x, this.y + 1);
     }
