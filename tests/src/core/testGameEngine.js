@@ -174,4 +174,29 @@ describe("GameEngine", () => {
         expect(engine.gameState.entityMap.get(0, 1).name).to.equal("player")
         expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug")
     });
+    it("should load entity directions from the original level after reset", () => {
+        let set = new LevelSet();
+        let level1 = LevelBuilder.generateFromSchematic(`
+            . tile floor
+            P entity player
+            B entity bug-normal-west
+            ===
+            ..P..
+            ..B..
+        `);
+        level1.name = "level1";
+        set.addLevel(level1);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(set);
+        engine.step();
+        engine.step();
+        engine.step();
+        engine.step();
+        engine.step();
+        // now the bug has killed the player but it should have also changed its direction to east
+        // instead of west. we want to make sure it's still facing west
+        engine.resetCurrentLevel();
+        expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug");
+        expect(engine.gameState.entityMap.get(2, 1).direction.toString()).to.equal("west");
+    });
 });

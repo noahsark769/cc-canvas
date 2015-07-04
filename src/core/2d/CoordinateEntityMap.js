@@ -15,10 +15,11 @@ export class CoordinateEntityMap extends CoordinateMap {
         let map = new CoordinateEntityMap();
         let key, value;
         for ([key, value] of this.layer1.entries()) {
-            map.layer1.set(key, value);
+            map.layer1.set(key, value.clone());
+            let index =
         }
         for ([key, value] of this.layer2.entries()) {
-            map.layer2.set(key, value);
+            map.layer2.set(key, value.clone());
         }
         map.entityList = Array.from(this.entityList);
         return map;

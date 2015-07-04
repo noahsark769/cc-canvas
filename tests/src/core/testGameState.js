@@ -2,6 +2,8 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
+let { GameEngine } = reqlib("/src/core/GameEngine");
+let { LevelSet } = reqlib("/src/core/LevelSet");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
 let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
@@ -68,6 +70,68 @@ describe("GameState", () => {
             state.movePlayerDown();
             state.movePlayerDown();
             expectations.expectPlayerAt(state, 2, 2);
+        });
+    });
+
+    describe("entity interactions", () => {
+        it("should not carry entity map over from previous loss", () => {
+            let set = new LevelSet();
+            let level1 = LevelBuilder.generateFromSchematic(`
+                . tile floor
+                P entity player
+                B entity bug-normal-west
+                ===
+                .....
+                P.B..
+            `);
+            level1.name = "level1";
+            set.addLevel(level1);
+            let engine = GameEngine.getInstance(false);
+            engine.loadLevelSet(set);
+            engine.resetCurrentLevel();
+            expect(engine.gameState.entityMap.get(0, 1).name).to.equal("player")
+            expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug")
+        });
+
+        it("should register loss when player moves into monster", () => {
+            let set = new LevelSet();
+            let level1 = LevelBuilder.generateFromSchematic(`
+                . tile floor
+                P entity player
+                B entity bug-normal-west
+                ===
+                .....
+                P.B..
+            `);
+            level1.name = "level1";
+            set.addLevel(level1);
+            let engine = GameEngine.getInstance(false);
+            engine.loadLevelSet(set);
+            engine.tick(); // bug is now next to player, will not move on next tick
+            engine.enqueuePlayerMovement("right");
+            engine.tick(); // player moves into bug, game should be over
+            expect(engine.gameState.isOver).to.be.true;
+            expect(engine.gameState.isLoss).to.be.true;
+        });
+
+        it("should register loss when monster moves into player", () => {
+            let set = new LevelSet();
+            let level1 = LevelBuilder.generateFromSchematic(`
+                . tile floor
+                P entity player
+                B entity bug-normal-west
+                ===
+                .....
+                P.B..
+            `);
+            level1.name = "level1";
+            set.addLevel(level1);
+            let engine = GameEngine.getInstance(false);
+            engine.loadLevelSet(set);
+            engine.step();
+            engine.step();
+            expect(engine.gameState.isOver).to.be.true;
+            expect(engine.gameState.isLoss).to.be.true;
         });
     });
 

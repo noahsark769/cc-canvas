@@ -32,6 +32,17 @@ export class GameState {
         this.greenKeys = 0;
     }
 
+    setLevel(level) {
+        this.level = level;
+        this.entityMap = this.level.entityMap.clone();
+        this.tileMap = this.level.tileMap.clone();
+        if (this.level.getInitialPlayerPosition() !== null) {
+            this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
+        }
+        this.viewport = this.level.getDefaultViewport();
+        this.chipsLeft = this.level.chipsNeeded;
+    }
+
     getPlayerPosition() {
         return this.playerPosition;
     }
@@ -40,7 +51,15 @@ export class GameState {
         let newCoord = new Coordinate(x, y);
         if (this.playerPosition !== null) {
             if (this.playerPosition.isDifferentFrom(newCoord)) {
-                this.entityMap.move(this.playerPosition.x, this.playerPosition.y, newCoord.x, newCoord.y);
+                // if (this.entityMap.has(newCoord.x, newCoord.y)) {
+                //     // this is a loss!
+                //     this.isOver = true;
+                //     this.isLoss = true;
+                //     this.entityMap.move(this.playerPosition.x, this.playerPosition.y, newCoord.x, newCoord.y, 1, 2);
+                //     return;
+                // } else {
+                    this.entityMap.move(this.playerPosition.x, this.playerPosition.y, newCoord.x, newCoord.y);
+                // }
             }
         }
         if (this.playerPosition === null && this.level !== null) {
@@ -159,17 +178,6 @@ export class GameState {
         }
     }
 
-    setLevel(level) {
-        this.level = level;
-        this.entityMap = this.level.entityMap.clone();
-        this.tileMap = this.level.tileMap.clone();
-        if (this.level.getInitialPlayerPosition() !== null) {
-            this.setPlayerPosition(...this.level.getInitialPlayerPosition().asArray());
-        }
-        this.viewport = this.level.getDefaultViewport();
-        this.chipsLeft = this.level.chipsNeeded;
-    }
-
     tick() {
         this.currentTicks++;
     }
@@ -202,7 +210,6 @@ export class GameState {
         return this.tileMap.get(x, y, 2);
     }
 
-    // for now, just return default viewport from level
     getViewport() {
         return this.viewport;
     }
