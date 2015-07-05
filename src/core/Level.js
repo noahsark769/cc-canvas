@@ -22,7 +22,7 @@ export class Level {
 
     // will eventually render differently based on player position. for now, just render upper left.
     getDefaultViewport() {
-        return Viewport.constructFromPlayerPosition(this.initialPlayerPosition, this.width, this.height);
+        return Viewport.constructFromPlayerPosition(this.getInitialPlayerPosition(), this.width, this.height);
     }
 
     /**

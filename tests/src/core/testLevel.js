@@ -1,5 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
+let expectations = reqlib("/testing/expectations")(expect);
 let { Level } = reqlib("/src/core/Level");
 let { GameState } = reqlib("/src/core/GameState");
 
@@ -13,7 +14,6 @@ describe("Level", () => {
     it("should have empty maps initially", () => {
         let level = new Level(4, 3);
         expect(level.tileMap.size).to.equal(0);
-        expect(level.entityMap.size).to.equal(0);
     });
     it("should not error when getting default viewport", () => {
         let level = new Level(4, 3);
@@ -57,10 +57,10 @@ describe("Level", () => {
             expectations.expectTileAt(state, 1, 1, "wall");
         });
         it("should support autosetting player location", () => {
-            let level = LevelBuilder.buildFromSchematic(`
+            let level = Level.buildFromSchematic(`
                 . floor
                 W wall
-                P player
+                P player-south-normal
                 ===
                 ....
                 .WP.
@@ -75,7 +75,7 @@ describe("Level", () => {
     it("should have viewport centered on player", () => {
         let level = Level.buildFromSchematic(`
             . floor
-            P player
+            P player-south-normal
             ===
             ................
             ................
@@ -97,7 +97,7 @@ describe("Level", () => {
 
         level = Level.buildFromSchematic(`
             . floor
-            P player
+            P player-south-normal
             ===
             P...............
             ................
@@ -119,7 +119,7 @@ describe("Level", () => {
 
         level = Level.buildFromSchematic(`
             . floor
-            P player
+            P player-south-normal
             ===
             ................
             ................
