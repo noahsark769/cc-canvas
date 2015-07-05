@@ -1,5 +1,6 @@
 let {Animator} = require("../animation/Animator");
 let {GameState} = require("./GameState");
+let {Direction} = require("./2d/directions");
 let {DocumentInterface} = require("../core/DocumentInterface");
 let {FileReaderDatParser} = require("../data/FileReaderDatParser");
 
@@ -55,6 +56,7 @@ export class GameEngine {
 
         this.pendingPlayerMovement = null;
         this.playerMovedOnLastTick = false;
+        this.ticksSincePlayerMove = 0;
 
         this.levelSet = null;
         this.currentLevelInSet = 0;
@@ -105,8 +107,11 @@ export class GameEngine {
         this.currentLevelInSet = 0;
 
         this.state = LEVEL_READY;
+        this.ticksSincePlayerMove = 0;
+        this.playerMovedOnLastTick = false;
         this.drawFrame();
         this.interface("update")
+        return this; // for testing
     }
 
     loadNextLevel() {
@@ -117,6 +122,8 @@ export class GameEngine {
             this.gameState.reset();
             this.currentLevelInSet++;
             this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
+            this.ticksSincePlayerMove = 0;
+            this.playerMovedOnLastTick = false;
             this.state = LEVEL_READY;
             this.drawFrame();
         }
@@ -126,6 +133,8 @@ export class GameEngine {
     resetCurrentLevel() {
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
+        this.ticksSincePlayerMove = 0;
+        this.playerMovedOnLastTick = false;
         this.state = LEVEL_READY;
         this.drawFrame();
         this.interface("update");
@@ -154,19 +163,25 @@ export class GameEngine {
             }
         }
         if (this.state === LEVEL_ACTIVE) {
+            if (this.gameState.even()) {
+                this.gameState.advanceEntities();
+            }
             if (this.pendingPlayerMovement === null) {
                 this.playerMovedOnLastTick = false;
+                this.ticksSincePlayerMove++;
+                if (this.ticksSincePlayerMove >= 3 && this.gameState.player && !this.gameState.isOver) {
+                    this.gameState.player.direction = Direction.south();
+                    this.gameState.updatePlayerTile();
+                }
             } else {
-                if (this.pendingPlayerMovement !== null && !this.playerMovedOnLastTick) {
+                if (!this.playerMovedOnLastTick) {
                     this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
                     this.pendingPlayerMovement = null;
                     this.playerMovedOnLastTick = true;
+                    this.ticksSincePlayerMove = 0;
                 } else {
                     this.playerMovedOnLastTick = false;
                 }
-            }
-            if (this.gameState.even()) {
-                this.gameState.advanceEntities();
             }
             this.drawFrame();
             this.gameState.tick();
@@ -200,6 +215,7 @@ export class GameEngine {
     }
 
     startTicking() {
+        this.ticksSincePlayerMove = 0;
         if (this.useIntervals) {
             this.intervalId = setInterval(() => {
                 this.tick();

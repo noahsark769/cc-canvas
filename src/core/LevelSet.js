@@ -1,3 +1,5 @@
+let { Level } = require("./Level");
+
 export class LevelSet {
     constructor(levels) {
         this.levels = levels || [];
@@ -12,4 +14,8 @@ export class LevelSet {
 
 LevelSet.fromLevel = function(level) {
     return new LevelSet([level]);
+}
+
+LevelSet.fromSchematic = function(schematic) {
+    return LevelSet.fromLevel(Level.buildFromSchematic(schematic));
 }

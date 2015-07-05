@@ -77,6 +77,11 @@ export class GameState {
         return this.player.position;
     }
 
+    // for resetting to south after three ticks
+    updatePlayerTile() {
+        this.tileMap.set(this.player.position.x, this.player.position.y, this.player.getTile(), 1)
+    }
+
     movePlayerByDirection(direction) {
         let prevPlayerPosition = this.player.position;
         let newCoord = this.player.chooseMove(direction, this);

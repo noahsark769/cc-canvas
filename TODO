@@ -1,4 +1,4 @@
-- [ ] Correct direction changing for chip and entities
+- [x] Correct direction changing for chip and entities
 - [ ] Drawing transparent items over each other
 - [ ] Next level, prev level, next 10 levels, prev 10 levels
 - [ ] Alerts for win

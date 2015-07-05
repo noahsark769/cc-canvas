@@ -39,6 +39,7 @@ export class Monster extends Entity {
             return;
         }
 
+        this.direction = newDir;
         if (!newTile || newTile.entityShouldReplace()) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
@@ -57,7 +58,6 @@ export class Monster extends Entity {
         if (newTile) {
             newTile.entityWillOccupy(this, newDir, gameState);
         }
-        this.direction = newDir;
         this.position = newCoord;
     }
 }

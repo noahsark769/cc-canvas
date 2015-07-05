@@ -9,8 +9,10 @@ export class PlayerTile extends Tile {
     shouldBlockEntity() {
         return false;
     }
+    entityShouldReplace() {
+        return true;
+    }
     entityWillOccupy(entity, direction, gameState) {
-        console.log("OH NOOOOO");
         gameState.isOver = true;
         gameState.isLoss = true;
     }
@@ -110,6 +112,7 @@ export class Player extends Entity {
         //
         // the tile we exit will have the second layer pushed up into the first layer, or have
         // the first layer replaced with floor if no second layer tile exists.
+        this.direction = direction;
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         if (!newTile || newTile.playerShouldReplace()) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
@@ -130,7 +133,6 @@ export class Player extends Entity {
             newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine);
         }
         this.position = newCoord;
-        this.direction = direction;
     }
 
     getTile() {
