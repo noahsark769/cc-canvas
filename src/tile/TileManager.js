@@ -13,6 +13,7 @@ let { RedDoor } = require("./doors/RedDoor");
 let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
 let { PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
+let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
 
 let INSTANCE = null;
 
@@ -41,6 +42,9 @@ export class TileManager {
         this.map.set("door_green", GreenDoor);
 
         for (let tileClass of [PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+        for (let tileClass of [BugNorth, BugSouth, BugEast, BugWest]) {
             this.map.set((new tileClass()).name, tileClass);
         }
     }

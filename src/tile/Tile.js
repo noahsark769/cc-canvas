@@ -28,4 +28,7 @@ export class Tile {
     entityShouldReplace(entity) {
         return false;
     }
+    isLethalToEntity(entity) {
+        return false;
+    }
 }

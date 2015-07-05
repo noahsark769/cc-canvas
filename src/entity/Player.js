@@ -7,7 +7,7 @@ export class PlayerTile extends Tile {
         return true;
     }
     shouldBlockEntity() {
-        return true;
+        return false;
     }
     entityWillOccupy(entity, direction, gameState) {
         gameState.isOver = true;
@@ -132,7 +132,7 @@ export class Player extends Entity {
 
     getTile() {
         let {TileManager} = require("../tile/TileManager");
-        let tileClass = TileManager.getInstance().tileClassByName("player-" + this.direction.toString() + "-" + this.state);
+        let tileClass = TileManager.getInstance().tileClassByName("player-" + this.direction.asStringDirection() + "-" + this.state);
         return new tileClass();
     }
 };

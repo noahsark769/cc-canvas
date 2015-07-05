@@ -6,14 +6,7 @@ let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { Coordinate } = reqlib("/src/core/2d/Coordinate");
-
-function buildLevelFromSchematic(schematic) {
-    let state = new GameState();
-    let builder = LevelBuilder.buildFromSchematic(schematic);
-    let level = builder.generateLevel();
-    state.setLevel(level);
-    return [state, level];
-}
+let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 function expectEntityAtCoordSequence(engine, entity, startCoord, sequence) {
     let coord = startCoord;
@@ -31,17 +24,24 @@ describe("Bug", () => {
         GameEngine.reset(false);
     });
     it("should import correctly", () => {});
-    it("should should move on step", () => {
+    it("should move on step", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-west
+            . floor
+            W wall
+            P player-south-normal
+            B bug-west
             ===
-            .....
+            P....
             .....
             ....B
             WWWWW
+            ===
+            .....
+            .....
+            .....
+            .....
+            ===
+            4 2
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
@@ -53,17 +53,26 @@ describe("Bug", () => {
     });
     it("should follow left wall", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-north
+            . floor
+            W wall
+            P player-south-normal
+            B bug-north
             ===
-            ........
+            P.......
             ........
             ........
             ..WWWB..
             ........
             ........
+            ===
+            ........
+            ........
+            ........
+            ........
+            ........
+            ........
+            ===
+            5 3
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
@@ -71,17 +80,22 @@ describe("Bug", () => {
     });
     it("should follow inside of box it's in", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-west
+            . floor
+            W wall
+            P player-south-normal
+            B bug-west
             ===
-            ..WWWW..
+            P.WWWW..
             .W...W..
             .W..BW..
             ..WWWW..
+            ===
             ........
             ........
+            ........
+            ........
+            ===
+            4 2
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
@@ -89,17 +103,26 @@ describe("Bug", () => {
     });
     it("should reverse when faced with only one lane", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-south
+            . floor
+            W wall
+            P player-south-normal
+            B bug-south
             ===
-            ...WWW..
+            P..WWW..
             ...W.W..
             ...WBW..
             ...W.W..
             ...W.W..
             ...WWW..
+            ===
+            ........
+            ........
+            ........
+            ........
+            ........
+            ........
+            ===
+            4 2
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
@@ -107,15 +130,22 @@ describe("Bug", () => {
     });
     it("should follow end of level when faced with it", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-west
+            . floor
+            W wall
+            P player-south-normal
+            B bug-west
+            ===
+            ....
+            .P..
+            ....
+            ...B
             ===
             ....
             ....
             ....
-            ...B
+            ....
+            ===
+            3 3
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
@@ -123,20 +153,23 @@ describe("Bug", () => {
     });
     it("should kill player", () => {
         let [nothing, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            B entity bug-normal-west
+            . floor
+            W wall
+            P player-south-normal
+            B bug-west
+            ===
+            ....
+            P..B
             ===
             ....
             ....
-            ....
-            P..B
+            ===
+            3 1
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level]));
         sinon.stub(engine, "resetCurrentLevel");
-        expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 3), "lll");
+        expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 1), "lll");
         expect(engine.gameState.isOver, "Game was not over").to.be.true;
         expect(engine.gameState.isLoss, "Game was not a loss!").to.be.true;
         expect(engine.gameState.isWin, "Game was a win when it should have been a loss").to.be.false;

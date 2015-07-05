@@ -1,4 +1,4 @@
-let {NORTH, SOUTH, EAST, WEST, Direction} = require("../../core/2d/directions");
+let {Direction} = require("../../core/2d/directions");
 let {Monster, MonsterStateTile} = require("./Monster");
 
 export class Bug extends Monster {
@@ -6,6 +6,7 @@ export class Bug extends Monster {
         super(...args);
         this.name = "bug";
     }
+
     chooseMove(gameState) {
         let tileMap = gameState.tileMap;
         let dirsToTry = [
@@ -17,7 +18,7 @@ export class Bug extends Monster {
 
         let newCoord;
         for (let dir of dirsToTry) {
-            newCoord = dir.coordinateFor(coordinate, 1);
+            newCoord = dir.coordinateFor(this.position, 1);
             if (
                 (tileMap.has(newCoord.x, newCoord.y) && tileMap.get(newCoord.x, newCoord.y).shouldBlockEntity(this)) ||
                 newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height
@@ -47,7 +48,7 @@ export class Bug extends Monster {
         if (!newTile || newTile.entityShouldReplace()) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
-            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCord.y, 1), 2);
+            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         }
 
@@ -58,7 +59,7 @@ export class Bug extends Monster {
             gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
         }
 
-        newTile.entityWillOccupy(this, direction, gameState);
+        newTile.entityWillOccupy(this, newDir, gameState);
         this.direction = newDir;
         this.position = newCoord;
     }

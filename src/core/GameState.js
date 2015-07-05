@@ -3,7 +3,8 @@ let { ObjectLinkedList } = require("../util/ObjectLinkedList");
 let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
 let { Viewport } = require("./2d/Viewport");
 let { Player } = require("../entity/Player");
-let {Direction} = require("./2d/directions");
+let { Direction } = require("./2d/directions");
+let { EntityManager } = require("../entity/EntityManager");
 
 export class GameState {
     constructor(engine, level) {
@@ -47,7 +48,13 @@ export class GameState {
             let tile = this.tileMap.get(coord.x, coord.y, 1); // only check the top level for monsters: http://chipschallenge.wikia.com/wiki/Monster_list
             if (tile) {
                 let [name, dir] = tile.name.split("-");
-                this.monsterList.append(new EntityManager.getInstance().entityClassByName(tile.name)(new Direction(dir), coord));
+                let entityClass = EntityManager.getInstance().entityClassByName(name);
+                if (entityClass) {
+                    let entityInstance = new entityClass(new Direction(dir), coord);
+                    this.monsterList.append(entityInstance);
+                } else {
+                    console.warn("The entity class could not be found in manager for name " + name);
+                }
             } else {
                 console.warn("You tried to set a movement on a tile with no monster on it...");
             }
@@ -61,7 +68,7 @@ export class GameState {
             this.player = new Player(state, new Direction(dir), playerCoord);
         } else {
             console.warn("You tried to make a player without a player tile. I'm gunna put it at 0, 0 south.");
-            this.player = new Player(Direction.south(), playerCoord);
+            this.player = new Player("normal", Direction.south(), playerCoord);
         }
         this.viewport = Viewport.constructFromPlayerPosition(playerCoord, this.level.width, this.level.height);
     }

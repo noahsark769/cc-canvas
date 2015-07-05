@@ -9,11 +9,19 @@ export class Direction {
     }
     clockwise() {
         let dirs = [NORTH, EAST, SOUTH, WEST, NORTH, EAST, SOUTH, WEST];
-        return new Direction(dirs[dirs.indexOf(this.dir) + 1]);
+        let index = dirs.indexOf(this.dir);
+        if (index === -1) {
+            console.warn("Calling clockwise could not find direction...");
+        }
+        return new Direction(dirs[index + 1]);
     }
     counterclockwise() {
-        let dirs = [NORTH, WEST, SOUTH, EAST, NORTH, WEST, SOUTH, EAST];
-        return new Direction(dirs[dirs.indexOf(this.dir) + 1]);
+        let dirs = ["north", "west", "south", "east", "north", "west", "south", "east"];
+        let index = dirs.indexOf(this.dir);
+        if (index === -1) {
+            console.warn("Calling counterclockwise could not find direction...");
+        }
+        return new Direction(dirs[index + 1]);
     }
     coordinateFor(coord, amount) {
         let map = new Map();
@@ -28,7 +36,7 @@ export class Direction {
         return result;
     }
     toString() {
-        return this.dir;
+        return "<Direction :" + this.dir + ">";
     }
     equals(other) {
         return this.dir === other.dir;
@@ -37,6 +45,10 @@ export class Direction {
     isSouth() { return this.equals(new Direction(SOUTH)); }
     isNorth() { return this.equals(new Direction(NORTH)); }
     isEast() { return this.equals(new Direction(EAST)); }
+
+    asStringDirection() {
+        return this.dir;
+    }
 }
 
 Direction.south = function() { return new Direction(SOUTH); }

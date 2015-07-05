@@ -1,11 +1,28 @@
+let reqlib = require("app-root-path").require;
+let sinon = require("sinon");
+let {Coordinate} = reqlib("/src/core/2d/Coordinate");
+
 export default function expectations(expect) {
     return {
         expectNoEntityAt: function(state, x, y) {
-            expect(state.hasEntityAt(x, y), "found entity at " + x + ", " + y).to.be.false;
+            let found = false;
+            let name;
+            for (let entity of state.monsterList.objects()) {
+                if (entity.position.equals(new Coordinate(x, y)) && entity.name === name) {
+                    found = true;
+                    name = entity.name;
+                }
+            }
+            expect(found, "an unexpected entity was found, and it was " + name).to.be.false;
         },
         expectEntityAt: function(state, x, y, name) {
-            expect(state.getEntityAt(x, y), "no " + name + " at " + x + ", " + y).to.be.ok;
-            expect(state.getEntityAt(x, y).name).to.equal(name);
+            let found = false;
+            for (let entity of state.monsterList.objects()) {
+                if (entity.position.equals(new Coordinate(x, y)) && entity.name === name) {
+                    found = true;
+                }
+            }
+            expect(found, "no " + name + " found at " + x + ", " + y).to.be.true;
         },
         expectTileAt: function(state, x, y, name) {
             expect(state.hasTileAt(x, y), "no " + name + " at " + x + ", " + y).to.be.true;

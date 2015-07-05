@@ -5,7 +5,7 @@ let ENTITY_MASTER_MAP = new Map();
 
 export class Entity {
     constructor(direction, position) {
-        this.direction = new Direction(direction);
+        this.direction = direction;
         this.position = position;
         this.state = "normal";
         this.id = CURR_ID;
@@ -32,6 +32,11 @@ export class Entity {
     // return whether the given entity should block the path of THIS entity.
     shouldBlockEntity(entity) {
         return true;
+    }
+    getTile() {
+        let {TileManager} = require("../tile/TileManager");
+        let tileClass = TileManager.getInstance().tileClassByName(this.name + "-" + this.direction.asStringDirection());
+        return new tileClass();
     }
 }
 
