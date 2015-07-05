@@ -45,6 +45,10 @@ export class Coordinate {
     asArray() {
         return [this.x, this.y];
     }
+
+    toString() {
+        return "<Coordinate: " + this.x + ", " + this.y + ">";
+    }
 }
 
 Coordinate.deserialize = function (serialized) {

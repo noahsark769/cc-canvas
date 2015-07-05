@@ -8,8 +8,13 @@ export class Monster extends Entity {
 }
 
 export class MonsterStateTile extends Tile {
-    playerWillOccupy(player, direction, gameState) {
-        gameState.isOver = true;
-        gameState.isLoss = true;
+    entityWillOccupy(entity, direction, gameState) {
+        if (entity.name === "player") {
+            gameState.isOver = true;
+            gameState.isLoss = true;
+        }
+    }
+    shouldBlockEntity(entity) {
+        return true;
     }
 }

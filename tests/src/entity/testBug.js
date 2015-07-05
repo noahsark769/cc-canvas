@@ -174,4 +174,5 @@ describe("Bug", () => {
         expect(engine.gameState.isLoss, "Game was not a loss!").to.be.true;
         expect(engine.gameState.isWin, "Game was a win when it should have been a loss").to.be.false;
     });
+    it.skip("should treat fire as walls");
 });

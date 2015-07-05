@@ -4,7 +4,50 @@ let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
+let { Level } = reqlib("/src/core/Level");
+let { Direction } = reqlib("/src/core/2d/directions");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
+
+let build32x32 = function() {
+    let state = new GameState(GameEngine.getInstance(false), Level.buildFromSchematic(`
+        . floor
+        P player-south-normal
+        ===
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................P...............
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+        ................................
+    `));
+    return state;
+}
 
 describe("GameState", () => {
     it("should import correctly", () => {});
@@ -18,8 +61,15 @@ describe("GameState", () => {
     });
     it("should support tile state", () => {
         let state = new GameState();
-        state.setLevel(new LevelBuilder.generateEmptyLevel(4, 4, "floor"));
-        state.tileMap.setTileByName(1, 1, "wall");
+        state.setLevel(Level.buildFromSchematic(`
+            . floor
+            ===
+            ....
+            ....
+            ....
+            ....
+        `));
+        state.tileMap.setTileByName(1, 1, "wall", 1);
 
         expect(state.hasTileAt(0, 0), "0, 0").to.be.true;
         expect(state.getTileAt(0, 0).name).to.equal("floor");
@@ -41,8 +91,17 @@ describe("GameState", () => {
 
     describe("player mechanics", () => {
         it("should support simple player machanics", () => {
-            let [state, level] = buildSimpleLevelWithPlayerAt(4, 4, "floor", 1, 1);
-            state.movePlayerUp();
+            let state = new GameState();
+            state.setLevel(Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                ===
+                ....
+                .P..
+                ....
+                ....
+            `));
+            state.movePlayer("U");
             let [x, y] = state.getPlayerPosition().asArray();
             expect(x).to.equal(1);
             expect(y).to.equal(0);
@@ -50,58 +109,76 @@ describe("GameState", () => {
             expectations.expectPlayerAt(state, 1, 0);
         });
         it("should not allow the player to move outside of level", () => {
-            let [state, level] = buildSimpleLevelWithPlayerAt(3, 3, "floor", 1, 1);
-            state.movePlayerLeft();
-            state.movePlayerLeft();
+            let state = new GameState();
+            state.setLevel(Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                ===
+                ...
+                .P.
+                ...
+            `));
+            state.movePlayer("L");
+            state.movePlayer("L");
             expectations.expectNoEntityAt(state, 1, 1);
             expectations.expectPlayerAt(state, 0, 1);
-            state.movePlayerUp();
+            state.movePlayer("U");
             expectations.expectPlayerAt(state, 0, 0);
-            state.movePlayerUp();
-            state.movePlayerLeft();
+            state.movePlayer("U");
+            state.movePlayer("L");
             expectations.expectPlayerAt(state, 0, 0);
-            state.movePlayerRight();
-            state.movePlayerRight();
-            state.movePlayerRight();
+            state.movePlayer("R");
+            state.movePlayer("R");
+            state.movePlayer("R");
             expectations.expectPlayerAt(state, 2, 0);
-            state.movePlayerDown();
-            state.movePlayerDown();
-            state.movePlayerDown();
+            state.movePlayer("D");
+            state.movePlayer("D");
+            state.movePlayer("D");
             expectations.expectPlayerAt(state, 2, 2);
         });
     });
 
     describe("entity interactions", () => {
-        it("should not carry entity map over from previous loss", () => {
+        it("should not carry tile map over from previous loss", () => {
             let set = new LevelSet();
-            let level1 = LevelBuilder.generateFromSchematic(`
-                . tile floor
-                P entity player
-                B entity bug-normal-west
+            let level1 = Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                B bug-west
                 ===
                 .....
                 P.B..
+                ===
+                .....
+                .....
+                ===
+                2 1
             `);
-            level1.name = "level1";
             set.addLevel(level1);
             let engine = GameEngine.getInstance(false);
             engine.loadLevelSet(set);
             engine.resetCurrentLevel();
-            expect(engine.gameState.entityMap.get(0, 1).name).to.equal("player")
-            expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug")
+            expect(engine.gameState.tileMap.get(2, 1).name).to.equal("bug-west")
+            let monsters = Array.from(engine.gameState.monsterList.objects());
+            expect(monsters.length).to.equal(1);
+            expect(monsters[0].direction.equals(Direction.west())).to.be.true;
         });
 
         it("should register loss when player moves into monster", () => {
             let set = new LevelSet();
-            let level1 = LevelBuilder.generateFromSchematic(`
-                . tile floor
-                P entity player
-                B entity bug-normal-west
+            let level1 = Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                B bug-west
                 ===
                 .....
                 P.B..
+                ===
+                .....
+                .....
+                ===
+                2 1
             `);
-            level1.name = "level1";
             set.addLevel(level1);
             let engine = GameEngine.getInstance(false);
             engine.loadLevelSet(set);
@@ -114,20 +191,24 @@ describe("GameState", () => {
 
         it("should register loss when monster moves into player", () => {
             let set = new LevelSet();
-            let level1 = LevelBuilder.generateFromSchematic(`
-                . tile floor
-                P entity player
-                B entity bug-normal-west
+            let level1 = Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                B bug-west
                 ===
                 .....
                 P.B..
+                ===
+                .....
+                .....
+                ===
+                2 1
             `);
-            level1.name = "level1";
             set.addLevel(level1);
             let engine = GameEngine.getInstance(false);
             engine.loadLevelSet(set);
             engine.step();
-            engine.step();
+            engine.tick();
             expect(engine.gameState.isOver).to.be.true;
             expect(engine.gameState.isLoss).to.be.true;
         });
@@ -135,43 +216,49 @@ describe("GameState", () => {
 
     describe("viewport", () => {
         it("should support getting viewport", () => {
-            let state = new GameState();
-            state.setLevel(LevelBuilder.generateEmptyLevel(4, 4, "floor"));
-            let viewport = state.getViewport();
+            let state = new GameState(GameEngine.getInstance(false), Level.buildFromSchematic(`
+                . floor
+                ===
+                ....
+                ....
+                ....
+                ....
+            `));
+            let viewport = state.viewport;
             expect(viewport).to.be.instanceof(Viewport);
         });
         it("should have viewport follow player", () => {
-            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            let state = build32x32();
             // player is at 16, 16. go down down, right right and make sure the viewport
             // is still centered on player
             state.movePlayer("DDRR");
-            expect(state.getViewport().getCenter().asArray()).to.deep.equals([18, 18]);
+            expect(state.viewport.getCenter().asArray()).to.deep.equals([18, 18]);
         });
         it("should have viewport stop at bounds of level", () => {
-            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            let state = build32x32();
             // move to the corners. Make sure it's centered in the corners as far as it should go
             state.movePlayer("DDRRRRRRRRRRRRRRRR");
-            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 18]);
-            expect(state.getViewport().getCenter())
+            expect(state.viewport.getCenter().asArray()).to.deep.equals([27, 18]);
+            expect(state.viewport.getCenter())
             state.movePlayer("DDDDDDDDDDDDDD");
-            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 27]);
+            expect(state.viewport.getCenter().asArray()).to.deep.equals([27, 27]);
             state.movePlayer("UUUUUUUUUUUUUUUUUUUUUUUUUUU");
-            expect(state.getViewport().getCenter().asArray()).to.deep.equals([27, 4]);
+            expect(state.viewport.getCenter().asArray()).to.deep.equals([27, 4]);
         });
         it("should not let viewport get offset from player location", () => {
-            let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16);
+            let state = build32x32();
             state.movePlayer("RRRRRRRRRRRRRRRR");
             state.movePlayer("LLLLLLLLLLLLLLLL");
-            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.viewport);
             state.movePlayer("LLLLLLLLLLLLLLLL");
             state.movePlayer("RRRRRRRRRRRRRRRR");
-            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.viewport);
             state.movePlayer("DDDDDDDDDDDDDDDD");
             state.movePlayer("UUUUUUUUUUUUUUUU");
-            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.viewport);
             state.movePlayer("UUUUUUUUUUUUUUUU");
             state.movePlayer("DDDDDDDDDDDDDDDD");
-            expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
+            expectations.expectPlayerAndViewportCenterToMatch(state, state.viewport);
         });
     });
     it.skip("should register game over if there are two chip tiles and the uncontrolled one dies"); // http://chipschallenge.wikia.com/wiki/Chip

@@ -158,7 +158,7 @@ export class GameEngine {
                 this.playerMovedOnLastTick = false;
             } else {
                 if (this.pendingPlayerMovement !== null && !this.playerMovedOnLastTick) {
-                    this.gameState["movePlayer" + this.pendingPlayerMovement.charAt(0).toUpperCase() + this.pendingPlayerMovement.slice(1)]();
+                    this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
                     this.pendingPlayerMovement = null;
                     this.playerMovedOnLastTick = true;
                 } else {

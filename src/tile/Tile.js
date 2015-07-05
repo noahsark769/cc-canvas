@@ -31,4 +31,8 @@ export class Tile {
     isLethalToEntity(entity) {
         return false;
     }
+
+    toString() {
+        return "<Tile: " + this.name + ">";
+    }
 }

@@ -29,7 +29,7 @@ export class Bug extends Monster {
                 return [newCoord, dir];
             }
         }
-        return false;
+        return [false, false];
     }
 
     advance(newDir, newCoord, gameState) {
@@ -52,14 +52,17 @@ export class Bug extends Monster {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         }
 
-        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y);
+        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (!lastSecondLayer) {
             gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
         } else {
             gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
         }
 
-        newTile.entityWillOccupy(this, newDir, gameState);
+        if (newTile) {
+            console.log("Bug will occupy " + newCoord + " where tile is " + newTile);
+            newTile.entityWillOccupy(this, newDir, gameState);
+        }
         this.direction = newDir;
         this.position = newCoord;
     }
