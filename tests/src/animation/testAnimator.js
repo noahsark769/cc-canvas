@@ -8,19 +8,23 @@ let { Wall } = reqlib("/src/tile/Wall");
 let { Coordinate } = reqlib("/src/core/2d/Coordinate");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
 let { GameState } = reqlib("/src/core/GameState");
+let { Level } = reqlib("/src/core/Level");
 let { CCClassicImageRenderer } = reqlib("/src/animation/renderers/image/CCClassicImageRenderer");
 
 describe("Animator", () => {
     it("should import correctly", () => {});
     it("should render all tiles in viewport", () => {
         // set up a small level of 2x2, all floor, with player at 11
-        let builder = new LevelBuilder(2, 2, "floor");
-        builder.addEntityAt(1, 1, "player");
-        let level = builder.generateLevel();
+        let level = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            ===
+            ..
+            .P
+        `);
 
         // build game state from level
         let gameState = new GameState();
-        gameState.setPlayerPosition(1, 1);
         gameState.setLevel(level)
 
         // set up animator to render the gamestate
@@ -47,8 +51,14 @@ describe("Animator", () => {
             let canvas = getMockCanvas(drawImageSpy);
             let animator = new Animator(canvas, new CCClassicImageRenderer(sinon.spy(), function () {}));
             let gameState = new GameState();
-            gameState.setLevel(LevelBuilder.generateEmptyLevel(5, 5, "floor"));
-            animator.renderViewport(gameState.getViewport(), gameState);
+            gameState.setLevel(Level.buildFromSchematic(`
+                . floor
+                P player-south-normal
+                ===
+                ..
+                P.
+            `));
+            animator.renderViewport(gameState.viewport, gameState);
             expect(drawImageSpy).to.have.been.called;
         });
     });

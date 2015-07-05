@@ -4,6 +4,8 @@ let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameEngine, LEVEL_READY, LEVEL_ACTIVE } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
+let { Level } = reqlib("/src/core/Level");
+let { Direction } = reqlib("/src/core/2d/directions");
 let { getMockDocument, getMockCanvas } = reqlib("/testing/utils");
 
 describe("GameEngine", () => {
@@ -52,53 +54,65 @@ describe("GameEngine", () => {
     });
     it("should only move player at steps", () => {
         let engine = GameEngine.getInstance();
-        let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16, engine.gameState);
-        engine.enqueuePlayerMovement("down");
-        engine.enqueuePlayerMovement("down");
-        engine.enqueuePlayerMovement("down");
+        let level = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            ===
+            ....P....
+        `);
+        engine.loadLevelSet(new LevelSet([level]));
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("left");
         // first tick, player will move immediately
         engine.tick();
-        expectations.expectPlayerAt(state, 16, 17);
-        engine.enqueuePlayerMovement("down");
-        engine.enqueuePlayerMovement("down");
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("left");
         // second tick, player will not move, only moves on even ticks
         engine.tick();
-        expectations.expectPlayerAt(state, 16, 17);
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
         // third tick, player will now move
         engine.tick();
-        expectations.expectPlayerAt(state, 16, 18);
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
     });
-    it("should support player moving in odd step", () => {
+    it("should support player waiting [1/2]", () => {
         let engine = GameEngine.getInstance(getMockDocument(), getMockCanvas());
-        let [state, level] = buildSimpleLevelWithPlayerAt(32, 32, "floor", 16, 16, engine.gameState);
+        let level = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            ===
+            ....P....
+        `);
+        engine.loadLevelSet(new LevelSet([level]));
         engine.tick();
-        engine.enqueuePlayerMovement("down");
+        engine.enqueuePlayerMovement("left");
         // since the player was not moving before, it should move now.
         engine.tick();
-        expectations.expectPlayerAt(state, 16, 17);
-        engine.enqueuePlayerMovement("down");
-        engine.enqueuePlayerMovement("down");
-        engine.enqueuePlayerMovement("down");
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("left");
         engine.tick();
         // just moved, so should not have moved again
-        expectations.expectPlayerAt(state, 16, 17);
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
         engine.tick();
         // now should have moved again
-        expectations.expectPlayerAt(state, 16, 18);
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
     });
     it("should support level sets and loading next levels", () => {
         let set = new LevelSet();
-        let level1 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        let level1 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
             ===
             ...P.
             .....
         `);
         level1.name = "level1";
-        let level2 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        let level2 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
             ===
             ..P..
             .....
@@ -114,9 +128,9 @@ describe("GameEngine", () => {
         expect(engine.gameState.level.name).to.equal("level2");
     });
     it("should be active after receiving command", () => {
-        let set = LevelSet.fromLevel(LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        let set = LevelSet.fromLevel(Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
             ===
             ...P.
             .....
@@ -129,19 +143,19 @@ describe("GameEngine", () => {
     });
     it.skip("should move onto the next level after escape", () => {
         let set = new LevelSet();
-        let level1 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
-            E tile escape
+        let level1 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            E escape
             ===
             ...P.
             ....E
         `);
         level1.name = "level1";
-        let level2 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
-            E tile escape
+        let level2 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            E escape
             ===
             ..P..
             ....E
@@ -154,35 +168,42 @@ describe("GameEngine", () => {
         engine.tick(); // get it started
         engine.gameState.movePlayer("DR");
     });
-    it("should load original entity maps from level after reload", () => {
+    it("should load original entities from level after reload", () => {
         let set = new LevelSet();
-        let level1 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
-            B entity bug-normal-west
+        let level1 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            B bug-west
             ===
             .....
             P.B..
+            ===
+            .....
+            .....
+            ===
+            2 1
         `);
-        level1.name = "level1";
         set.addLevel(level1);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(set);
         engine.resetCurrentLevel();
-        expect(engine.gameState.entityMap.get(0, 1).name).to.equal("player")
-        expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug")
+        expect(engine.gameState.tileMap.get(2, 1).name).to.equal("bug-west");
     });
     it("should load entity directions from the original level after reset", () => {
         let set = new LevelSet();
-        let level1 = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
-            B entity bug-normal-west
+        let level1 = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            B bug-west
             ===
             ..P..
             ..B..
+            ===
+            .....
+            .....
+            ===
+            2 1
         `);
-        level1.name = "level1";
         set.addLevel(level1);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(set);
@@ -190,11 +211,11 @@ describe("GameEngine", () => {
         engine.step();
         engine.step();
         engine.step();
-        engine.step();
-        // now the bug has killed the player but it should have also changed its direction to east
+        // now the bug should have changed its direction to east
         // instead of west. we want to make sure it's still facing west
         engine.resetCurrentLevel();
-        expect(engine.gameState.entityMap.get(2, 1).name).to.equal("bug");
-        expect(engine.gameState.entityMap.get(2, 1).direction.toString()).to.equal("west");
+        let monsters = Array.from(engine.gameState.monsterList.objects());
+        expect(monsters.length).to.equal(1);
+        expect(monsters[0].direction.equals(Direction.west())).to.be.true;
     });
 });
