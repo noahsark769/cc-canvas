@@ -101,9 +101,6 @@ export class AbstractDatParser {
                 name,
                 layer
             );
-            if (name.indexOf("player") !== -1) {
-                this.currentLevel.setInitialPlayerPosition(new Coordinate(x, y));
-            }
         }
         currentTileMarker += num;
         return currentTileMarker;
@@ -148,7 +145,7 @@ export class AbstractDatParser {
     consumeLevelOptionalFields(offset) {
         // hacky, but needed for multiple assignment/destructuring
         let nextOffset, optionalFieldBytes, fieldCode, fieldAdditionalBytes, mapTitle, numBytes,
-            buttonX, buttonY, trapX, nothing, numBytesIncludingNull, asciiByte, mapHint;
+            buttonX, buttonY, trapX, nothing, numBytesIncludingNull, asciiByte, mapHint, x, y;
 
         [optionalFieldBytes, nextOffset] = this.consumeWordAsNumber(offset);
         let endOfOptionalFieldsOffset = nextOffset + optionalFieldBytes;
@@ -213,7 +210,7 @@ export class AbstractDatParser {
                     while (nextOffset < endOfMovementsOffset) {
                         [x, nextOffset] = this.consumeByteAsNumber(nextOffset);
                         [y, nextOffset] = this.consumeByteAsNumber(nextOffset);
-                        this.level.movements.append(new Coordinate(x, y));
+                        this.currentLevel.movements.push(new Coordinate(x, y));
                     }
                     break;
 
