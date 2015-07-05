@@ -58,6 +58,7 @@ export class Bug extends Monster {
         } else {
             gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
         }
+        gameState.tileMap.get(this.position.x, this.position.y, 1).entityWillExit(this, newDir, gameState, this.position, gameState.engine);
 
         if (newTile) {
             newTile.entityWillOccupy(this, newDir, gameState);

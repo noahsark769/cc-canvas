@@ -80,4 +80,10 @@ export class ObjectLinkedList {
             node = node.next;
         }
     }
+    asArray() {
+        return Array.from(this.objects());
+    }
+    toString() {
+        return "<ObjectLinkedList: " + this.asArray().toString() + ">";
+    }
 }

@@ -17,7 +17,6 @@ export class Tile {
      * Will be called when the entity moves into this tile.
      */
     entityWillOccupy(entity, dir, gameState, coordinate, engine) {}
-    playerWillOccupy(player, dir, gameState) {}
     entityWillExit(entity, dir, gameState, coordinate, engine) {}
     isTransparent() {
         return false;

@@ -261,13 +261,113 @@ describe("GameState", () => {
             expectations.expectPlayerAndViewportCenterToMatch(state, state.viewport);
         });
     });
-    it.skip("should register game over if there are two chip tiles and the uncontrolled one dies"); // http://chipschallenge.wikia.com/wiki/Chip
+    it("should register game over if there are two chip tiles and the uncontrolled one dies", () => {
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(new LevelSet([Level.buildFromSchematic(`
+            . floor
+            B bug-west
+            P player-south-normal
+            ===
+            .WP.
+            .W..
+            PWB.
+            ===
+            ....
+            ....
+            ....
+            ===
+            2 2
+        `)]));
+        engine.step();
+        engine.step();
+        expectations.expectLoss(engine.gameState);
+    }); // http://chipschallenge.wikia.com/wiki/Chip
     it.skip("should support non-existance glitch");
-    it.skip("should register monster list from level");
-    it.skip("should register monster list in correct order");
-    it.skip("should advance monsters in order of monster list");
+    it("should register monster list from level", () => {
+        let state = new GameState();
+        state.setLevel(Level.buildFromSchematic(`
+            . floor
+            B bug-west
+            P player-south-normal
+            ===
+            P...
+            ..B.
+            .BBB
+            ===
+            ....
+            ....
+            ....
+            ===
+            2 1
+            2 2
+        `));
+        let monsters = Array.from(state.monsterList.objects());
+        expect(monsters.length).to.equal(2);
+        expect(monsters[0].name).to.equal("bug")
+    });
+    it("should advance monsters in order of monster list", () => {
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(new LevelSet([Level.buildFromSchematic(`
+            . floor
+            B bug-west
+            P player-south-normal
+            ===
+            P...
+            ....
+            ..BB
+            ===
+            ....
+            ....
+            ....
+            ===
+            2 2
+            3 2
+        `)]));
+        engine.step();
+        expectations.expectEntityAt(engine.gameState, 1, 2, "bug");
+        expectations.expectEntityAt(engine.gameState, 2, 2, "bug");
+
+        engine.loadLevelSet(new LevelSet([Level.buildFromSchematic(`
+            . floor
+            B bug-west
+            P player-south-normal
+            ===
+            P...
+            ....
+            ..BB
+            ===
+            ....
+            ....
+            ....
+            ===
+            3 2
+            2 2
+        `)]));
+        engine.step();
+        expectations.expectEntityAt(engine.gameState, 3, 1, "bug");
+        expectations.expectEntityAt(engine.gameState, 1, 2, "bug");
+    });
     it.skip("should remove monster from monster list on death of monster");
     it.skip("should add monster to the monster list when it's cloned");
     it.skip("should add monster to the monster list when cloned even when not on a clone machine"); // http://chipschallenge.wikia.com/wiki/Monster_list
-    it.skip("should not add monsters to the monster list if they're on the bottom level"); // http://chipschallenge.wikia.com/wiki/Monster_list
+    it("should not add monsters to the monster list if they're on the bottom level", () => {
+        let state = new GameState();
+        state.setLevel(Level.buildFromSchematic(`
+            . floor
+            B bug-west
+            P player-south-normal
+            ===
+            P...
+            ....
+            ....
+            ===
+            ...B
+            ....
+            ....
+            ===
+            3 0
+        `));
+        let monsters = state.monsterList.asArray();
+        expect(monsters.length).to.equal(0);
+    }); // http://chipschallenge.wikia.com/wiki/Monster_list
 });

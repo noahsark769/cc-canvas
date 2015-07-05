@@ -139,5 +139,18 @@ describe("Level", () => {
         state.setLevel(level);
         expect(level.getDefaultViewport().getCenter().asArray()).to.deep.equals([11, 8]);
     });
-    it.skip("should register the first player in RRO if there are two chip tiles");
+    it("should register the first player in RRO if there are two chip tiles", () => {
+        let level = Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            ===
+            ..P
+            ...
+            ..P
+            ...
+        `);
+        let state = new GameState();
+        state.setLevel(level);
+        expect(state.player.position.asArray()).to.deep.equals([2, 2]);
+    });
 });

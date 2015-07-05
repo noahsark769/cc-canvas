@@ -8,7 +8,7 @@ export class Key extends Tile {
         return false;
     }
     shouldBlockEntity(entity) {
-        return true;
+        return false;
     }
 
     playerShouldReplace() {

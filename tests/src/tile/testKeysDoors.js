@@ -2,6 +2,9 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
+let { GameEngine } = reqlib("/src/core/GameEngine");
+let { Level } = reqlib("/src/core/Level");
+let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 let {GreenKey} = reqlib("/src/tile/keys/GreenKey");
@@ -37,9 +40,71 @@ describe("Keys", () => {
         expect(state.yellowKeys).to.equal(2);
         expect(state.greenKeys).to.equal(1);
     });
-    it.skip("should not push away lower layer when collected on top layer by player");
-    it.skip("should not block monsters");
-    it.skip("should push away lower layer when passed over by monster");
+    it("should not push away lower layer when collected on top layer by player", () => {
+        let [state, level] = buildLevelFromSchematic(`
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_red
+            ===
+            P.
+            .1
+            ===
+            ..
+            .2
+        `);
+        state.movePlayer("RDL");
+        expect(state.tileMap.get(1, 1, 1).name).to.equal("key_red");
+        state.movePlayer("URD");
+        expect(state.greenKeys).to.equal(1);
+        expect(state.redKeys).to.equal(1);
+    });
+    it("should not block monsters", () => {
+        let set = new LevelSet([Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_red
+            B bug-west
+            ===
+            P..
+            .1B
+            ===
+            ...
+            ...
+            ===
+            2 1
+        `)]);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(set);
+        engine.step();
+        engine.step();
+        expectations.expectEntityAt(engine.gameState, 0, 1, "bug");
+    });
+    it("should push away lower layer when passed over by monster", () => {
+        let set = new LevelSet([Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_red
+            B bug-west
+            ===
+            P..
+            .1B
+            ===
+            ...
+            .2.
+            ===
+            2 1
+        `)]);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(set);
+        engine.step();
+        engine.step();
+        engine.gameState.movePlayer("RRDLRLR");
+        expect(engine.gameState.greenKeys).to.equal(1);
+        expect(engine.gameState.redKeys).to.equal(0);
+    });
     it("should unlock their respective doors", () => {
         let [state, level] = buildLevelFromSchematic(`
             . floor

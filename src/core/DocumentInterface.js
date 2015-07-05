@@ -85,6 +85,7 @@ export class DocumentInterface {
         console.log("WIN!!");
     }
     showLoss() {
+        alert("Bummer!");
         console.log("BUMMER");
     }
     showHint(hint) {

@@ -33,6 +33,11 @@ export default function expectations(expect) {
         },
         expectPlayerAndViewportCenterToMatch: function(state, viewport) {
             expect(state.getPlayerPosition().asArray()).to.deep.equals(viewport.getCenter().asArray());
+        },
+        expectLoss: function(state) {
+            expect(state.isOver, "state was not game over").to.be.true;
+            expect(state.isLoss, "state was not a loss").to.be.true;
+            expect(state.isWin, "state was a win").to.be.false;
         }
     };
 }

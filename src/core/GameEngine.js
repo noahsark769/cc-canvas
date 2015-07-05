@@ -205,6 +205,7 @@ export class GameEngine {
                 this.tick();
             }, TICK_INTERVAL);
         }
+        this.tick();
     }
 
     stopTicking() {
