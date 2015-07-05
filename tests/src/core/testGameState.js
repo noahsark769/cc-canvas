@@ -265,6 +265,7 @@ describe("GameState", () => {
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([Level.buildFromSchematic(`
             . floor
+            W wall
             B bug-west
             P player-south-normal
             ===
@@ -279,7 +280,7 @@ describe("GameState", () => {
             2 2
         `)]));
         engine.step();
-        engine.step();
+        engine.tick();
         expectations.expectLoss(engine.gameState);
     }); // http://chipschallenge.wikia.com/wiki/Chip
     it.skip("should support non-existance glitch");

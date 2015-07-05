@@ -10,6 +10,7 @@ export class PlayerTile extends Tile {
         return false;
     }
     entityWillOccupy(entity, direction, gameState) {
+        console.log("OH NOOOOO");
         gameState.isOver = true;
         gameState.isLoss = true;
     }

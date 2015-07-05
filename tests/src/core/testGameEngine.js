@@ -65,7 +65,6 @@ describe("GameEngine", () => {
         engine.enqueuePlayerMovement("left");
         engine.enqueuePlayerMovement("left");
         // first tick, player will move immediately
-        engine.tick();
         expectations.expectPlayerAt(engine.gameState, 3, 0);
         engine.enqueuePlayerMovement("left");
         engine.enqueuePlayerMovement("left");
