@@ -1,21 +1,22 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let { LevelSet } = reqlib("/src/core/LevelSet");
+let { Level } = reqlib("/src/core/Level");
 
 describe("LevelSet", () => {
     it("should import correctly", () => {});
     it("should support adding levels", () => {
         let set = new LevelSet();
-        set.addLevel(LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        set.addLevel(Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
             ===
             ...P.
             .....
         `));
-        set.addLevel(LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        set.addLevel(Level.buildFromSchematic(`
+            . floor
+            P player-south-normal
             ===
             ..P..
             .....
