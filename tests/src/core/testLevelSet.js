@@ -1,7 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let { LevelSet } = reqlib("/src/core/LevelSet");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 
 describe("LevelSet", () => {
     it("should import correctly", () => {});

@@ -2,25 +2,17 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
-
-function buildLevelFromSchematic(schematic) {
-    let state = new GameState();
-    let builder = LevelBuilder.buildFromSchematic(schematic);
-    let level = builder.generateLevel();
-    state.setLevel(level);
-    return [state, level];
-}
+let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Socket", () => {
     it("should import correctly", () => {});
     it("should block player until all chips collected", () => {
         let [state, level] = buildLevelFromSchematic(`
-            . tile floor
-            W tile wall
-            P entity player
-            C tile chip
-            S tile socket
+            . floor
+            W wall
+            P player-south-normal
+            C chip
+            S socket
             ===
             C..
             .WP

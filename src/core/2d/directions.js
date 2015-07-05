@@ -30,4 +30,16 @@ export class Direction {
     toString() {
         return this.dir;
     }
+    equals(other) {
+        return this.dir === other.dir;
+    }
+    isWest() { return this.equals(new Direction(WEST)); }
+    isSouth() { return this.equals(new Direction(SOUTH)); }
+    isNorth() { return this.equals(new Direction(NORTH)); }
+    isEast() { return this.equals(new Direction(EAST)); }
 }
+
+Direction.south = function() { return new Direction(SOUTH); }
+Direction.north = function() { return new Direction(NORTH); }
+Direction.east = function() { return new Direction(EAST); }
+Direction.west = function() { return new Direction(WEST); }

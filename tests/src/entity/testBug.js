@@ -6,7 +6,6 @@ let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { Coordinate } = reqlib("/src/core/2d/Coordinate");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 
 function buildLevelFromSchematic(schematic) {
     let state = new GameState();

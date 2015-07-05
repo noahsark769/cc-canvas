@@ -2,7 +2,7 @@ let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
+let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 let {GreenKey} = reqlib("/src/tile/keys/GreenKey");
 let {BlueKey} = reqlib("/src/tile/keys/BlueKey");
@@ -14,24 +14,16 @@ let {BlueDoor} = reqlib("/src/tile/doors/BlueDoor");
 let {YellowDoor} = reqlib("/src/tile/doors/YellowDoor");
 let {RedDoor} = reqlib("/src/tile/doors/RedDoor");
 
-function buildLevelFromSchematic(schematic) {
-    let state = new GameState();
-    let builder = LevelBuilder.buildFromSchematic(schematic);
-    let level = builder.generateLevel();
-    state.setLevel(level);
-    return [state, level];
-}
-
 describe("Keys", () => {
     it("should import correctly", () => {});
     it("should be collectable by player", () => {
         let [state, level] = buildLevelFromSchematic(`
-            . tile floor
-            P entity player
-            1 tile key_green
-            2 tile key_yellow
-            3 tile key_red
-            4 tile key_blue
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_yellow
+            3 key_red
+            4 key_blue
             ===
             P....
             .1234
@@ -45,18 +37,21 @@ describe("Keys", () => {
         expect(state.yellowKeys).to.equal(2);
         expect(state.greenKeys).to.equal(1);
     });
+    it.skip("should not push away lower layer when collected on top layer by player");
+    it.skip("should not block monsters");
+    it.skip("should push away lower layer when passed over by monster");
     it("should unlock their respective doors", () => {
         let [state, level] = buildLevelFromSchematic(`
-            . tile floor
-            P entity player
-            1 tile key_green
-            2 tile key_yellow
-            3 tile key_red
-            4 tile key_blue
-            B tile door_blue
-            G tile door_green
-            R tile door_red
-            Y tile door_yellow
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_yellow
+            3 key_red
+            4 key_blue
+            B door_blue
+            G door_green
+            R door_red
+            Y door_yellow
             ===
             P1G2Y
             ....3
@@ -69,16 +64,16 @@ describe("Keys", () => {
     });
     it("should open the correct number of doors", () => {
         let [state, level] = buildLevelFromSchematic(`
-            . tile floor
-            P entity player
-            1 tile key_green
-            2 tile key_yellow
-            3 tile key_red
-            4 tile key_blue
-            B tile door_blue
-            G tile door_green
-            R tile door_red
-            Y tile door_yellow
+            . floor
+            P player-south-normal
+            1 key_green
+            2 key_yellow
+            3 key_red
+            4 key_blue
+            B door_blue
+            G door_green
+            R door_red
+            Y door_yellow
             ===
             P33RR
             ....R
@@ -93,16 +88,16 @@ describe("Keys", () => {
     describe("Green Key", () => {
         it("should only be stored once", () => {
             let [state, level] = buildLevelFromSchematic(`
-                . tile floor
-                P entity player
-                1 tile key_green
-                2 tile key_yellow
-                3 tile key_red
-                4 tile key_blue
-                B tile door_blue
-                G tile door_green
-                R tile door_red
-                Y tile door_yellow
+                . floor
+                P player-south-normal
+                1 key_green
+                2 key_yellow
+                3 key_red
+                4 key_blue
+                B door_blue
+                G door_green
+                R door_red
+                Y door_yellow
                 ===
                 P1111
                 .....
@@ -115,16 +110,16 @@ describe("Keys", () => {
         });
         it("should not be used up opening a door", () => {
             let [state, level] = buildLevelFromSchematic(`
-                . tile floor
-                P entity player
-                1 tile key_green
-                2 tile key_yellow
-                3 tile key_red
-                4 tile key_blue
-                B tile door_blue
-                G tile door_green
-                R tile door_red
-                Y tile door_yellow
+                . floor
+                P player-south-normal
+                1 key_green
+                2 key_yellow
+                3 key_red
+                4 key_blue
+                B door_blue
+                G door_green
+                R door_red
+                Y door_yellow
                 ===
                 P1GGG
                 .....

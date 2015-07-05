@@ -5,8 +5,6 @@ let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
-let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
 describe("GameState", () => {
     it("should import correctly", () => {});
@@ -176,4 +174,13 @@ describe("GameState", () => {
             expectations.expectPlayerAndViewportCenterToMatch(state, state.getViewport());
         });
     });
+    it.skip("should register game over if there are two chip tiles and the uncontrolled one dies"); // http://chipschallenge.wikia.com/wiki/Chip
+    it.skip("should support non-existance glitch");
+    it.skip("should register monster list from level");
+    it.skip("should register monster list in correct order");
+    it.skip("should advance monsters in order of monster list");
+    it.skip("should remove monster from monster list on death of monster");
+    it.skip("should add monster to the monster list when it's cloned");
+    it.skip("should add monster to the monster list when cloned even when not on a clone machine"); // http://chipschallenge.wikia.com/wiki/Monster_list
+    it.skip("should not add monsters to the monster list if they're on the bottom level"); // http://chipschallenge.wikia.com/wiki/Monster_list
 });

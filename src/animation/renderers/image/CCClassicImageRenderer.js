@@ -67,49 +67,49 @@ export function buildSpriteMap() {
     spriteMap.set("player-normal-win", new Coordinate(3, 9));
     spriteMap.set("escape-normal", new Coordinate(3, 10));
     spriteMap.set("escape-normal", new Coordinate(3, 11));
-    spriteMap.set("player-swim-north", new Coordinate(3, 12));
-    spriteMap.set("player-swim-west", new Coordinate(3, 13));
-    spriteMap.set("player-swim-down", new Coordinate(3, 14));
-    spriteMap.set("player-swim-east", new Coordinate(3, 15));
+    spriteMap.set("player-north-swim", new Coordinate(3, 12));
+    spriteMap.set("player-west-swim", new Coordinate(3, 13));
+    spriteMap.set("player-south-swim", new Coordinate(3, 14));
+    spriteMap.set("player-east-swim", new Coordinate(3, 15));
 
-    spriteMap.set("bug-normal-north", new Coordinate(4, 0));
-    spriteMap.set("bug-normal-west", new Coordinate(4, 1));
-    spriteMap.set("bug-normal-south", new Coordinate(4, 2));
-    spriteMap.set("bug-normal-east", new Coordinate(4, 3));
-    spriteMap.set("fireball-normal-north", new Coordinate(4, 4));
-    spriteMap.set("fireball-normal-west", new Coordinate(4, 5));
-    spriteMap.set("fireball-normal-south", new Coordinate(4, 6));
-    spriteMap.set("fireball-normal-east", new Coordinate(4, 7));
-    spriteMap.set("ball-normal-north", new Coordinate(4, 8));
-    spriteMap.set("ball-normal-west", new Coordinate(4, 9));
-    spriteMap.set("ball-normal-south", new Coordinate(4, 10));
-    spriteMap.set("ball-normal-east", new Coordinate(4, 11));
-    spriteMap.set("tank-normal-north", new Coordinate(4, 12));
-    spriteMap.set("tank-normal-west", new Coordinate(4, 13));
-    spriteMap.set("tank-normal-south", new Coordinate(4, 14));
-    spriteMap.set("tank-normal-east", new Coordinate(4, 15));
+    spriteMap.set("bug-north", new Coordinate(4, 0));
+    spriteMap.set("bug-west", new Coordinate(4, 1));
+    spriteMap.set("bug-south", new Coordinate(4, 2));
+    spriteMap.set("bug-east", new Coordinate(4, 3));
+    spriteMap.set("fireball-north", new Coordinate(4, 4));
+    spriteMap.set("fireball-west", new Coordinate(4, 5));
+    spriteMap.set("fireball-south", new Coordinate(4, 6));
+    spriteMap.set("fireball-east", new Coordinate(4, 7));
+    spriteMap.set("ball-north", new Coordinate(4, 8));
+    spriteMap.set("ball-west", new Coordinate(4, 9));
+    spriteMap.set("ball-south", new Coordinate(4, 10));
+    spriteMap.set("ball-east", new Coordinate(4, 11));
+    spriteMap.set("tank-north", new Coordinate(4, 12));
+    spriteMap.set("tank-west", new Coordinate(4, 13));
+    spriteMap.set("tank-south", new Coordinate(4, 14));
+    spriteMap.set("tank-east", new Coordinate(4, 15));
 
-    spriteMap.set("glider-normal-north", new Coordinate(5, 0));
-    spriteMap.set("glider-normal-west", new Coordinate(5, 1));
-    spriteMap.set("glider-normal-south", new Coordinate(5, 2));
-    spriteMap.set("glider-normal-east", new Coordinate(5, 3));
-    spriteMap.set("teeth-normal-north", new Coordinate(5, 4));
-    spriteMap.set("teeth-normal-west", new Coordinate(5, 5));
-    spriteMap.set("teeth-normal-south", new Coordinate(5, 6));
-    spriteMap.set("teeth-normal-east", new Coordinate(5, 7));
-    spriteMap.set("walker-normal-north", new Coordinate(5, 8));
-    spriteMap.set("walker-normal-west", new Coordinate(5, 9));
-    spriteMap.set("walker-normal-south", new Coordinate(5, 10));
-    spriteMap.set("walker-normal-east", new Coordinate(5, 11));
-    spriteMap.set("blob-normal-north", new Coordinate(5, 12));
-    spriteMap.set("blob-normal-west", new Coordinate(5, 13));
-    spriteMap.set("blob-normal-south", new Coordinate(5, 14));
-    spriteMap.set("blob-normal-east", new Coordinate(5, 15));
+    spriteMap.set("glider-north", new Coordinate(5, 0));
+    spriteMap.set("glider-west", new Coordinate(5, 1));
+    spriteMap.set("glider-south", new Coordinate(5, 2));
+    spriteMap.set("glider-east", new Coordinate(5, 3));
+    spriteMap.set("teeth-north", new Coordinate(5, 4));
+    spriteMap.set("teeth-west", new Coordinate(5, 5));
+    spriteMap.set("teeth-south", new Coordinate(5, 6));
+    spriteMap.set("teeth-east", new Coordinate(5, 7));
+    spriteMap.set("walker-north", new Coordinate(5, 8));
+    spriteMap.set("walker-west", new Coordinate(5, 9));
+    spriteMap.set("walker-south", new Coordinate(5, 10));
+    spriteMap.set("walker-east", new Coordinate(5, 11));
+    spriteMap.set("blob-north", new Coordinate(5, 12));
+    spriteMap.set("blob-west", new Coordinate(5, 13));
+    spriteMap.set("blob-south", new Coordinate(5, 14));
+    spriteMap.set("blob-east", new Coordinate(5, 15));
 
-    spriteMap.set("paramecium-normal-north", new Coordinate(6, 0));
-    spriteMap.set("paramecium-normal-west", new Coordinate(6, 1));
-    spriteMap.set("paramecium-normal-south", new Coordinate(6, 2));
-    spriteMap.set("paramecium-normal-east", new Coordinate(6, 3));
+    spriteMap.set("paramecium-north", new Coordinate(6, 0));
+    spriteMap.set("paramecium-west", new Coordinate(6, 1));
+    spriteMap.set("paramecium-south", new Coordinate(6, 2));
+    spriteMap.set("paramecium-east", new Coordinate(6, 3));
     spriteMap.set("key_blue", new Coordinate(6, 4));
     spriteMap.set("key_red", new Coordinate(6, 5));
     spriteMap.set("key_green", new Coordinate(6, 6));
@@ -118,10 +118,10 @@ export function buildSpriteMap() {
     spriteMap.set("boots_fire", new Coordinate(6, 9));
     spriteMap.set("boots_ice", new Coordinate(6, 10));
     spriteMap.set("boots_force", new Coordinate(6, 11));
-    spriteMap.set("player-normal-north", new Coordinate(6, 12));
-    spriteMap.set("player-normal-west", new Coordinate(6, 13));
-    spriteMap.set("player-normal-south", new Coordinate(6, 14));
-    spriteMap.set("player-normal-east", new Coordinate(6, 15));
+    spriteMap.set("player-north-normal", new Coordinate(6, 12));
+    spriteMap.set("player-west-normal", new Coordinate(6, 13));
+    spriteMap.set("player-south-normal", new Coordinate(6, 14));
+    spriteMap.set("player-east-normal", new Coordinate(6, 15));
 
     // blank backgrounds
     spriteMap.set("bug-blank-north", new Coordinate(7, 0));
@@ -170,10 +170,10 @@ export function buildSpriteMap() {
     spriteMap.set("boots_fire-blank", new Coordinate(9, 9));
     spriteMap.set("boots_ice-blank", new Coordinate(9, 10));
     spriteMap.set("boots_force-blank", new Coordinate(9, 11));
-    spriteMap.set("player-blank-north", new Coordinate(9, 12));
-    spriteMap.set("player-blank-west", new Coordinate(9, 13));
-    spriteMap.set("player-blank-south", new Coordinate(9, 14));
-    spriteMap.set("player-blank-east", new Coordinate(9, 15));
+    spriteMap.set("player-north-blank", new Coordinate(9, 12));
+    spriteMap.set("player-west-blank", new Coordinate(9, 13));
+    spriteMap.set("player-south-blank", new Coordinate(9, 14));
+    spriteMap.set("player-east-blank", new Coordinate(9, 15));
 
     // masks
     spriteMap.set("bug-mask-north", new Coordinate(10, 0));
@@ -222,10 +222,10 @@ export function buildSpriteMap() {
     spriteMap.set("boots_fire-mask", new Coordinate(12, 9));
     spriteMap.set("boots_ice-mask", new Coordinate(12, 10));
     spriteMap.set("boots_force-mask", new Coordinate(12, 11));
-    spriteMap.set("player-mask-north", new Coordinate(12, 12));
-    spriteMap.set("player-mask-west", new Coordinate(12, 13));
-    spriteMap.set("player-mask-south", new Coordinate(12, 14));
-    spriteMap.set("player-mask-east", new Coordinate(12, 15));
+    spriteMap.set("player-north-mask", new Coordinate(12, 12));
+    spriteMap.set("player-west-mask", new Coordinate(12, 13));
+    spriteMap.set("player-south-mask", new Coordinate(12, 14));
+    spriteMap.set("player-east-mask", new Coordinate(12, 15));
 
     return spriteMap;
 }

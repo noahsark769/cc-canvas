@@ -37,16 +37,12 @@ export class Animator {
         entity.render(this.canvas, this.renderer, coordinate)
     }
 
+    // TODO: transparent tiles
     renderViewport(viewport, gameState) {
         for (let coordinate of viewport.coordinatesInBounds()) {
             if (gameState.hasTileAt(coordinate.x, coordinate.y)) {
                 let tile = gameState.getTileAt(coordinate.x, coordinate.y);
                 this.renderTile(tile, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
-            }
-            // right now, entities will entirely superseed tiles
-            if (gameState.hasEntityAt(coordinate.x, coordinate.y)) {
-                let entity = gameState.getEntityAt(coordinate.x, coordinate.y);
-                this.renderEntity(entity, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
             }
         }
     }

@@ -11,14 +11,21 @@ export class Key extends Tile {
         return true;
     }
 
-    entityWillOccupy(entityName, dir, gameState, coordinate) {
-        if (entityName === "player") {
+    playerShouldReplace() {
+        return true;
+    }
+
+    isTransparent() {
+        return true;
+    }
+
+    entityWillOccupy(entity, dir, gameState, coordinate) {
+        if (entity.name === "player") {
             if (this.color === "green") {
                 gameState.greenKeys = 1;
             } else {
                 gameState[this.color + "Keys"]++;
             }
-            gameState.tileMap.setTileByName(coordinate.x, coordinate.y, "floor", this.renderer);
         }
     }
 }

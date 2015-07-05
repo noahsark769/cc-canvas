@@ -16,10 +16,12 @@ export class Chip extends Tile {
      * chips needed and replace the tile with floor.
      * TODO: when implementing two levels, may need to change this.
      */
-    entityWillOccupy(entityName, dir, gameState, coordinate) {
-        if (entityName === "player") {
+    entityWillOccupy(entity, dir, gameState, coordinate) {
+        if (entity.name === "player") {
             gameState.chipsLeft--;
-            gameState.tileMap.setTileByName(coordinate.x, coordinate.y, "floor", this.renderer);
         }
+    }
+    playerShouldReplace() {
+        return true;
     }
 }

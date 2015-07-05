@@ -1,7 +1,7 @@
 let reqlib = require("app-root-path").require;
 let sinon = require("sinon");
 let {GameState} = reqlib("/src/core/GameState");
-let {LevelBuilder} = reqlib("/src/util/LevelBuilder");
+let {Level} = reqlib("/src/core/Level");
 let {CCClassicImageRenderer} = reqlib("/src/animation/renderers/image/CCClassicImageRenderer");
 
 /**
@@ -42,12 +42,9 @@ export function stopTickingDebugger() {
     }
 }
 
-export function buildSimpleLevelWithPlayerAt(width, height, defaultTile, playerX, playerY, maybeState) {
-    let state = maybeState || new GameState();
-    let builder = new LevelBuilder(width, height, defaultTile);
-    builder.addEntityAt(playerX, playerY, "player");
-    let level = builder.generateLevel();
+export function buildLevelFromSchematic(schematic) {
+    let state = new GameState();
+    let level = Level.buildFromSchematic(schematic);
     state.setLevel(level);
-    state.setPlayerPosition(playerX, playerY);
     return [state, level];
 }

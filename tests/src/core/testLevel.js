@@ -1,7 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let { Level } = reqlib("/src/core/Level");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { GameState } = reqlib("/src/core/GameState");
 
 describe("Level", () => {
@@ -20,10 +19,63 @@ describe("Level", () => {
         let level = new Level(4, 3);
         level.getDefaultViewport();
     });
+
+    describe("schematics", () => {
+        it("should build level from schematic", () => {
+            let level = Level.buildFromSchematic(`
+                . floor
+                ===
+                ...
+                ...
+                ...
+                ...
+            `);
+            expect(level.width).to.equal(3);
+            expect(level.height).to.equal(4);
+
+            let state = new GameState();
+            state.setLevel(level);
+
+            for (let i of [0, 1, 2]) {
+                for (let j of [0, 1, 2, 3]) {
+                    expectations.expectTileAt(state, i, j, "floor");
+                }
+            }
+        });
+        it("should support multiple tile types", () => {
+            let level = Level.buildFromSchematic(`
+                . floor
+                W wall
+                ===
+                ..W.
+                .W..
+            `);
+            let state = new GameState();
+            state.setLevel(level);
+            expectations.expectTileAt(state, 0, 0, "floor");
+            expectations.expectTileAt(state, 2, 0, "wall");
+            expectations.expectTileAt(state, 1, 1, "wall");
+        });
+        it("should support autosetting player location", () => {
+            let level = LevelBuilder.buildFromSchematic(`
+                . floor
+                W wall
+                P player
+                ===
+                ....
+                .WP.
+                ....
+            `);
+            let state = new GameState();
+            state.setLevel(level);
+            expectations.expectPlayerAt(state, 2, 1);
+        });
+    });
+
     it("should have viewport centered on player", () => {
-        let level = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        let level = Level.buildFromSchematic(`
+            . floor
+            P player
             ===
             ................
             ................
@@ -43,9 +95,9 @@ describe("Level", () => {
         state.setLevel(level);
         expect(level.getDefaultViewport().getCenter().asArray()).to.deep.equals([7, 7]);
 
-        level = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        level = Level.buildFromSchematic(`
+            . floor
+            P player
             ===
             P...............
             ................
@@ -65,9 +117,9 @@ describe("Level", () => {
         state.setLevel(level);
         expect(level.getDefaultViewport().getCenter().asArray()).to.deep.equals([4, 4]);
 
-        level = LevelBuilder.generateFromSchematic(`
-            . tile floor
-            P entity player
+        level = Level.buildFromSchematic(`
+            . floor
+            P player
             ===
             ................
             ................
@@ -87,4 +139,5 @@ describe("Level", () => {
         state.setLevel(level);
         expect(level.getDefaultViewport().getCenter().asArray()).to.deep.equals([11, 8]);
     });
+    it.skip("should register the first player in RRO if there are two chip tiles");
 });

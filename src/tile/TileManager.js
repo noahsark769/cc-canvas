@@ -12,6 +12,7 @@ let { BlueDoor } = require("./doors/BlueDoor");
 let { RedDoor } = require("./doors/RedDoor");
 let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
+let { PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 
 let INSTANCE = null;
 
@@ -38,6 +39,10 @@ export class TileManager {
         this.map.set("door_red", RedDoor);
         this.map.set("door_yellow", YellowDoor);
         this.map.set("door_green", GreenDoor);
+
+        for (let tileClass of [PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
     }
 
     tileClassByName(name) {

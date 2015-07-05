@@ -7,7 +7,6 @@ let { Animator } = reqlib("/src/animation/Animator");
 let { Wall } = reqlib("/src/tile/Wall");
 let { Coordinate } = reqlib("/src/core/2d/Coordinate");
 let { Viewport } = reqlib("/src/core/2d/Viewport");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { GameState } = reqlib("/src/core/GameState");
 let { CCClassicImageRenderer } = reqlib("/src/animation/renderers/image/CCClassicImageRenderer");
 

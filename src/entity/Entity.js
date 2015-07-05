@@ -4,8 +4,9 @@ let CURR_ID = 0;
 let ENTITY_MASTER_MAP = new Map();
 
 export class Entity {
-    constructor(direction = SOUTH) {
+    constructor(direction, position) {
         this.direction = new Direction(direction);
+        this.position = position;
         this.state = "normal";
         this.id = CURR_ID;
         CURR_ID++;

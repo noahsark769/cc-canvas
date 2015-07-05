@@ -1,12 +1,13 @@
 let {NORTH, SOUTH, EAST, WEST, Direction} = require("../../core/2d/directions");
-let {Enemy} = require("./Enemy");
+let {Monster, MonsterStateTile} = require("./Monster");
 
-export class Bug extends Enemy {
+export class Bug extends Monster {
     constructor(...args) {
         super(...args);
         this.name = "bug";
     }
-    chooseMove(tileMap, entityMap, gameState, coordinate) {
+    chooseMove(gameState) {
+        let tileMap = gameState.tileMap;
         let dirsToTry = [
             this.direction.counterclockwise(),
             this.direction,
@@ -18,7 +19,6 @@ export class Bug extends Enemy {
         for (let dir of dirsToTry) {
             newCoord = dir.coordinateFor(coordinate, 1);
             if (
-                (entityMap.has(newCoord.x, newCoord.y) && entityMap.get(newCoord.x, newCoord.y).shouldBlockEntity(this)) ||
                 (tileMap.has(newCoord.x, newCoord.y) && tileMap.get(newCoord.x, newCoord.y).shouldBlockEntity(this)) ||
                 newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height
             ) {
@@ -29,5 +29,65 @@ export class Bug extends Enemy {
             }
         }
         return false;
+    }
+
+    advance(newDir, newCoord, gameState) {
+        let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
+        if (newTile && newTile.isLethalToEntity(this)) {
+            gameState.monsterList.remove(this);
+            // if there was a tile under us, move it up. otherwise, replace us with floor
+            if (gameState.tileMap.has(this.position.x, this.position.y, 2)) {
+                gameState.tileMap.set(this.position.x, this.position.y, gameState.tileMap.get(this.position.x, this.position.y, 2), 1);
+            } else {
+                gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
+            }
+            return;
+        }
+
+        if (!newTile || newTile.entityShouldReplace()) {
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+        } else {
+            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCord.y, 1), 2);
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+        }
+
+        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y);
+        if (!lastSecondLayer) {
+            gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
+        } else {
+            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
+        }
+
+        newTile.entityWillOccupy(this, direction, gameState);
+        this.direction = newDir;
+        this.position = newCoord;
+    }
+}
+
+export class BugSouth extends MonsterStateTile {
+    constructor(...args) {
+        super(...args);
+        this.name = "bug-south";
+    }
+}
+
+export class BugNorth extends MonsterStateTile {
+    constructor(...args) {
+        super(...args);
+        this.name = "bug-north";
+    }
+}
+
+export class BugEast extends MonsterStateTile {
+    constructor(...args) {
+        super(...args);
+        this.name = "bug-east";
+    }
+}
+
+export class BugWest extends MonsterStateTile {
+    constructor(...args) {
+        super(...args);
+        this.name = "bug-west";
     }
 }

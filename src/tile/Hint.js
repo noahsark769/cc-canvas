@@ -11,13 +11,13 @@ export class Hint extends Tile {
     shouldBlockEntity(entity) {
         return false;
     }
-    entityWillOccupy(entityName, dir, gameState, coordinate, engine) {
-        if (entityName === "player") {
+    entityWillOccupy(entity, dir, gameState, coordinate, engine) {
+        if (entity.name === "player") {
             engine.interface("showHint");
         }
     }
-    entityWillExit(entityName, dir, gameState, coordinate, engine) {
-        if (entityName === "player") {
+    entityWillExit(entity, dir, gameState, coordinate, engine) {
+        if (entity.name === "player") {
             engine.interface("hideHint");
         }
     }

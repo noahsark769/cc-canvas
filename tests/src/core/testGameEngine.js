@@ -4,9 +4,7 @@ let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameEngine, LEVEL_READY, LEVEL_ACTIVE } = reqlib("/src/core/GameEngine");
 let { LevelSet } = reqlib("/src/core/LevelSet");
-let { LevelBuilder } = reqlib("/src/util/LevelBuilder");
 let { getMockDocument, getMockCanvas } = reqlib("/testing/utils");
-let { buildSimpleLevelWithPlayerAt } = reqlib("/testing/utils");
 
 describe("GameEngine", () => {
     beforeEach(() => {
