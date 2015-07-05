@@ -31,7 +31,7 @@ export class CoordinateTileMap extends CoordinateMap {
         if (!layer) { console.warn("You tried to call setTileByName without a layer!!"); }
         let tileInstance = this.newTileInstanceByName(tileName);
         if (tileInstance === false) {
-            console.warn("Could not set tile " + tileName + " into CoordinateTileMap because it was not found in the respective manager.");
+            // console.warn("Could not set tile " + tileName + " into CoordinateTileMap because it was not found in the respective manager.");
             return false;
         }
         this.set(x, y, tileInstance, layer);

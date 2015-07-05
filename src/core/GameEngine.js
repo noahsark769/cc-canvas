@@ -89,7 +89,7 @@ export class GameEngine {
     drawFrame() {
         if (this.animator) {
             this.animator.clear();
-            this.animator.renderViewport(this.gameState.getViewport(), this.gameState);
+            this.animator.renderViewport(this.gameState.viewport, this.gameState);
         }
     }
 

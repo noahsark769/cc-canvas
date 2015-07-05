@@ -12,10 +12,11 @@ export class ObjectLinkedList {
         this.name = name;
         this.head = null;
         this.tail = null;
+        this.length = 0;
     }
     append(obj) {
         if (obj["__ObjectLinkedList__" + this.name]) {
-            console.warn("Trying to put an object into an ObjectLinkedList, but it alread has an associated node!!");
+            console.warn("Trying to put an object into an ObjectLinkedList, but it already has an associated node!!");
         }
         let node = new Node(obj);
         obj["__ObjectLinkedList__" + this.name] = node;
@@ -27,10 +28,11 @@ export class ObjectLinkedList {
             this.tail.next = node;
             this.tail = node;
         }
+        this.length++;
     }
     prepend(obj) {
         if (obj["__ObjectLinkedList__" + this.name]) {
-            console.warn("Trying to put an object into an ObjectLinkedList, but it alread has an associated node!!");
+            console.warn("Trying to put an object into an ObjectLinkedList, but it already has an associated node!!");
         }
         let node = new Node(obj);
         obj["__ObjectLinkedList__" + this.name] = node;
@@ -42,6 +44,7 @@ export class ObjectLinkedList {
             this.head.prev = node;
             this.head = node;
         }
+        this.length++;
     }
     remove(obj) {
         let node = obj["__ObjectLinkedList__" + this.name];
@@ -50,11 +53,15 @@ export class ObjectLinkedList {
         } else {
             if (this.head === node) {
                 this.head = this.head.next;
-                this.head.prev = null;
+                if (this.head) {
+                    this.head.prev = null;
+                }
                 node.next = null;
             } else if (this.tail === node) {
                 this.tail = this.tail.prev;
-                this.tail.next = null;
+                if (this.tail) {
+                    this.tail.next = null;
+                }
                 node.prev = null;
             } else {
                 node.prev.next = node.next;
@@ -64,6 +71,7 @@ export class ObjectLinkedList {
             }
             obj["__ObjectLinkedList__" + this.name] = undefined;
         }
+        this.length--;
     }
     *objects() {
         let node = this.head;

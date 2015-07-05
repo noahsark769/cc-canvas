@@ -60,7 +60,6 @@ export class Bug extends Monster {
         }
 
         if (newTile) {
-            console.log("Bug will occupy " + newCoord + " where tile is " + newTile);
             newTile.entityWillOccupy(this, newDir, gameState);
         }
         this.direction = newDir;

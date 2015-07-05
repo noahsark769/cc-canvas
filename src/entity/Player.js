@@ -126,7 +126,9 @@ export class Player extends Entity {
         }
 
         gameState.tileMap.get(this.position.x, this.position.y, 1).entityWillExit(this, direction, gameState, this.position, gameState.engine);
-        newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine);
+        if (newTile) {
+            newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine);
+        }
         this.position = newCoord;
         this.direction = direction;
     }
