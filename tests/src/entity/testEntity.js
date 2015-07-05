@@ -26,7 +26,7 @@ describe("Entity", () => {
         expect(engine.gameState.tileMap.get(1, 0, 1).name).to.equal("bug-east");
     });
 
-    it("should reset player to south after 3 ticks", () => {
+    it("should reset player to south after 4 ticks", () => {
         let engine = GameEngine.getInstance(false).loadLevelSet(LevelSet.fromSchematic(`
             . floor
             P player-south-normal
@@ -37,7 +37,8 @@ describe("Entity", () => {
         engine.enqueuePlayerMovement("left"); // one tick
         engine.tick(); // once since last tick
         engine.tick(); // twice since last tick
-        engine.tick(); // three times since last tick, should now be facing down
+        engine.tick(); // three times since last tick
+        engine.tick(); // four times since last tick, should now be facing down
         expect(engine.gameState.player.direction.equals(Direction.south())).to.be.true;
         expect(engine.gameState.tileMap.get(0, 1, 1).name).to.equal("player-south-normal");
     });

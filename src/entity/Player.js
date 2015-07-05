@@ -10,6 +10,9 @@ export class PlayerTile extends Tile {
         return false;
     }
     entityShouldReplace() {
+        return false;
+    }
+    isTransparent() {
         return true;
     }
     entityWillOccupy(entity, direction, gameState) {

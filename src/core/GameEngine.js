@@ -169,7 +169,7 @@ export class GameEngine {
             if (this.pendingPlayerMovement === null) {
                 this.playerMovedOnLastTick = false;
                 this.ticksSincePlayerMove++;
-                if (this.ticksSincePlayerMove >= 3 && this.gameState.player && !this.gameState.isOver) {
+                if (this.ticksSincePlayerMove >= 4 && this.gameState.player && !this.gameState.isOver) {
                     this.gameState.player.direction = Direction.south();
                     this.gameState.updatePlayerTile();
                 }

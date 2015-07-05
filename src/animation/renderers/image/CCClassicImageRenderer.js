@@ -124,44 +124,44 @@ export function buildSpriteMap() {
     spriteMap.set("player-east-normal", new Coordinate(6, 15));
 
     // blank backgrounds
-    spriteMap.set("bug-blank-north", new Coordinate(7, 0));
-    spriteMap.set("bug-blank-west", new Coordinate(7, 1));
-    spriteMap.set("bug-blank-south", new Coordinate(7, 2));
-    spriteMap.set("bug-blank-east", new Coordinate(7, 3));
-    spriteMap.set("fireball-blank-north", new Coordinate(7, 4));
-    spriteMap.set("fireball-blank-west", new Coordinate(7, 5));
-    spriteMap.set("fireball-blank-south", new Coordinate(7, 6));
-    spriteMap.set("fireball-blank-east", new Coordinate(7, 7));
-    spriteMap.set("ball-blank-north", new Coordinate(7, 8));
-    spriteMap.set("ball-blank-west", new Coordinate(7, 9));
-    spriteMap.set("ball-blank-south", new Coordinate(7, 10));
-    spriteMap.set("ball-blank-east", new Coordinate(7, 11));
-    spriteMap.set("tank-blank-north", new Coordinate(7, 12));
-    spriteMap.set("tank-blank-west", new Coordinate(7, 13));
-    spriteMap.set("tank-blank-south", new Coordinate(7, 14));
-    spriteMap.set("tank-blank-east", new Coordinate(7, 15));
+    spriteMap.set("bug-north-blank", new Coordinate(7, 0));
+    spriteMap.set("bug-west-blank", new Coordinate(7, 1));
+    spriteMap.set("bug-south-blank", new Coordinate(7, 2));
+    spriteMap.set("bug-east-blank", new Coordinate(7, 3));
+    spriteMap.set("fireball-north-blank", new Coordinate(7, 4));
+    spriteMap.set("fireball-west-blank", new Coordinate(7, 5));
+    spriteMap.set("fireball-south-blank", new Coordinate(7, 6));
+    spriteMap.set("fireball-east-blank", new Coordinate(7, 7));
+    spriteMap.set("ball-north-blank", new Coordinate(7, 8));
+    spriteMap.set("ball-west-blank", new Coordinate(7, 9));
+    spriteMap.set("ball-south-blank", new Coordinate(7, 10));
+    spriteMap.set("ball-east-blank", new Coordinate(7, 11));
+    spriteMap.set("tank-north-blank", new Coordinate(7, 12));
+    spriteMap.set("tank-west-blank", new Coordinate(7, 13));
+    spriteMap.set("tank-south-blank", new Coordinate(7, 14));
+    spriteMap.set("tank-east-blank", new Coordinate(7, 15));
 
-    spriteMap.set("glider-blank-north", new Coordinate(8, 0));
-    spriteMap.set("glider-blank-west", new Coordinate(8, 1));
-    spriteMap.set("glider-blank-south", new Coordinate(8, 2));
-    spriteMap.set("glider-blank-east", new Coordinate(8, 3));
-    spriteMap.set("teeth-blank-north", new Coordinate(8, 4));
-    spriteMap.set("teeth-blank-west", new Coordinate(8, 5));
-    spriteMap.set("teeth-blank-south", new Coordinate(8, 6));
-    spriteMap.set("teeth-blank-east", new Coordinate(8, 7));
-    spriteMap.set("walker-blank-north", new Coordinate(8, 8));
-    spriteMap.set("walker-blank-west", new Coordinate(8, 9));
-    spriteMap.set("walker-blank-south", new Coordinate(8, 10));
-    spriteMap.set("walker-blank-east", new Coordinate(8, 11));
-    spriteMap.set("blob-blank-north", new Coordinate(8, 12));
-    spriteMap.set("blob-blank-west", new Coordinate(8, 13));
-    spriteMap.set("blob-blank-south", new Coordinate(8, 14));
-    spriteMap.set("blob-blank-east", new Coordinate(8, 15));
+    spriteMap.set("glider-north-blank", new Coordinate(8, 0));
+    spriteMap.set("glider-west-blank", new Coordinate(8, 1));
+    spriteMap.set("glider-south-blank", new Coordinate(8, 2));
+    spriteMap.set("glider-east-blank", new Coordinate(8, 3));
+    spriteMap.set("teeth-north-blank", new Coordinate(8, 4));
+    spriteMap.set("teeth-west-blank", new Coordinate(8, 5));
+    spriteMap.set("teeth-south-blank", new Coordinate(8, 6));
+    spriteMap.set("teeth-east-blank", new Coordinate(8, 7));
+    spriteMap.set("walker-north-blank", new Coordinate(8, 8));
+    spriteMap.set("walker-west-blank", new Coordinate(8, 9));
+    spriteMap.set("walker-south-blank", new Coordinate(8, 10));
+    spriteMap.set("walker-east-blank", new Coordinate(8, 11));
+    spriteMap.set("blob-north-blank", new Coordinate(8, 12));
+    spriteMap.set("blob-west-blank", new Coordinate(8, 13));
+    spriteMap.set("blob-south-blank", new Coordinate(8, 14));
+    spriteMap.set("blob-east-blank", new Coordinate(8, 15));
 
-    spriteMap.set("paramecium-blank-north", new Coordinate(9, 0));
-    spriteMap.set("paramecium-blank-west", new Coordinate(9, 1));
-    spriteMap.set("paramecium-blank-south", new Coordinate(9, 2));
-    spriteMap.set("paramecium-blank-east", new Coordinate(9, 3));
+    spriteMap.set("paramecium-north-blank", new Coordinate(9, 0));
+    spriteMap.set("paramecium-west-blank", new Coordinate(9, 1));
+    spriteMap.set("paramecium-south-blank", new Coordinate(9, 2));
+    spriteMap.set("paramecium-east-blank", new Coordinate(9, 3));
     spriteMap.set("key_blue-blank", new Coordinate(9, 4));
     spriteMap.set("key_red-blank", new Coordinate(9, 5));
     spriteMap.set("key_green-blank", new Coordinate(9, 6));
@@ -247,7 +247,7 @@ export class CCClassicImageRenderer extends ImageRenderer {
      */
     constructor(...args) {
         super(...args);
-        this.tilesetFilename = "/images/cc-classic-color-tileset.gif";
+        this.tilesetFilename = "/images/cc-classic-color-tileset.png";
         this.tileSideLength = 32; // pixels
         this.tilesetHeight = 16 * this.tileSideLength;
         this.tilesetWidth = 13 * this.tileSideLength;
@@ -286,9 +286,20 @@ export class CCClassicImageRenderer extends ImageRenderer {
             return false;
         }
         this.buildSpriteMap();
-        let sprite = this.spriteMap.get(tile.name);
+        let sprite, fullName;
+        if (tile.isTransparent()) {
+            let [name, dir, state] = tile.name.split("-");
+            fullName = name;
+            if (dir) {
+                fullName += "-" + dir;
+            }
+            fullName += "-blank";
+        } else {
+            fullName = tile.name;
+        }
+        sprite = this.spriteMap.get(fullName);
         if (sprite === undefined) {
-            console.log("Could not find " + tile.name);
+            console.log("Image renderer could not find " + fullName);
         }
         let context = canvas.getContext("2d");
         context.drawImage(

@@ -69,6 +69,9 @@ export class MonsterStateTile extends Tile {
             gameState.isLoss = true;
         }
     }
+    isTransparent() {
+        return true;
+    }
     shouldBlockEntity(entity) {
         return true;
     }

@@ -1,5 +1,5 @@
 - [x] Correct direction changing for chip and entities
-- [ ] Drawing transparent items over each other
+- [x] Drawing transparent items over each other
 - [ ] Next level, prev level, next 10 levels, prev 10 levels
 - [ ] Alerts for win
 - [ ] Other enemies except tank
@@ -24,6 +24,7 @@
 - [ ] Other tiles (dead chips, etc)
 - [ ] Clone machine
 - [ ] LocalStorage scorekeeper, including game engine version
+- [ ] Passwords in HTML
 - [ ] Deploy GH-pages
 - [ ] Even and odd step: http://chipschallenge.wikia.com/wiki/Odd_and_even_step
 - [ ] Even and odd step for clone machines

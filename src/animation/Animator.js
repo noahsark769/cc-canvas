@@ -1,4 +1,5 @@
 let {Coordinate} = require("../core/2d/Coordinate");
+let {Floor} = require("../tile/Floor");
 /**
  * The Animator class is responsible for drawing tiles, entities, level, etc to
  * the canvas and updating the display as the GameState changes. Usually, the
@@ -37,11 +38,42 @@ export class Animator {
         entity.render(this.canvas, this.renderer, coordinate)
     }
 
+    shouldRenderFloor(gameState, coordinate) {
+        let upper = gameState.tileMap.get(coordinate.x, coordinate.y, 1);
+        let lower = gameState.tileMap.get(coordinate.x, coordinate.y, 2);
+        if (!upper && !lower) {
+            return true;
+        }
+        if (upper && !upper.isTransparent()) {
+            return false;
+        }
+        if (lower && !lower.isTransparent()) {
+            return false;
+        }
+        return true;
+    }
+
     // TODO: transparent tiles
     renderViewport(viewport, gameState) {
         for (let coordinate of viewport.coordinatesInBounds()) {
-            if (gameState.hasTileAt(coordinate.x, coordinate.y)) {
-                let tile = gameState.getTileAt(coordinate.x, coordinate.y);
+            if (this.shouldRenderFloor(gameState, coordinate)) {
+                this.renderTile(new Floor(), new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
+            }
+            if (
+                (
+                    !gameState.tileMap.has(coordinate.x, coordinate.y, 1) ||
+                    (
+                        gameState.tileMap.has(coordinate.x, coordinate.y, 1) &&
+                        gameState.tileMap.get(coordinate.x, coordinate.y, 1).isTransparent()
+                    )
+                ) &&
+                gameState.tileMap.has(coordinate.x, coordinate.y, 2)
+            ) {
+                let tile = gameState.tileMap.get(coordinate.x, coordinate.y, 2);
+                this.renderTile(tile, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
+            }
+            if (gameState.tileMap.has(coordinate.x, coordinate.y, 1)) {
+                let tile = gameState.tileMap.get(coordinate.x, coordinate.y, 1);
                 this.renderTile(tile, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
             }
         }
