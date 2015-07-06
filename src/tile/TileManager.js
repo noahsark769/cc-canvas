@@ -18,6 +18,7 @@ let { FireballNorth, FireballSouth, FireballEast, FireballWest } = require("../e
 let { GliderNorth, GliderSouth, GliderEast, GliderWest } = require("../entity/enemy/Glider");
 let { ParameciumNorth, ParameciumSouth, ParameciumEast, ParameciumWest } = require("../entity/enemy/Paramecium");
 let { BallNorth, BallSouth, BallEast, BallWest } = require("../entity/enemy/Ball");
+let { BlobNorth, BlobSouth, BlobEast, BlobWest } = require("../entity/enemy/Blob");
 
 let INSTANCE = null;
 
@@ -61,6 +62,9 @@ export class TileManager {
             this.map.set((new tileClass()).name, tileClass);
         }
         for (let tileClass of [BallNorth, BallSouth, BallEast, BallWest]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+        for (let tileClass of [BlobNorth, BlobSouth, BlobEast, BlobWest]) {
             this.map.set((new tileClass()).name, tileClass);
         }
     }

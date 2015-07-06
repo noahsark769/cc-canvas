@@ -371,4 +371,5 @@ describe("GameState", () => {
         let monsters = state.monsterList.asArray();
         expect(monsters.length).to.equal(0);
     }); // http://chipschallenge.wikia.com/wiki/Monster_list
+    it.skip("should give player one free move before monsters move");
 });
