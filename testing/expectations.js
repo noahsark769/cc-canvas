@@ -38,6 +38,16 @@ export default function expectations(expect) {
             expect(state.isOver, "state was not game over").to.be.true;
             expect(state.isLoss, "state was not a loss").to.be.true;
             expect(state.isWin, "state was a win").to.be.false;
+        },
+        expectEntityAtCoordSequence: function(engine, entity, startCoord, sequence) {
+            let coord = startCoord;
+            this.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
+
+            for (let char of sequence) {
+                coord = coord[char]();
+                engine.step();
+                this.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
+            }
         }
     };
 }

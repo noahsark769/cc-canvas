@@ -38,6 +38,9 @@ export class Entity {
         let tileClass = TileManager.getInstance().tileClassByName(this.name + "-" + this.direction.asStringDirection());
         return new tileClass();
     }
+    toString() {
+        return "<Entity (" + this.name + ") with " + this.direction + " at " + this.position.serialize();
+    }
 }
 
 Entity.getById = function(id) {

@@ -54,7 +54,7 @@ export class Animator {
     }
 
     // TODO: transparent tiles
-    renderViewport(viewport, gameState) {
+    renderViewport(viewport, gameState, shouldRenderTitle) {
         for (let coordinate of viewport.coordinatesInBounds()) {
             if (this.shouldRenderFloor(gameState, coordinate)) {
                 this.renderTile(new Floor(), new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
@@ -76,6 +76,9 @@ export class Animator {
                 let tile = gameState.tileMap.get(coordinate.x, coordinate.y, 1);
                 this.renderTile(tile, new Coordinate(coordinate.x - viewport.getMinX(), coordinate.y - viewport.getMinY()));
             }
+        }
+        if (shouldRenderTitle) {
+            
         }
     }
 }
