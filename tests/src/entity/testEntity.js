@@ -42,4 +42,5 @@ describe("Entity", () => {
         expect(engine.gameState.player.direction.equals(Direction.south())).to.be.true;
         expect(engine.gameState.tileMap.get(0, 1, 1).name).to.equal("player-south-normal");
     });
+    it.skip("should make monsters die in water even when chip is in it");
 });
