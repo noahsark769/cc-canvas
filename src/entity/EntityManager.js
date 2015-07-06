@@ -5,7 +5,8 @@ let { Glider } = require("./enemy/Glider");
 let { Paramecium } = require("./enemy/Paramecium");
 let { Ball } = require("./enemy/ball");
 let { Blob } = require("./enemy/blob");
-let { Walker } = require("./enemy/walker");
+let { Walker } = require("./enemy/Walker");
+let { Teeth } = require("./enemy/Teeth");
 
 let INSTANCE = null;
 
@@ -17,7 +18,8 @@ export const ENTITY_NAME_LIST = [
     "paramecium",
     "ball",
     "blob",
-    "walker"
+    "walker",
+    "teeth"
 ];
 
 export class EntityManager {
@@ -37,6 +39,7 @@ export class EntityManager {
         this.map.set("ball", Ball);
         this.map.set("blob", Blob);
         this.map.set("walker", Walker);
+        this.map.set("teeth", Teeth);
     }
 
     entityClassByName(name) {

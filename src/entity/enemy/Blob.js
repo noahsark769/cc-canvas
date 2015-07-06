@@ -1,8 +1,8 @@
 let {Direction} = require("../../core/2d/directions");
-let {Monster, MonsterStateTile} = require("./Monster");
+let {SlowMonster, MonsterStateTile} = require("./Monster");
 let {shuffle} = require("../../util/random");
 
-export class Blob extends Monster {
+export class Blob extends SlowMonster {
     constructor(...args) {
         super(...args);
         this.name = "blob";
@@ -16,12 +16,6 @@ export class Blob extends Monster {
             this.direction.clockwise().clockwise()
         ];
         return shuffle(dirs);
-    }
-    chooseMove(gameState) {
-        if (gameState.currentTicks % 4 !== 0) {
-            return [false, false];
-        }
-        return super.chooseMove(gameState);
     }
 }
 

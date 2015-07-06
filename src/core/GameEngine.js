@@ -130,7 +130,23 @@ export class GameEngine {
         this.interface("update")
     }
 
+    loadPreviousLevel() {
+        this.stopTicking();
+        if (this.currentLevelInSet - 1 < 0) {
+            return;
+        }
+        this.gameState.reset();
+        this.currentLevelInSet--;
+        this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
+        this.ticksSincePlayerMove = 0;
+        this.playerMovedOnLastTick = false;
+        this.state = LEVEL_READY;
+        this.drawFrame();
+        this.interface("update")
+    }
+
     resetCurrentLevel() {
+        this.stopTicking();
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.ticksSincePlayerMove = 0;

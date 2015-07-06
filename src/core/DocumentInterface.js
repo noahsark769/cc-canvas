@@ -67,6 +67,15 @@ export class DocumentInterface {
                 }
             }
         });
+        document.getElementById("level-next").addEventListener("click", () => {
+            engine.loadNextLevel();
+        });
+        document.getElementById("level-prev").addEventListener("click", () => {
+            engine.loadPreviousLevel();
+        });
+        document.getElementById("level-reset").addEventListener("click", () => {
+            engine.resetCurrentLevel();
+        });
         engine.documentInterface = this;
         return this;
     }

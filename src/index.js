@@ -2,6 +2,7 @@ require("babelify/polyfill");
 
 let { GameEngine } = require("./core/GameEngine");
 let { LevelSet } = require("./core/LevelSet");
+let { Level } = require("./core/Level");
 let { DocumentInterface } = require("./core/DocumentInterface");
 let { Animator } = require("./animation/Animator");
 let { CCClassicImageRenderer } = require("./animation/renderers/image/CCClassicImageRenderer");
@@ -10,7 +11,8 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
     let engine = GameEngine.getInstance();
     let di = new DocumentInterface(window).register(engine);
     engine.animator = new Animator(di.getCanvas(), renderer);
-    engine.loadLevelSet(LevelSet.fromSchematic(`
+    engine.loadLevelSet(new LevelSet([
+    Level.buildFromSchematic(`
         . floor
         W wall
         F fireball-east
@@ -21,7 +23,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         o ball-south
         w walker-east
         B blob-east
-        T teeth
+        T teeth-south
         S socket
         E escape
         P player-south-normal
@@ -30,9 +32,9 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         .WCCCW.C.T.C..SE
         .F.W.G.CCCCC...S
         W.....W.........
-        ..WCWC.O.CbWWW.C
+        ..WCWC.O.CWbWW.C
         WW...W.W....p..C
-        ..W.WwC.Wo.WWW.C
+        ..W.WwC.Wo..WW.C
         B.WWW...W......P
         WWWWWWWWWWWWWWWW
         WWWWWWWWWWWWWWWW
@@ -53,8 +55,38 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         5 5
         9 0
         7 3
-        10 3
+        11 3
         12 4
         9 5
-    `));
+    `),
+    Level.buildFromSchematic(`
+        . floor
+        P player-south-normal
+        T teeth-west
+        W wall
+        E escape
+        C chip
+        S socket
+        ===
+        P....W.CW
+        .WWWC..W.
+        .CW...W..
+        W...W.TSE
+        WW.WWW.WW
+        W..WWW.WW
+        W....C.WW
+        WWWWWWWWW
+        ===
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        ===
+        6 3
+    `)
+    ]));
 });

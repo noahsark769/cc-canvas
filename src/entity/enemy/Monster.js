@@ -8,7 +8,7 @@ export class Monster extends Entity {
 
     chooseMove(gameState) {
         let tileMap = gameState.tileMap;
-        let dirsToTry = this.getDirectionsInOrder();
+        let dirsToTry = this.getDirectionsInOrder(gameState);
 
         let newCoord;
         for (let dir of dirsToTry) {
@@ -59,6 +59,15 @@ export class Monster extends Entity {
             newTile.entityWillOccupy(this, newDir, gameState);
         }
         this.position = newCoord;
+    }
+}
+
+export class SlowMonster extends Monster {
+    chooseMove(gameState) {
+        if (gameState.currentTicks % 4 !== 0) {
+            return [false, false];
+        }
+        return super.chooseMove(gameState);
     }
 }
 

@@ -20,6 +20,7 @@ let { ParameciumNorth, ParameciumSouth, ParameciumEast, ParameciumWest } = requi
 let { BallNorth, BallSouth, BallEast, BallWest } = require("../entity/enemy/Ball");
 let { BlobNorth, BlobSouth, BlobEast, BlobWest } = require("../entity/enemy/Blob");
 let { WalkerNorth, WalkerSouth, WalkerEast, WalkerWest } = require("../entity/enemy/Walker");
+let { TeethNorth, TeethSouth, TeethEast, TeethWest } = require("../entity/enemy/Teeth");
 
 let INSTANCE = null;
 
@@ -69,6 +70,9 @@ export class TileManager {
             this.map.set((new tileClass()).name, tileClass);
         }
         for (let tileClass of [WalkerNorth, WalkerSouth, WalkerEast, WalkerWest]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+        for (let tileClass of [TeethNorth, TeethSouth, TeethEast, TeethWest]) {
             this.map.set((new tileClass()).name, tileClass);
         }
     }
