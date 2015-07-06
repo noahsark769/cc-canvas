@@ -174,7 +174,7 @@ export class GameEngine {
                     this.gameState.updatePlayerTile();
                 }
             } else {
-                if (!this.playerMovedOnLastTick) {
+                if (!this.playerMovedOnLastTick && !this.gameState.isOver) {
                     this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
                     this.pendingPlayerMovement = null;
                     this.playerMovedOnLastTick = true;
