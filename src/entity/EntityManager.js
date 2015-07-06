@@ -3,6 +3,7 @@ let { Bug } = require("./enemy/Bug");
 let { Fireball } = require("./enemy/Fireball");
 let { Glider } = require("./enemy/Glider");
 let { Paramecium } = require("./enemy/Paramecium");
+let { Ball } = require("./enemy/ball");
 
 let INSTANCE = null;
 
@@ -11,7 +12,8 @@ export const ENTITY_NAME_LIST = [
     "bug",
     "fireball",
     "glider",
-    "paramecium"
+    "paramecium",
+    "ball"
 ];
 
 export class EntityManager {
@@ -28,6 +30,7 @@ export class EntityManager {
         this.map.set("fireball", Fireball);
         this.map.set("glider", Glider);
         this.map.set("paramecium", Paramecium);
+        this.map.set("ball", Ball);
     }
 
     entityClassByName(name) {
