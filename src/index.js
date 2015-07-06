@@ -32,7 +32,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         W.....W.........
         ..WCWC.O.CbWWW.C
         WW...W.W....p..C
-        ..W.Ww..Wo.WWW.C
+        ..W.WwC.Wo.WWW.C
         B.WWW...W......P
         WWWWWWWWWWWWWWWW
         WWWWWWWWWWWWWWWW

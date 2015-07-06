@@ -2,53 +2,48 @@ let {Direction} = require("../../core/2d/directions");
 let {Monster, MonsterStateTile} = require("./Monster");
 let {shuffle} = require("../../util/random");
 
-export class Blob extends Monster {
+export class Walker extends Monster {
     constructor(...args) {
         super(...args);
-        this.name = "blob";
+        this.name = "walker";
     }
 
     getDirectionsInOrder() {
         let dirs = [
             this.direction.counterclockwise(),
-            this.direction,
             this.direction.clockwise(),
             this.direction.clockwise().clockwise()
         ];
-        return shuffle(dirs);
-    }
-    chooseMove(gameState) {
-        if (gameState.currentTicks % 4 !== 0) {
-            return [false, false];
-        }
-        return super.chooseMove(gameState);
+        dirs = shuffle(dirs);
+        dirs.unshift(this.direction);
+        return dirs;
     }
 }
 
-export class BlobSouth extends MonsterStateTile {
+export class WalkerSouth extends MonsterStateTile {
     constructor(...args) {
         super(...args);
-        this.name = "blob-south";
+        this.name = "walker-south";
     }
 }
 
-export class BlobNorth extends MonsterStateTile {
+export class WalkerNorth extends MonsterStateTile {
     constructor(...args) {
         super(...args);
-        this.name = "blob-north";
+        this.name = "walker-north";
     }
 }
 
-export class BlobEast extends MonsterStateTile {
+export class WalkerEast extends MonsterStateTile {
     constructor(...args) {
         super(...args);
-        this.name = "blob-east";
+        this.name = "walker-east";
     }
 }
 
-export class BlobWest extends MonsterStateTile {
+export class WalkerWest extends MonsterStateTile {
     constructor(...args) {
         super(...args);
-        this.name = "blob-west";
+        this.name = "walker-west";
     }
 }
