@@ -3,7 +3,9 @@ let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
 let { Wall } = reqlib("/src/tile/Wall");
 let { GameState } = reqlib("/src/core/GameState");
+let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
+let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Wall", () => {
@@ -29,4 +31,20 @@ describe("Wall", () => {
         expectPlayer(0, 1);
     });
     it.skip("should register impass for monsters on pop up from lower level");
+    it("should pop up from under floor", () => {
+        let engine = GameEngine.getInstance(false).loadLevelSet(LevelSet.fromSchematic(`
+            . floor
+            P player-south-normal
+            W wall
+            ===
+            .P
+            ..
+            ===
+            ..
+            .W
+        `));
+        engine.gameState.movePlayer("DUD");
+        // should have been blocked by wall that popped up
+        expectations.expectPlayerAt(engine.gameState, 1, 0);
+    });
 });

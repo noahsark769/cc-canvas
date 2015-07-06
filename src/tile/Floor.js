@@ -11,4 +11,7 @@ export class Floor extends Tile {
     shouldBlockEntity(entity) {
         return false;
     }
+    playerShouldReplace() {
+        return true;
+    }
 }
