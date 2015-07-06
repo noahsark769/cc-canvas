@@ -1,5 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
+let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
 let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
@@ -181,7 +182,7 @@ describe("GameState", () => {
             `);
             set.addLevel(level1);
             let engine = GameEngine.getInstance(false);
-            engine.loadLevelSet(set);
+            engine.loadLevelSet(set).step();
             engine.tick(); // bug is now next to player, will not move on next tick
             engine.enqueuePlayerMovement("right");
             engine.tick(); // player moves into bug, game should be over
@@ -206,7 +207,7 @@ describe("GameState", () => {
             `);
             set.addLevel(level1);
             let engine = GameEngine.getInstance(false);
-            engine.loadLevelSet(set);
+            engine.loadLevelSet(set).step();
             engine.step();
             engine.tick();
             expect(engine.gameState.isOver).to.be.true;
@@ -278,7 +279,7 @@ describe("GameState", () => {
             ....
             ===
             2 2
-        `)]));
+        `)])).step();
         engine.step();
         engine.tick();
         expectations.expectLoss(engine.gameState);
@@ -323,7 +324,7 @@ describe("GameState", () => {
             ===
             2 2
             3 2
-        `)]));
+        `)])).step();
         engine.step();
         expectations.expectEntityAt(engine.gameState, 1, 2, "bug");
         expectations.expectEntityAt(engine.gameState, 2, 2, "bug");
@@ -343,7 +344,7 @@ describe("GameState", () => {
             ===
             3 2
             2 2
-        `)]));
+        `)])).step();
         engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 1, "bug");
         expectations.expectEntityAt(engine.gameState, 1, 2, "bug");
@@ -371,5 +372,30 @@ describe("GameState", () => {
         let monsters = state.monsterList.asArray();
         expect(monsters.length).to.equal(0);
     }); // http://chipschallenge.wikia.com/wiki/Monster_list
-    it.skip("should give player one free move before monsters move");
+    it("should give player one free move before monsters move", () => {
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(new LevelSet([Level.buildFromSchematic(`
+            . floor
+            B bug-north
+            P player-south-normal
+            E escape
+            ===
+            P...
+            B...
+            ....
+            ===
+            ....
+            ....
+            ....
+            ===
+            0 1
+        `)]));
+        sinon.stub(engine, "resetCurrentLevel");
+        engine.enqueuePlayerMovement("right"); // first tick, player moves
+        engine.enqueuePlayerMovement("right");
+        engine.tick(); // doesn't move on this tick
+        engine.tick(); // both move on this tick, bug does not hit player
+        expectations.expectEntityAt(engine.gameState, 0, 0, "bug");
+        expect(engine.gameState.isOver).to.be.false;
+    });
 });

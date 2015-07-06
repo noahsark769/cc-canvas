@@ -37,6 +37,7 @@ describe("Blob", () => {
         expectations.expectEntityAt(engine.gameState, 4, 2, "blob");
         engine.step();
         engine.step();
+        engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "blob");
         engine.step();
         engine.step();
@@ -64,7 +65,7 @@ describe("Blob", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step().step();
         sinon.stub(engine, "resetCurrentLevel");
         engine.step();
         expectations.expectLoss(engine.gameState);

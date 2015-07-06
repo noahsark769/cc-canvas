@@ -33,7 +33,7 @@ describe("Teeth", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step().step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "teeth");
         engine.step();
         engine.step();
@@ -66,7 +66,7 @@ describe("Teeth", () => {
             ........
             ===
             3 2
-        `));
+        `)).step().step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAt(engine.gameState, 3, 2, "teeth");
         engine.step(); engine.step();
@@ -109,7 +109,7 @@ describe("Teeth", () => {
             ........
             ===
             7 1
-        `));
+        `)).step().step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAt(engine.gameState, 7, 1, "teeth");
         engine.step(); engine.step();
@@ -143,7 +143,7 @@ describe("Teeth", () => {
             ........
             ===
             3 3
-        `));
+        `)).step().step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAt(engine.gameState, 3, 3, "teeth");
         engine.step(); engine.step();

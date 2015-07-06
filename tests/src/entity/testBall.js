@@ -33,7 +33,7 @@ describe("Ball", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "ball");
         engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "ball");
@@ -60,7 +60,7 @@ describe("Ball", () => {
             ===
             4 2
             6 1
-        `));
+        `)).step();
         function expectTwoBalls(x1, y1, x2, y2) {
             expectations.expectEntityAt(engine.gameState, x1, y1, "ball");
             expectations.expectEntityAt(engine.gameState, x2, y2, "ball");
@@ -109,7 +109,7 @@ describe("Ball", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "ball", new Coordinate(4, 2), "dduuuddduuuddd");
     });
     it("should kill player", () => {
@@ -128,7 +128,7 @@ describe("Ball", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "ball", new Coordinate(3, 1), "lll");
         expectations.expectLoss(engine.gameState);

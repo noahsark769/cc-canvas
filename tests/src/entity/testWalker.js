@@ -33,7 +33,7 @@ describe("Walker", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "walker");
         engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "walker");
@@ -56,7 +56,7 @@ describe("Walker", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         sinon.stub(engine, "resetCurrentLevel");
         engine.step();
         engine.step();

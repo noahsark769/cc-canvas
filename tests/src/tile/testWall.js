@@ -28,4 +28,5 @@ describe("Wall", () => {
         state.movePlayer("LUR");
         expectPlayer(0, 1);
     });
+    it.skip("should register impass for monsters on pop up from lower level");
 });

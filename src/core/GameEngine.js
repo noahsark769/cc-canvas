@@ -179,7 +179,7 @@ export class GameEngine {
             }
         }
         if (this.state === LEVEL_ACTIVE) {
-            if (this.gameState.even()) {
+            if (this.gameState.even() && this.gameState.currentTicks !== 0) {
                 this.gameState.advanceEntities();
             }
             if (this.pendingPlayerMovement === null) {
@@ -209,6 +209,7 @@ export class GameEngine {
     step() {
         this.tick();
         this.tick();
+        return this;
     }
 
     pause() {

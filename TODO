@@ -2,7 +2,7 @@
 - [x] Drawing transparent items over each other
 - [ ] Next level, prev level, next 10 levels, prev 10 levels
 - [ ] Alerts for win
-- [ ] Other enemies except tank
+- [x] Other enemies except tank
 - [ ] Thin walls
 - [ ] HTML improvements
 - [ ] Time left

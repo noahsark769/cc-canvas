@@ -87,6 +87,35 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         .........
         ===
         6 3
+    `),
+    Level.buildFromSchematic(`
+        . floor
+        P player-south-normal
+        B bug-north
+        W wall
+        E escape
+        C chip
+        S socket
+        ===
+        PCCCCCSEW
+        BWWWWWWWW
+        WWWWWWWWW
+        WWWWWWWWW
+        WWWWWWWWW
+        WWWWWWWWW
+        WWWWWWWWW
+        WWWWWWWWW
+        ===
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        ===
+        0 1
     `)
     ]));
 });

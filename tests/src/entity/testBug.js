@@ -33,7 +33,7 @@ describe("Bug", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "bug");
         engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "bug");
@@ -64,7 +64,7 @@ describe("Bug", () => {
             5 3
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(5, 3), "ullllddrrrru");
     });
     it("should follow inside of box it's in", () => {
@@ -87,7 +87,7 @@ describe("Bug", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(4, 2), "llurrdllurrd");
     });
     it("should reverse when faced with only one lane", () => {
@@ -114,7 +114,7 @@ describe("Bug", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(4, 2), "dduuuddduuuddd");
     });
     it("should follow end of level when faced with it", () => {
@@ -137,7 +137,7 @@ describe("Bug", () => {
             3 3
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 3), "llluuurrrdddlll");
     });
     it("should kill player", () => {
@@ -156,7 +156,7 @@ describe("Bug", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 1), "lll");
         expect(engine.gameState.isOver, "Game was not over").to.be.true;

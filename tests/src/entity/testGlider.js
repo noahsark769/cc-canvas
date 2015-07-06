@@ -33,7 +33,7 @@ describe("Glider", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "glider");
         engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "glider");
@@ -58,7 +58,7 @@ describe("Glider", () => {
             ........
             ===
             7 2
-        `));
+        `)).step();
         expectations.expectEntityAtCoordSequence(engine, "glider", new Coordinate(7, 2), "lllldlllrrruulrrrrullddrrr");
     });
     it("should reverse when faced with only one lane", () => {
@@ -85,7 +85,7 @@ describe("Glider", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "glider", new Coordinate(4, 2), "dduuuddduuuddd");
     });
     it("should kill player", () => {
@@ -104,7 +104,7 @@ describe("Glider", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "glider", new Coordinate(3, 1), "lll");
         expectations.expectLoss(engine.gameState);

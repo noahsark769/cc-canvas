@@ -23,6 +23,7 @@ describe("Entity", () => {
         `));
         engine.enqueuePlayerMovement("left");
         expect(engine.gameState.tileMap.get(0, 1, 1).name).to.equal("player-west-normal");
+        engine.step();
         expect(engine.gameState.tileMap.get(1, 0, 1).name).to.equal("bug-east");
     });
 

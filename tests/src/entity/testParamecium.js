@@ -33,7 +33,7 @@ describe("Paramecium", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAt(engine.gameState, 4, 2, "paramecium");
         engine.step();
         expectations.expectEntityAt(engine.gameState, 4, 1, "paramecium");
@@ -58,7 +58,7 @@ describe("Paramecium", () => {
             ........
             ===
             7 2
-        `));
+        `)).step();
         expectations.expectEntityAtCoordSequence(engine, "paramecium", new Coordinate(7, 2), "luurlddldlluurudllrddlludlrrrrrrru");
     });
     it("should reverse when faced with only one lane", () => {
@@ -85,7 +85,7 @@ describe("Paramecium", () => {
             4 2
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         expectations.expectEntityAtCoordSequence(engine, "paramecium", new Coordinate(4, 2), "dduuuddduuuddd");
     });
     it("should move in circle in space", () => {
@@ -106,7 +106,7 @@ describe("Paramecium", () => {
             ........
             ===
             1 1
-        `));
+        `)).step();
         expectations.expectEntityAtCoordSequence(engine, "paramecium", new Coordinate(1, 1), "urdlurdlurdl");
     });
     it("should kill player", () => {
@@ -125,7 +125,7 @@ describe("Paramecium", () => {
             3 1
         `);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(new LevelSet([level]));
+        engine.loadLevelSet(new LevelSet([level])).step();
         sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "paramecium", new Coordinate(3, 1), "ullld");
         expectations.expectLoss(engine.gameState);

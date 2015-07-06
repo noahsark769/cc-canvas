@@ -76,7 +76,7 @@ describe("Keys", () => {
             2 1
         `)]);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(set);
+        engine.loadLevelSet(set).step();
         engine.step();
         engine.step();
         expectations.expectEntityAt(engine.gameState, 0, 1, "bug");
@@ -98,7 +98,7 @@ describe("Keys", () => {
             2 1
         `)]);
         let engine = GameEngine.getInstance(false);
-        engine.loadLevelSet(set);
+        engine.loadLevelSet(set).step();
         engine.step();
         engine.step();
         engine.gameState.movePlayer("RRDLRLR");
