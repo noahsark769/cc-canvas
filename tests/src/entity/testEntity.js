@@ -44,4 +44,5 @@ describe("Entity", () => {
         expect(engine.gameState.tileMap.get(0, 1, 1).name).to.equal("player-south-normal");
     });
     it.skip("should make monsters die in water even when chip is in it");
+    it.skip(": monsters should block blocks");
 });

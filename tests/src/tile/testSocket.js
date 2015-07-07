@@ -24,4 +24,5 @@ describe("Socket", () => {
         expectations.expectPlayerAt(state, 2, 1);
         expect(state.tileMap.get(2, 2).name).to.equal("floor");
     });
+    it("should block blocks, even if all chips collected");
 });

@@ -197,3 +197,7 @@ describe("Keys", () => {
         });
     });
 });
+
+describe("Doors", () => {
+    it.skip("should block blocks");
+});

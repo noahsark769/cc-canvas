@@ -24,4 +24,5 @@ describe("Chip", () => {
         expect(state.chipsLeft).to.equal(0);
         expect(state.tileMap.get(0, 0).name).to.equal("floor");
     });
+    it.skip("should block blocks");
 });
