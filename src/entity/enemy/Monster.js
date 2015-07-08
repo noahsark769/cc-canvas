@@ -10,11 +10,21 @@ export class Monster extends Entity {
         let tileMap = gameState.tileMap;
         let dirsToTry = this.getDirectionsInOrder(gameState);
 
-        let newCoord;
+        let newCoord, newTileFirstLayer, newTileSecondLayer, oldTileSecondLayer;
         for (let dir of dirsToTry) {
             newCoord = dir.coordinateFor(this.position, 1);
+            newTileFirstLayer = tileMap.get(newCoord.x, newCoord.y, 1);
+            newTileSecondLayer = tileMap.get(newCoord.x, newCoord.y, 2);
+            oldTileSecondLayer = tileMap.get(this.position.x, this.position.y, 2);
             if (
-                (tileMap.has(newCoord.x, newCoord.y) && tileMap.get(newCoord.x, newCoord.y).shouldBlockEntity(this)) ||
+                (oldTileSecondLayer && oldTileSecondLayer.shouldBlockEntityExit(this, dir, gameState)) ||
+                (newTileFirstLayer && newTileFirstLayer.shouldBlockEntity(this, dir, gameState)) ||
+                (
+                    newTileFirstLayer &&
+                    newTileFirstLayer.name.indexOf("player") !== -1 &&
+                    newTileSecondLayer &&
+                    newTileSecondLayer.shouldBlockEntity(this, dir, gameState)
+                ) ||
                 newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height
             ) {
                 continue;
@@ -40,7 +50,7 @@ export class Monster extends Entity {
         }
 
         this.direction = newDir;
-        if (!newTile || newTile.entityShouldReplace()) {
+        if (!newTile || newTile.entityShouldReplace(this)) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
@@ -82,6 +92,6 @@ export class MonsterStateTile extends Tile {
         return true;
     }
     shouldBlockEntity(entity) {
-        return true;
+        return entity.name !== "player";
     }
 }

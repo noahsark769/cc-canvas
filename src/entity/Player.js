@@ -6,8 +6,8 @@ export class PlayerTile extends Tile {
         console.log("WOAH blocked by self!!!");
         return true;
     }
-    shouldBlockEntity() {
-        return false;
+    shouldBlockEntity(entity, direction, gameState) {
+        return entity.name === "player" || entity.name === "block";
     }
     entityShouldReplace() {
         return false;
@@ -84,11 +84,13 @@ export class Player extends Entity {
         this.name = "player";
     }
 
-    shouldBlockEntity(entity) {
-        return false;
-    }
-
     chooseMove(direction, gameState) {
+        let lowerLayerSourceTile = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        console.log(this + " encountered " + lowerLayerSourceTile + " when trying to decide whether to go " + direction);
+        if (lowerLayerSourceTile && lowerLayerSourceTile.shouldBlockEntityExit(this, direction, gameState)) {
+            console.log(this + " decided based on the lower layer source tile to NOT go " + direction);
+            return false;
+        }
         let newCoord = direction.coordinateFor(this.position, 1);
         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height) {
             return false;
@@ -96,10 +98,10 @@ export class Player extends Entity {
         let upperLayerDestTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         let lowerLayerDestTile = gameState.tileMap.get(newCoord.x, newCoord.y, 2);
         // TODO: special case for clone machine
-        if (upperLayerDestTile && upperLayerDestTile.shouldBlockPlayer(this, gameState)) {
+        if (upperLayerDestTile && upperLayerDestTile.shouldBlockEntity(this, direction, gameState)) {
             return false;
         }
-        if ((!upperLayerDestTile || upperLayerDestTile.isTransparent()) && lowerLayerDestTile && lowerLayerDestTile.shouldBlockPlayer(this, gameState)) {
+        if ((!upperLayerDestTile || upperLayerDestTile.isTransparent()) && lowerLayerDestTile && lowerLayerDestTile.shouldBlockEntity(this, direction, gameState)) {
             return false;
         }
         return newCoord;
@@ -117,7 +119,7 @@ export class Player extends Entity {
         // the first layer replaced with floor if no second layer tile exists.
         this.direction = direction;
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
-        if (!newTile || newTile.playerShouldReplace()) {
+        if (!newTile || newTile.entityShouldReplace(this)) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);

@@ -5,13 +5,14 @@ let { Wall } = reqlib("/src/tile/Wall");
 let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
+let { Coordinate } = reqlib("/src/core/2d/Coordinate");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Thin walls", () => {
     it("should import correctly", () => {});
     it("should block player movement off of same and opposing spaces", () => {
-        let engine = GameEngine.fromSchematic(`
+        let engine = GameEngine.fromTestSchematic(`
             . floor
             - thin_top
             ] thin_right
@@ -49,7 +50,7 @@ describe("Thin walls", () => {
         expectations.expectPlayerAt(engine.gameState, 0, 3);
     });
     it("should block monster movement", () => {
-        let engine = GameEngine.fromSchematic(`
+        let engine = GameEngine.fromTestSchematic(`
             . floor
             - thin_top
             ] thin_right
@@ -62,11 +63,18 @@ describe("Thin walls", () => {
             PF].[.
             .J_]..
             _].J-.
+            .....[
+            ===
             ......
-        `);
-        expectations.expectEntityAtCoordSequence(engine, "firball", new Coordinate(1, 0), "rdruddldllrrrrruuuldr");
+            ......
+            ......
+            ......
+            ===
+            1 0
+        `).step();
+        expectations.expectEntityAtCoordSequence(engine, "fireball", new Coordinate(1, 0), "rdrdldllrrrrurduuuldrddu");
 
-        engine = GameEngine.fromSchematic(`
+        engine = GameEngine.fromTestSchematic(`
             . floor
             - thin_top
             ] thin_right
@@ -80,7 +88,14 @@ describe("Thin walls", () => {
             --....
             _.][..
             -.][JB
-        `);
+            ===
+            ......
+            ......
+            ......
+            ......
+            ===
+            5 3
+        `).step();
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(5, 3), "uldluulddllrulurrurrrldrdd");
     }); // bug can go around a thin wall run
     it.skip("should block blocks (from both sides)");

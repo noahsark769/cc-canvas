@@ -143,6 +143,23 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         .........
         ===
         1 3
+    `),
+    Level.buildFromSchematic(`
+        . floor
+        - thin_top
+        ] thin_right
+        [ thin_left
+        _ thin_bottom
+        P player-south-normal
+        J thin_lr
+        W wall
+        E escape
+        ===
+        P.].[.W
+        ......W
+        _.-.J.W
+        .....EW
+        WWWWWWW
     `)
     ]));
 });

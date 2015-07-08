@@ -1,5 +1,6 @@
 let {Animator} = require("../animation/Animator");
 let {GameState} = require("./GameState");
+let {LevelSet} = require("./LevelSet");
 let {Direction} = require("./2d/directions");
 let {DocumentInterface} = require("../core/DocumentInterface");
 let {FileReaderDatParser} = require("../data/FileReaderDatParser");
@@ -264,4 +265,11 @@ GameEngine.getInstance = (useIntervals = true) => {
 GameEngine.reset = (useIntervals = true) => {
     SINGLETON_INSTANCE = new GameEngine(useIntervals);
     return SINGLETON_INSTANCE;
+};
+
+// for testing
+GameEngine.fromTestSchematic = (schematic) => {
+    let engine = GameEngine.getInstance(false);
+    engine.loadLevelSet(LevelSet.fromSchematic(schematic));
+    return engine;
 };

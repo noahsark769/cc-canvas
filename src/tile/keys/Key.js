@@ -4,15 +4,12 @@ export class Key extends Tile {
     constructor(...args) {
         super(...args);
     }
-    shouldBlockPlayer(player, gameState) {
-        return false;
-    }
-    shouldBlockEntity(entity) {
+    shouldBlockEntity(entity, direction, gameState) {
         return false;
     }
 
-    playerShouldReplace() {
-        return true;
+    entityShouldReplace(entity) {
+        return entity.name === "player";
     }
 
     isTransparent() {

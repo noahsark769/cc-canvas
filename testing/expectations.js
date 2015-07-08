@@ -22,7 +22,7 @@ export default function expectations(expect) {
                     found = true;
                 }
             }
-            expect(found, "no " + name + " found at " + x + ", " + y).to.be.true;
+            expect(found, "no " + name + " found at " + x + ", " + y + ", monster list was: " + state.monsterList.asArray().map((entity) => { return entity.position.toString(); }).join(", ")).to.be.true;
         },
         expectTileAt: function(state, x, y, name) {
             expect(state.hasTileAt(x, y), "no " + name + " at " + x + ", " + y).to.be.true;

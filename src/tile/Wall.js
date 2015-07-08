@@ -5,11 +5,8 @@ export class Wall extends Tile {
         super(...args);
         this.name = "wall";
     }
-    shouldBlockPlayer(player, gameState) {
-        if (gameState.DEBUG) { return false; }
-        return true;
-    }
-    shouldBlockEntity(entity) {
+    shouldBlockEntity(entity, direction, gameState) {
+        if (gameState.DEBUG && entity.name === "player") { return false; }
         return true;
     }
 }

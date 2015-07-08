@@ -4,14 +4,14 @@ export class Door extends Tile {
     constructor(...args) {
         super(...args);
     }
-    shouldBlockPlayer(player, gameState) {
-        return gameState[this.color + "Keys"] == 0;
-    }
-    shouldBlockEntity(entity) {
+    shouldBlockEntity(entity, direction, gameState) {
+        if (entity.name === "player") {
+            return gameState[this.color + "Keys"] === 0;
+        }
         return true;
     }
-    playerShouldReplace() {
-        return true;
+    entityShouldReplace(entity) {
+        return entity.name === "player";
     }
     /**
      * When the player occupies a chip at a certain coordinate, decrease the

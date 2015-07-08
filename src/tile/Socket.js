@@ -6,16 +6,15 @@ export class Socket extends Tile {
         this.name = "socket";
     }
 
-    shouldBlockPlayer(player, gameState) {
-        if (gameState.DEBUG) { return false; }
-        return gameState.chipsLeft !== 0;
-    }
-
-    shouldBlockEntity(entity, gameState) {
+    shouldBlockEntity(entity, direction, gameState) {
+        if (entity.name === "player") {
+            if (gameState.DEBUG) { return false; }
+            return gameState.chipsLeft > 0;
+        }
         return true;
     }
 
-    playerShouldReplace() {
-        return true;
+    entityShouldReplace(entity) {
+        return entity.name === "player";
     }
 }

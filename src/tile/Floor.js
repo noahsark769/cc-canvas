@@ -5,13 +5,10 @@ export class Floor extends Tile {
         super(...args);
         this.name = "floor";
     }
-    shouldBlockPlayer(player) {
+    shouldBlockEntity(entity, direction, gameState) {
         return false;
     }
-    shouldBlockEntity(entity) {
-        return false;
-    }
-    playerShouldReplace() {
-        return true;
+    entityShouldReplace(entity) {
+        return entity.name === "player";
     }
 }

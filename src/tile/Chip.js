@@ -5,11 +5,8 @@ export class Chip extends Tile {
         super(...args);
         this.name = "chip";
     }
-    shouldBlockPlayer(player) {
-        return false;
-    }
-    shouldBlockEntity(entity) {
-        return true;
+    shouldBlockEntity(entity, direction, gameState) {
+        return entity.name !== "player";
     }
     /**
      * When the player occupies a chip at a certain coordinate, decrease the
@@ -21,7 +18,7 @@ export class Chip extends Tile {
             gameState.chipsLeft--;
         }
     }
-    playerShouldReplace() {
-        return true;
+    entityShouldReplace(entity) {
+        return entity.name === "player";
     }
 }

@@ -14,15 +14,19 @@ export class CoordinateMap {
         return layer == 1 ? this.layer1 : this.layer2;
     }
     set(x, y, obj, layer = 1) {
+        // console.warn("You tried to call a tile map function (set) without a layer!");
         return this.getLayer(layer).set((new Coordinate(x, y)).serialize(), obj);
     }
     get(x, y, layer = 1) {
+        // console.warn("You tried to call a tile map function (get) without a layer!");
         return this.getLayer(layer).get((new Coordinate(x, y)).serialize());
     }
     has(x, y, layer = 1) {
+        // console.warn("You tried to call a tile map function (has) without a layer!");
         return this.getLayer(layer).has((new Coordinate(x, y)).serialize());
     }
     delete(x, y, layer = 1) {
+        // console.warn("You tried to call a tile map function (delete) without a layer!");
         return this.getLayer(layer).delete((new Coordinate(x, y)).serialize());
     }
     move(x1, y1, x2, y2, layerSource = 1, layerDest = 1) {

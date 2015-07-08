@@ -5,10 +5,7 @@ export class Hint extends Tile {
         super(...args);
         this.name = "hint";
     }
-    shouldBlockPlayer(player) {
-        return false;
-    }
-    shouldBlockEntity(entity) {
+    shouldBlockEntity(entity, direction, gameState) {
         return false;
     }
     entityWillOccupy(entity, dir, gameState, coordinate, engine) {

@@ -5,11 +5,8 @@ export class Escape extends Tile {
         super(...args);
         this.name = "escape";
     }
-    shouldBlockPlayer(player) {
-        return false;
-    }
     shouldBlockEntity(entity) {
-        return true;
+        return entity.name !== "player";
     }
     entityWillOccupy(entity, dir, gameState, coordinate) {
         if (entity.name === "player") {

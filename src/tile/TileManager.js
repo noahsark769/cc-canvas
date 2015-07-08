@@ -12,6 +12,7 @@ let { BlueDoor } = require("./doors/BlueDoor");
 let { RedDoor } = require("./doors/RedDoor");
 let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
+let { ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight } = require("./ThinWall.js");
 let { PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
 let { FireballNorth, FireballSouth, FireballEast, FireballWest } = require("../entity/enemy/Fireball");
@@ -48,6 +49,11 @@ export class TileManager {
         this.map.set("door_yellow", YellowDoor);
         this.map.set("door_green", GreenDoor);
 
+        for (let tileClass of [ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+
+        // monsters
         for (let tileClass of [PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth]) {
             this.map.set((new tileClass()).name, tileClass);
         }

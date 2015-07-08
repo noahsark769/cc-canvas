@@ -5,11 +5,11 @@ export class Tile {
         renderer.renderTile(canvas, this, coordinate);
     }
 
-    shouldBlockPlayer(player) {
+    shouldBlockEntity(entity) {
         return false;
     }
 
-    shouldBlockEntity(entity) {
+    shouldBlockEntityExit(entity, direction, gameState) {
         return false;
     }
 
@@ -19,9 +19,6 @@ export class Tile {
     entityWillOccupy(entity, dir, gameState, coordinate, engine) {}
     entityWillExit(entity, dir, gameState, coordinate, engine) {}
     isTransparent() {
-        return false;
-    }
-    playerShouldReplace() {
         return false;
     }
     entityShouldReplace(entity) {
