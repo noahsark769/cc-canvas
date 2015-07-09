@@ -88,7 +88,7 @@ describe("Water", () => {
             engine.gameState.monsterList.length,
             "monster list was actually: " + engine.gameState.monsterList.asArray().map((entity) => { return entity.position.toString() + " " + entity.name; }).join(", ")
         ).to.equal(1);
-        expectations.expectEntityAt(engine.gameState, 1, 6, "glider")
+        expectations.expectEntityAt(engine.gameState, 1, 6, "glider");
     });
     it.skip("should be deadly to tanks");
 });
