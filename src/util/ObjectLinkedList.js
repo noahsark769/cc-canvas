@@ -74,10 +74,11 @@ export class ObjectLinkedList {
         this.length--;
     }
     *objects() {
-        let node = this.head;
+        let node = this.head, nextNode;
         while (node !== null) {
+            nextNode = node.next;
             yield node.object;
-            node = node.next;
+            node = nextNode;
         }
     }
     asArray() {

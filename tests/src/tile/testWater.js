@@ -29,10 +29,10 @@ describe("Water", () => {
     it("should kill all monsters except glider", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor
-            P player-south-normal
             ~ water
+            P player-south-normal
             B bug-west
-            P paramecium-west
+            p paramecium-west
             F fireball-west
             G glider-west
             O ball-west
@@ -43,7 +43,7 @@ describe("Water", () => {
             ===
             P.~..BW
             WWWWWWW
-            ..~..PW
+            ..~..pW
             WWWWWWW
             ..~..FW
             WWWWWWW
@@ -83,12 +83,12 @@ describe("Water", () => {
             5 10
             5 12
             5 14
-        `).step().step().step().step().step().step();
+        `).step().step().step().step().step().step().step();
         expect(
             engine.gameState.monsterList.length,
-            "monster list was actually: " + engine.gameState.monsterList.asArray().map((entity) => { return entity.position.toString(); }).join(", ")
+            "monster list was actually: " + engine.gameState.monsterList.asArray().map((entity) => { return entity.position.toString() + " " + entity.name; }).join(", ")
         ).to.equal(1);
-        expectations.expectEntityAt(engine.gameState, 0, 6, "glider")
+        expectations.expectEntityAt(engine.gameState, 1, 6, "glider")
     });
     it.skip("should be deadly to tanks");
 });

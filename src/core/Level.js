@@ -50,6 +50,9 @@ Level.buildFromSchematic = function(schematic) {
     let charToTileType = new Map();
     for (let definition of frontmatter) {
         let [char, name] = definition.split(" ").filter((item) => { return item.length > 0; });
+        if (charToTileType.get(char)) {
+            console.warn("When building level, saw duplicate definition of " + char + " from " + charToTileType.get(char) + " to " + name);
+        }
         charToTileType.set(char, name);
     }
 
@@ -100,7 +103,7 @@ Level.buildFromSchematic = function(schematic) {
                     level.chipsNeeded++;
                 }
             } else {
-                console.warn("When building level, char " + char + " could not find an associated tile type.");
+                console.warn("WARNING: When building level, char " + char + " could not find an associated tile type.");
             }
         };
     };
