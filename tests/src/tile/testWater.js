@@ -9,27 +9,27 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Water", () => {
-    it.skip("should import correctly");
-    it.skip("should be deadly to player", () => {
+    it("should import correctly");
+    it("should be deadly to player", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor
-            P player-normal-south
+            P player-south-normal
             ~ water
             ===
             P.
             .~
         `);
         engine.gameState.movePlayer("RD");
-        expecations.expectLoss(engine.gameState);
+        expectations.expectLoss(engine.gameState);
         expect(engine.gameState.tileMap.get(1, 1).name).to.equal("player-dead-water");
     });
     it.skip("should not kill player with flippers");
     it.skip("should register player as swim state with flippers");
     it.skip("should turn into dirt by block");
-    it.skip("should kill all monsters except glider", () => {
+    it("should kill all monsters except glider", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor
-            P player-normal-south
+            P player-south-normal
             ~ water
             B bug-west
             P paramecium-west
@@ -39,6 +39,7 @@ describe("Water", () => {
             w walker-west
             b blob-west
             T teeth-west
+            W wall
             ===
             P.~..BW
             WWWWWWW
