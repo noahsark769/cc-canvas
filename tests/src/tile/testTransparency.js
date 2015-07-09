@@ -32,4 +32,5 @@ describe("Transparency mechanics", () => {
     it.skip("should support real exit above clone machine that actually blocks player");
     it.skip(": player that pushes block over hidden water should be killed by water on next push");
     it.skip(": player should be killed by monster hidden under block");
+    it.skip("should treat bottom level with something, top level empty as if bottom tile were on top level");
 });

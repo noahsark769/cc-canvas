@@ -25,4 +25,5 @@ describe("Chip", () => {
         expect(state.tileMap.get(0, 0).name).to.equal("floor");
     });
     it.skip("should block blocks");
+    it.skip("should be picked up if nothing on top level");
 });
