@@ -48,6 +48,23 @@ describe("ObjectLinkedList", () => {
         l.remove(o2);
         expect(Array.from(l.objects())).to.deep.equals([]);
     });
+    it("should remove during iteration", () => {
+        let o1 = {1: 2};
+        let o2 = {3: 4};
+        let o3 = {3: 5};
+        let o4 = {3: 6};
+        let l = new ObjectLinkedList("name");
+        l.append(o1);
+        l.append(o2);
+        l.append(o3);
+        l.append(o4);
+
+        for (let elem of l.objects()) {
+            l.remove(elem);
+        }
+        expect(l.length).to.equal(0);
+        expect(l.asArray()).to.deep.equal([]);
+    });
     it("should allow two different linked lists", () => {
         let o1 = {1: 2};
         let l1 = new ObjectLinkedList("one");
