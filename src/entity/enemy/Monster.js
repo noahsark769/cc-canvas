@@ -38,11 +38,17 @@ export class Monster extends Entity {
 
     advance(newDir, newCoord, gameState) {
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
-        if (newTile && newTile.isLethalToEntity(this)) {
+        let newTileSecondLayer = gameState.tileMap.get(newCoord.x, newCoord.y, 2);
+        let oldTileSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        if (
+            (newTile && newTile.isLethalToEntity(this)) ||
+            (newTile && newTile.name.indexOf("player") !== -1 && newTileSecondLayer && newTileSecondLayer.isLethalToEntity(this))
+        ) {
             gameState.monsterList.remove(this);
             // if there was a tile under us, move it up. otherwise, replace us with floor
-            if (gameState.tileMap.has(this.position.x, this.position.y, 2)) {
-                gameState.tileMap.set(this.position.x, this.position.y, gameState.tileMap.get(this.position.x, this.position.y, 2), 1);
+            if (oldTileSecondLayer) {
+                gameState.tileMap.set(this.position.x, this.position.y, oldTileSecondLayer, 1);
+                oldTileSecondLayer.entityWillUnpress(this, newDir, gameState, newCoord, gameState.engine);
             } else {
                 gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
             }
@@ -50,23 +56,21 @@ export class Monster extends Entity {
         }
 
         this.direction = newDir;
-        if (!newTile || newTile.entityShouldReplace(this)) {
+        if (!newTile || newTile.entityShouldReplace(this)) { // occupation
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-        } else {
-            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
+            if (newTile) { newTile.entityWillOccupy(this, newDir, gameState, newCoord, gameState.engine); } // do not "press" yet
+        } else { // press
+            gameState.tileMap.set(newCoord.x, newCoord.y, newTile, 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+            newTile.entityWillPress(this, newDir, gameState, newCoord, gameState.engine);
         }
 
         let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (!lastSecondLayer) {
             gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
         } else {
+            lastSecondLayer.entityWillUnpress(this, newDir, gameState, newCoord, gameState.engine);
             gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
-        }
-        gameState.tileMap.get(this.position.x, this.position.y, 1).entityWillExit(this, newDir, gameState, this.position, gameState.engine);
-
-        if (newTile) {
-            newTile.entityWillOccupy(this, newDir, gameState);
         }
         this.position = newCoord;
     }
@@ -82,7 +86,7 @@ export class SlowMonster extends Monster {
 }
 
 export class MonsterStateTile extends Tile {
-    entityWillOccupy(entity, direction, gameState) {
+    entityWillPress(entity, direction, gameState) {
         if (entity.name === "player") {
             gameState.isOver = true;
             gameState.isLoss = true;

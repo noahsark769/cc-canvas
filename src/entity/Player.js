@@ -2,10 +2,6 @@ let {Entity} = require("./Entity");
 let {Tile} = require("../tile/Tile");
 
 export class PlayerTile extends Tile {
-    shouldBlockPlayer() {
-        console.log("WOAH blocked by self!!!");
-        return true;
-    }
     shouldBlockEntity(entity, direction, gameState) {
         return entity.name === "player" || entity.name === "block";
     }
@@ -15,7 +11,7 @@ export class PlayerTile extends Tile {
     isTransparent() {
         return true;
     }
-    entityWillOccupy(entity, direction, gameState) {
+    entityWillPress(entity, direction, gameState) {
         gameState.isOver = true;
         gameState.isLoss = true;
     }
@@ -86,9 +82,7 @@ export class Player extends Entity {
 
     chooseMove(direction, gameState) {
         let lowerLayerSourceTile = gameState.tileMap.get(this.position.x, this.position.y, 2);
-        console.log(this + " encountered " + lowerLayerSourceTile + " when trying to decide whether to go " + direction);
         if (lowerLayerSourceTile && lowerLayerSourceTile.shouldBlockEntityExit(this, direction, gameState)) {
-            console.log(this + " decided based on the lower layer source tile to NOT go " + direction);
             return false;
         }
         let newCoord = direction.coordinateFor(this.position, 1);
@@ -121,9 +115,11 @@ export class Player extends Entity {
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         if (!newTile || newTile.entityShouldReplace(this)) {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+            if (newTile) { newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine); }
         } else {
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+            newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
         }
 
         let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
@@ -131,12 +127,9 @@ export class Player extends Entity {
             gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
         } else {
             gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
+            lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
         }
 
-        gameState.tileMap.get(this.position.x, this.position.y, 1).entityWillExit(this, direction, gameState, this.position, gameState.engine);
-        if (newTile) {
-            newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine);
-        }
         this.position = newCoord;
     }
 

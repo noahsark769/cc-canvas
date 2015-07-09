@@ -15,4 +15,10 @@ describe("Toggle walls", () => {
     it.skip(": green button should toggle all toggle wall tiles");
     it.skip("should support blocks flicked off");
     it.skip(": closed should be able to be stepped off by player");
+    it.skip("should never switch if starts on top of clone machine");
+    it.skip("should not switch if starts on lower level");
+    it.skip("should switch if starts on upper level but dropped to lower level by entity");
+    it.skip(": on multiple green button press per turn, should only switch if odd number pressed");
+    it.skip(": Button Smash Glitch"); // http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch
+    it.skip(": scenario from http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch");
 });

@@ -8,7 +8,7 @@ export class Escape extends Tile {
     shouldBlockEntity(entity) {
         return entity.name !== "player";
     }
-    entityWillOccupy(entity, dir, gameState, coordinate) {
+    entityWillPress(entity, dir, gameState, coordinate) {
         if (entity.name === "player") {
             gameState.isWin = true;
             gameState.isOver = true;

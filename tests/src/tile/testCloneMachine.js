@@ -23,4 +23,5 @@ describe("Red button", () => {
     it.skip("should clone once and disappear for clone block with no clone machine and legal move");
     it.skip("should do nothing for clone block with no machine and legal move");
     it.skip("should not make monster movable if first move is illegal");
+    it.skip(": Button Smash Glitch"); // http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch
 });

@@ -25,4 +25,5 @@ describe("Bear trap", () => {
     it.skip(": a block that slides into a connected trap should slide for one more step after trap is released");
     it.skip(": scenario from http://chipschallenge.wikia.com/wiki/Trap");
     it.skip(": Controller Glitch");
+    it.skip(": Button Smash Glitch"); // http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch
 });
