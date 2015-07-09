@@ -1,5 +1,6 @@
 let { Floor } = require("./Floor");
 let { Wall } = require("./Wall");
+let { Water } = require("./Water");
 let { Chip } = require("./Chip");
 let { Escape } = require("./Escape");
 let { Socket } = require("./Socket");
@@ -13,7 +14,7 @@ let { RedDoor } = require("./doors/RedDoor");
 let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
 let { ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight } = require("./ThinWall.js");
-let { PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
+let { PlayerDeadFire, PlayerDeadWater, PlayerDeadCharred, PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
 let { FireballNorth, FireballSouth, FireballEast, FireballWest } = require("../entity/enemy/Fireball");
 let { GliderNorth, GliderSouth, GliderEast, GliderWest } = require("../entity/enemy/Glider");
@@ -49,12 +50,16 @@ export class TileManager {
         this.map.set("door_yellow", YellowDoor);
         this.map.set("door_green", GreenDoor);
 
+        for (let tileClass of [Water]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+
         for (let tileClass of [ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 
         // monsters
-        for (let tileClass of [PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth]) {
+        for (let tileClass of [PlayerDeadFire, PlayerDeadWater, PlayerDeadCharred, PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth]) {
             this.map.set((new tileClass()).name, tileClass);
         }
         for (let tileClass of [BugNorth, BugSouth, BugEast, BugWest]) {

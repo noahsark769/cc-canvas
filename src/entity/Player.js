@@ -17,6 +17,36 @@ export class PlayerTile extends Tile {
     }
 }
 
+export class PlayerDeadWater extends Tile {
+    constructor(...args) {
+        super(...args);
+        this.name = "player-dead-water";
+    }
+    shouldBlockEntity(entity) {
+        return true;
+    }
+}
+
+export class PlayerDeadFire extends Tile {
+    constructor(...args) {
+        super(...args);
+        this.name = "player-dead-fire";
+    }
+    shouldBlockEntity(entity) {
+        return true;
+    }
+}
+
+export class PlayerDeadCharred extends Tile {
+    constructor(...args) {
+        super(...args);
+        this.name = "player-dead-charred";
+    }
+    shouldBlockEntity(entity) {
+        return true;
+    }
+}
+
 export class PlayerSouth extends PlayerTile {
     constructor(...args) {
         super(...args);
@@ -114,20 +144,20 @@ export class Player extends Entity {
         this.direction = direction;
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         if (!newTile || newTile.entityShouldReplace(this)) {
-            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
             if (newTile) { newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine); }
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
+            newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-            newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
         }
 
         let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (!lastSecondLayer) {
             gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
         } else {
-            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
             lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
+            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
         }
 
         this.position = newCoord;
@@ -135,7 +165,12 @@ export class Player extends Entity {
 
     getTile() {
         let {TileManager} = require("../tile/TileManager");
-        let tileClass = TileManager.getInstance().tileClassByName("player-" + this.direction.asStringDirection() + "-" + this.state);
+        let tileClass;
+        if (this.state === "dead-water" || this.state === "dead-fire") {
+            tileClass = TileManager.getInstance().tileClassByName("player-" + this.state);
+        } else {
+            tileClass = TileManager.getInstance().tileClassByName("player-" + this.direction.asStringDirection() + "-" + this.state);
+        }
         return new tileClass();
     }
 };
