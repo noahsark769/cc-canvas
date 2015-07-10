@@ -28,4 +28,5 @@ describe("Hint", () => {
         engine.gameState.movePlayer("L");
         expect(stub.calledWith("hideHint")).to.be.ok;
     });
+    it("should hide hint when next level pressed while standing on hint tile");
 });
