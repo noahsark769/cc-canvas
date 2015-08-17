@@ -20,6 +20,14 @@ export class CoordinateMap {
     delete(x, y, layer = 1) {
         return this.map.delete((new Coordinate(x, y)).serialize());
     }
+    // TODO: doesn't try to deep clone the objects, lol
+    clone() {
+        let cloned = new CoordinateMap();
+        for (let [x, y, obj] of this.entries()) {
+            cloned.set(x, y, obj);
+        }
+        return cloned;
+    }
     *entries() {
         let coord;
         for (var [key, val] of this.map.entries()) {

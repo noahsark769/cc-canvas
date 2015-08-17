@@ -73,6 +73,9 @@ export class GameState {
             this.player = new Player("normal", Direction.south(), playerCoord);
         }
         this.viewport = Viewport.constructFromPlayerPosition(playerCoord, this.level.width, this.level.height);
+
+        // init blocks
+        this.blockMap = this.level.blockMap.clone();
     }
 
     getPlayerPosition() {

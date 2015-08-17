@@ -23,7 +23,7 @@ export class Block extends Entity {
         this.performMove(target, gameState);
     }
     getTile() {
-        return new BlockTile(this);
+        return new BlockTile();
     }
 }
 
@@ -32,13 +32,21 @@ export class BlockTile extends Tile {
         super(...args);
     }
     getEntity(gameState) {
-        return gameState.blockMap.get(...this.position.asArray(), 1);
+        let block = gameState.blockMap.get(...this.position.asArray(), 1);
+        if (!block) { console.warn("Tried to get the entity of a block, but the entity did not exist!"); }
     }
     shouldBlockEntity(entity, direction, gameState) {
-        // if (entity.name === "player") {
-        //     return !this.entity.canMove(direction, gameState);
-        // }
-        // return true;
+        if (entity.name === "player") {
+            // kinda hacky: we assume that a player will only ever check this if
+            // they want to move there. TODO: figure out a more robust way to do this.
+            if (this.getEntity().canMove(direction, gameState)) {
+                this.getEntity().move(direction, gameState);
+                return false;
+            }
+        }
+        return true;
+    }
+    entityShouldReplace() {
         return true;
     }
 }

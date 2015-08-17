@@ -1,7 +1,8 @@
-let { CoordinateMap } = require("../core/2d/CoordinateMap");
-let { Viewport } = require("../core/2d/Viewport");
-let { Coordinate } = require("../core/2d/Coordinate");
-let { CoordinateTileMap } = require("../core/2d/CoordinateTileMap");
+import { CoordinateMap } from "../core/2d/CoordinateMap";
+import { Viewport } from "../core/2d/Viewport";
+import { Coordinate } from "../core/2d/Coordinate";
+import { CoordinateTileMap } from "../core/2d/CoordinateTileMap";
+import { Block } from "../entity/Block";
 
 class TrapWiring {} // later
 
@@ -10,6 +11,7 @@ export class Level {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
+        this.blockMap = new CoordinateMap();
         this.movements = []; // array of coordinates indicating where the monsters are, in order
         this.chips = 0;
         this.chipsNeeded = 0;
@@ -20,7 +22,6 @@ export class Level {
         this.levelNumber = 0;
     }
 
-    // will eventually render differently based on player position. for now, just render upper left.
     getDefaultViewport() {
         return Viewport.constructFromPlayerPosition(this.getInitialPlayerPosition(), this.width, this.height);
     }
@@ -56,6 +57,7 @@ Level.buildFromSchematic = function(schematic) {
         charToTileType.set(char, name);
     }
 
+    // TODO: DRY this up
     let rows = layer1Schematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; });
     let maxX = 0, maxY = 0;
     for (let j in rows) {
@@ -68,6 +70,9 @@ Level.buildFromSchematic = function(schematic) {
                 level.tileMap.setTileByName(i, j, charToTileType.get(char), 1);
                 if (charToTileType.get(char) === "chip") {
                     level.chipsNeeded++;
+                }
+                if (charToTileType.get(char) === "block") {
+                    level.blockMap.set(i, j, new Block(null, new Coordinate(i, j)), 1);
                 }
             } else {
                 console.warn("When building level, char " + char + " could not find an associated tile type.");
@@ -101,6 +106,9 @@ Level.buildFromSchematic = function(schematic) {
                 level.tileMap.setTileByName(i, j, charToTileType.get(char), 2);
                 if (charToTileType.get(char) === "chip") {
                     level.chipsNeeded++;
+                }
+                if (charToTileType.get(char) === "block") {
+                    level.blockMap.set(i, j, new Block(null, new Coordinate(i, j)), 2);
                 }
             } else {
                 console.warn("WARNING: When building level, char " + char + " could not find an associated tile type.");

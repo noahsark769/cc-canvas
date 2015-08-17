@@ -1,5 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
+let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
 let { Wall } = reqlib("/src/tile/Wall");
 let { GameState } = reqlib("/src/core/GameState");

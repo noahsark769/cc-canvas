@@ -4,6 +4,21 @@ let sinon = require("sinon");
 let { Coordinate } = reqlib("/src/core/2d/Coordinate");
 let { TwoLayerCoordinateMap } = reqlib("/src/core/2d/TwoLayerCoordinateMap");
 let { CoordinateTileMap } = reqlib("/src/core/2d/CoordinateTileMap");
+let { CoordinateMap } = reqlib("/src/core/2d/CoordinateMap");
+
+describe("CoordinateMap", () => {
+    it("should import correctly", () => {});
+    it("should support cloning", () => {
+        let map = new CoordinateMap();
+        map.set(1, 1, 4);
+        map.set(2, 2, 3);
+        let cloned = map.clone();
+        map.set(1, 1, 1);
+        map.set(1, 1, 1);
+        expect(cloned.get(1, 1)).to.equal(4);
+        expect(cloned.get(2, 2)).to.equal(3);
+    });
+});
 
 describe("TwoLayerCoordinateMap", () => {
     it("should import correctly", () => {});
