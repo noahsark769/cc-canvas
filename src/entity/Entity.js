@@ -1,6 +1,7 @@
-let {NORTH, SOUTH, EAST, WEST, Direction} = require("../core/2d/directions");
+import { Direction } from "../core/2d/directions";
 
 let CURR_ID = 0;
+// TODO: pretty sure we don't use the entity master map anymore
 let ENTITY_MASTER_MAP = new Map();
 
 export class Entity {
@@ -40,6 +41,26 @@ export class Entity {
     }
     toString() {
         return "<Entity (" + this.name + ") with " + this.direction + " at " + this.position.serialize();
+    }
+
+    performMove(newCoord, direction, gameState) {
+        let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
+        if (!newTile || newTile.entityShouldReplace(this)) {
+            if (newTile) { newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine); }
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+        } else {
+            newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
+            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+        }
+
+        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        if (!lastSecondLayer) {
+            gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
+        } else {
+            lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
+            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
+        }
     }
 }
 

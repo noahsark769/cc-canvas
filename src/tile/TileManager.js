@@ -24,6 +24,7 @@ let { BallNorth, BallSouth, BallEast, BallWest } = require("../entity/enemy/Ball
 let { BlobNorth, BlobSouth, BlobEast, BlobWest } = require("../entity/enemy/Blob");
 let { WalkerNorth, WalkerSouth, WalkerEast, WalkerWest } = require("../entity/enemy/Walker");
 let { TeethNorth, TeethSouth, TeethEast, TeethWest } = require("../entity/enemy/Teeth");
+import { BlockTile } from "../entity/Block";
 
 let INSTANCE = null;
 
@@ -50,6 +51,7 @@ export class TileManager {
         this.map.set("door_red", RedDoor);
         this.map.set("door_yellow", YellowDoor);
         this.map.set("door_green", GreenDoor);
+        this.map.set("block", BlockTile);
 
         for (let tileClass of [Water, Fire]) {
             this.map.set((new tileClass()).name, tileClass);

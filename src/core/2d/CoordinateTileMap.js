@@ -1,8 +1,8 @@
-let {TileManager} = require("../../tile/TileManager");
-let {EntityManager} = require("../../entity/EntityManager");
-let {CoordinateMap} = require("./CoordinateMap");
+import { TileManager } from "../../tile/TileManager";
+import { EntityManager } from "../../entity/EntityManager";
+import { TwoLayerCoordinateMap } from "./TwoLayerCoordinateMap";
 
-export class CoordinateTileMap extends CoordinateMap {
+export class CoordinateTileMap extends TwoLayerCoordinateMap {
     constructor() {
         super();
     }
@@ -10,12 +10,12 @@ export class CoordinateTileMap extends CoordinateMap {
     // todo: somehow could move this into superclass??
     clone() {
         let map = new CoordinateTileMap();
-        let key, value;
-        for ([key, value] of this.layer1.entries()) {
-            map.layer1.set(key, value);
+        let x, y, value;
+        for ([x, y, value] of this.layer1.entries()) {
+            map.set(x, y, value, 1);
         }
-        for ([key, value] of this.layer2.entries()) {
-            map.layer2.set(key, value);
+        for ([x, y, value] of this.layer2.entries()) {
+            map.set(x, y, value, 2);
         }
         return map;
     }

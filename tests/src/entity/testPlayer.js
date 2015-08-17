@@ -9,11 +9,11 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Player", () => {
-    it.skip("should import correctly");
+    it("should import correctly", () => {});
 });
 
 describe("Player tiles", () => {
-    it.skip("should import correctly");
+    it("should import correctly", () => {});
     describe("(swimming chip)", () => {
         it.skip("should block chip");
         it.skip("should cause loss when hit by monster");

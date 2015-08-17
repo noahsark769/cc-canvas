@@ -1,6 +1,7 @@
 let { Coordinate } = require("./2d/Coordinate");
 let { ObjectLinkedList } = require("../util/ObjectLinkedList");
 let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
+let { CoordinateMap } = require("./2d/CoordinateMap");
 let { Viewport } = require("./2d/Viewport");
 let { Player } = require("../entity/Player");
 let { Direction } = require("./2d/directions");
@@ -21,6 +22,7 @@ export class GameState {
         this.tileMap = new CoordinateTileMap();
         // exact proxy to the level, nothing else
         this.monsterList = new ObjectLinkedList("monsters");
+        this.blockMap = new CoordinateMap();
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
         this.viewport = null;

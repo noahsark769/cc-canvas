@@ -56,22 +56,7 @@ export class Monster extends Entity {
         }
 
         this.direction = newDir;
-        if (!newTile || newTile.entityShouldReplace(this)) { // occupation
-            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-            if (newTile) { newTile.entityWillOccupy(this, newDir, gameState, newCoord, gameState.engine); } // do not "press" yet
-        } else { // press
-            gameState.tileMap.set(newCoord.x, newCoord.y, newTile, 2);
-            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-            newTile.entityWillPress(this, newDir, gameState, newCoord, gameState.engine);
-        }
-
-        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
-        if (!lastSecondLayer) {
-            gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
-        } else {
-            lastSecondLayer.entityWillUnpress(this, newDir, gameState, newCoord, gameState.engine);
-            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
-        }
+        this.performMove(newCoord, this.direction, gameState);
         this.position = newCoord;
     }
 }

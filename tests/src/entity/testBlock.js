@@ -9,7 +9,7 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Block", () => {
-    it("should import correctly");
+    it("should import correctly", () => {});
     it("should let player push", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor

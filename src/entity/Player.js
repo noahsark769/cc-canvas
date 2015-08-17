@@ -142,24 +142,7 @@ export class Player extends Entity {
         // the tile we exit will have the second layer pushed up into the first layer, or have
         // the first layer replaced with floor if no second layer tile exists.
         this.direction = direction;
-        let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
-        if (!newTile || newTile.entityShouldReplace(this)) {
-            if (newTile) { newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine); }
-            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-        } else {
-            newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
-            gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
-            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
-        }
-
-        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
-        if (!lastSecondLayer) {
-            gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
-        } else {
-            lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
-            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
-        }
-
+        this.performMove(newCoord, direction, gameState);
         this.position = newCoord;
     }
 
