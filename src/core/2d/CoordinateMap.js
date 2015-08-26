@@ -30,9 +30,18 @@ export class CoordinateMap {
     }
     *entries() {
         let coord;
-        for (var [key, val] of this.map.entries()) {
+        for (let [key, val] of this.map.entries()) {
             coord = Coordinate.deserialize(key);
             yield [coord.x, coord.y, val];
         }
+    }
+    toString() {
+        let result = "";
+        result += "<CoordinateMap:[";
+        for (let [x, y, value] of this.entries()) {
+            result += "{[" + x + ", " + y + "]: " + value + "} ";
+        }
+        result += "]>";
+        return result;
     }
 }

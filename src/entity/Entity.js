@@ -40,7 +40,7 @@ export class Entity {
         return new tileClass();
     }
     toString() {
-        return "<Entity (" + this.name + ") with " + this.direction + " at " + this.position.serialize();
+        return "<Entity (" + this.name + ") with direction " + this.direction + " at " + this.position.serialize() + ">";
     }
 
     performMove(newCoord, direction, gameState) {

@@ -163,5 +163,31 @@ describe("Bug", () => {
         expect(engine.gameState.isLoss, "Game was not a loss!").to.be.true;
         expect(engine.gameState.isWin, "Game was a win when it should have been a loss").to.be.false;
     });
-    it.skip("should treat fire as walls");
+    it("should treat fire as walls", () => {
+        let [nothing, level] = buildLevelFromSchematic(`
+            . floor
+            x fire
+            P player-south-normal
+            B bug-south
+            ===
+            P..xxx..
+            ...x.x..
+            ...xBx..
+            ...x.x..
+            ...x.x..
+            ...xxx..
+            ===
+            ........
+            ........
+            ........
+            ........
+            ........
+            ........
+            ===
+            4 2
+        `);
+        let engine = GameEngine.getInstance(false);
+        engine.loadLevelSet(new LevelSet([level])).step();
+        expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(4, 2), "dduuuddduuuddd");
+    });
 });

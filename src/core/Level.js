@@ -11,8 +11,8 @@ export class Level {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
-        this.blockMap = new CoordinateMap();
         this.movements = []; // array of coordinates indicating where the monsters are, in order
+        this.blockCoordinates = []; // array of coordinates of blocks
         this.chips = 0;
         this.chipsNeeded = 0;
         this.title = "";
@@ -57,7 +57,7 @@ Level.buildFromSchematic = function(schematic) {
         charToTileType.set(char, name);
     }
 
-    // TODO: DRY this up
+    // calc max dimensions
     let rows = layer1Schematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; });
     let maxX = 0, maxY = 0;
     for (let j in rows) {
@@ -65,21 +65,11 @@ Level.buildFromSchematic = function(schematic) {
         for (let i in line) {
             maxX = Math.max(maxX, i);
             maxY = Math.max(maxY, j);
-            let char = rows[j][i];
-            if (charToTileType.has(char)) {
-                level.tileMap.setTileByName(i, j, charToTileType.get(char), 1);
-                if (charToTileType.get(char) === "chip") {
-                    level.chipsNeeded++;
-                }
-                if (charToTileType.get(char) === "block") {
-                    level.blockMap.set(i, j, new Block(null, new Coordinate(i, j)), 1);
-                }
-            } else {
-                console.warn("When building level, char " + char + " could not find an associated tile type.");
-            }
-        };
-    };
+        }
+    }
 
+    // if there's no layer 2, we need to populate it with floor
+    // TODO: this clobbers the ` character, we should take that out somehow
     if (!layer2Schematic) {
         charToTileType.set("`", "floor");
         let newRows = [];
@@ -94,27 +84,27 @@ Level.buildFromSchematic = function(schematic) {
         layer2Schematic = newRows.join("\n");
     }
 
-    rows = layer2Schematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; });
-    maxX = 0, maxY = 0;
-    for (let j in rows) {
-        let line = rows[j];
-        for (let i in line) {
-            maxX = Math.max(maxX, i);
-            maxY = Math.max(maxY, j);
-            let char = rows[j][i];
-            if (charToTileType.has(char)) {
-                level.tileMap.setTileByName(i, j, charToTileType.get(char), 2);
-                if (charToTileType.get(char) === "chip") {
-                    level.chipsNeeded++;
+    for (let [layerNum, schematic] of [[1, layer1Schematic], [2, layer2Schematic]]) {
+        let rows = schematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; });
+        // i corresponds to x coordinates, j to y
+        for (let j in rows) {
+            let line = rows[j];
+            for (let i in line) {
+                let char = rows[j][i];
+                if (charToTileType.has(char)) {
+                    level.tileMap.setTileByName(i, j, charToTileType.get(char), layerNum);
+                    if (charToTileType.get(char) === "chip") {
+                        level.chipsNeeded++;
+                    }
+                    if (charToTileType.get(char) === "block") {
+                        level.blockCoordinates.push([new Coordinate(i, j), layerNum]);
+                    }
+                } else {
+                    console.warn("When building level, char " + char + " could not find an associated tile type on layer " + layerNum + ".");
                 }
-                if (charToTileType.get(char) === "block") {
-                    level.blockMap.set(i, j, new Block(null, new Coordinate(i, j)), 2);
-                }
-            } else {
-                console.warn("WARNING: When building level, char " + char + " could not find an associated tile type.");
             }
-        };
-    };
+        }
+    }
 
     if (movementSchematic) {
         let movements = movementSchematic.split("\n").map((value) => { return value.trim(); }).filter((item) => { return item.length > 0; });
@@ -126,7 +116,6 @@ Level.buildFromSchematic = function(schematic) {
     }
 
     // TODO: trap and clone wirings
-
     level.width = maxX + 1;
     level.height = maxY + 1;
     return level;

@@ -23,19 +23,19 @@ describe("Block", () => {
             .....
         `);
         expectations.expectTileAt(engine.gameState, 2, 1, "block");
-        engine.movePlayer("L");
+        engine.gameState.movePlayer("L");
         expectations.expectTileAt(engine.gameState, 1, 1, "block");
-        engine.movePlayer("ULD");
+        engine.gameState.movePlayer("ULD");
         expectations.expectTileAt(engine.gameState, 1, 2, "block");
-        engine.movePlayer("LDR");
+        engine.gameState.movePlayer("LDR");
         expectations.expectTileAt(engine.gameState, 2, 2, "block");
-        engine.movePlayer("DRU");
+        engine.gameState.movePlayer("DRU");
         expectations.expectTileAt(engine.gameState, 2, 1, "block");
-        engine.movePlayer("RUL");
+        engine.gameState.movePlayer("RUL");
         expectations.expectTileAt(engine.gameState, 1, 1, "block");
-        engine.movePlayer("LL");
+        engine.gameState.movePlayer("LL");
         expectations.expectTileAt(engine.gameState, 0, 1, "block");
-        engine.movePlayer("DLUUU");
+        engine.gameState.movePlayer("DLUUU");
         expectations.expectTileAt(engine.gameState, 0, 0, "block");
     });
     it("should block monsters", () => {
@@ -98,7 +98,7 @@ describe("Block", () => {
         `).step().step().step().step().step().step().step().step().step().step().step().step();
         expectations.expectEntityAt(engine.gameState, 5, 0, "bug");
         expectations.expectEntityAt(engine.gameState, 5, 2, "paramecium");
-        expectations.expectEntityAt(engine.gameState, 5, 4, "glider");
+        expectations.expectEntityAt(engine.gameState, 5, 4, "fireball");
         expectations.expectEntityAt(engine.gameState, 5, 6, "glider");
         expectations.expectEntityAt(engine.gameState, 5, 8, "ball");
         expectations.expectEntityAt(engine.gameState, 5, 10, "walker");
@@ -123,7 +123,7 @@ describe("Block", () => {
         engine.gameState.movePlayer("LUUURDDDDD");
         expectations.expectPlayerAt(engine.gameState, 1, 0);
         engine.gameState.movePlayer("LDRURDLLDRRRRRRR");
-        expectations.expectPlayerAt(engine.gameState, 0, 1);
+        expectations.expectPlayerAt(engine.gameState, 0, 2);
     });
     it("should immediately reveal fire on lower level", () => {
         let engine = GameEngine.fromTestSchematic(`
@@ -136,9 +136,10 @@ describe("Block", () => {
             ===
             ..x..
         `);
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         engine.gameState.movePlayer("L");
         expectations.expectLoss(engine.gameState);
+        stub.restore();
     });
     it("should immediately reveal chips on lower level", () => {
         let engine = GameEngine.fromTestSchematic(`
@@ -159,4 +160,6 @@ describe("Block", () => {
     it.skip("should should only press green and blue buttons once");
     it.skip("should destroy bombs");
     it.skip("should be able to be rammed"); // http://chipschallenge.wikia.com/wiki/Ram
+    it.skip(": hidden monster under block should kill player");
+    it.skip(": blocks under floors");
 });

@@ -101,6 +101,9 @@ export class AbstractDatParser {
                 name,
                 layer
             );
+            if (name === "block") {
+                this.currentLevel.blockCoordinates.push([new Coordinate(x, y), layer]);
+            }
         }
         currentTileMarker += num;
         return currentTileMarker;

@@ -61,6 +61,14 @@ export class Coordinate {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
 
+    isWithinBounds(x1, x2, y1, y2) {
+        return !(this.x < x1 || this.y < y1 || this.x > x2 || this.y > y2);
+    }
+
+    isWithinBoundsOfLevel(level) {
+        return this.isWithinBounds(0, level.width - 1, 0, level.height - 1);
+    }
+
     asArray() {
         return [this.x, this.y];
     }

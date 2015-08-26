@@ -1,11 +1,13 @@
-let { Coordinate } = require("./2d/Coordinate");
-let { ObjectLinkedList } = require("../util/ObjectLinkedList");
-let { CoordinateTileMap } = require("./2d/CoordinateTileMap");
-let { CoordinateMap } = require("./2d/CoordinateMap");
-let { Viewport } = require("./2d/Viewport");
-let { Player } = require("../entity/Player");
-let { Direction } = require("./2d/directions");
-let { EntityManager } = require("../entity/EntityManager");
+import { Coordinate } from "./2d/Coordinate";
+import { ObjectLinkedList } from "../util/ObjectLinkedList";
+import { CoordinateTileMap } from "./2d/CoordinateTileMap";
+import { CoordinateMap } from "./2d/CoordinateMap";
+import { TwoLayerCoordinateMap } from "./2d/TwoLayerCoordinateMap";
+import { Viewport } from "./2d/Viewport";
+import { Player } from "../entity/Player";
+import { Direction } from "./2d/directions";
+import { EntityManager } from "../entity/EntityManager";
+import { Block } from "../entity/Block";
 
 export class GameState {
     constructor(engine, level) {
@@ -22,7 +24,7 @@ export class GameState {
         this.tileMap = new CoordinateTileMap();
         // exact proxy to the level, nothing else
         this.monsterList = new ObjectLinkedList("monsters");
-        this.blockMap = new CoordinateMap();
+        this.blockMap = new TwoLayerCoordinateMap();
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
         this.viewport = null;
@@ -39,7 +41,6 @@ export class GameState {
     }
 
     setLevel(level) {
-        // TODO: go through, set monster list and player, etc
         this.level = level;
         this.tileMap = this.level.tileMap.clone();
         this.viewport = this.level.getDefaultViewport();
@@ -75,7 +76,13 @@ export class GameState {
         this.viewport = Viewport.constructFromPlayerPosition(playerCoord, this.level.width, this.level.height);
 
         // init blocks
-        this.blockMap = this.level.blockMap.clone();
+        for (let [blockCoord, layer] of this.level.blockCoordinates) {
+            let newBlock = new Block(null, blockCoord);
+            this.blockMap.set(blockCoord.x, blockCoord.y, newBlock, layer);
+            let tile = this.tileMap.get(blockCoord.x, blockCoord.y, layer);
+            if (tile.name !== "block") { console.warn("You tried to put a block entity over a non-block tile!"); }
+            tile.entity = newBlock;
+        }
     }
 
     getPlayerPosition() {
