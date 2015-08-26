@@ -125,6 +125,23 @@ describe("Block", () => {
         engine.gameState.movePlayer("LDRURDLLDRRRRRRR");
         expectations.expectPlayerAt(engine.gameState, 0, 2);
     });
+    it("should blocked by walls", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            B block
+            W wall
+            ===
+            .W...
+            WBBP.
+            .....
+            .....
+        `);
+        engine.gameState.movePlayer("LLLL");
+        expectations.expectPlayerAt(engine.gameState, 3, 1);
+        engine.gameState.movePlayer("ULDRDLDLUUUUUU"); // push under other block
+        expectations.expectPlayerAt(engine.gameState, 1, 3);
+    });
     it("should immediately reveal fire on lower level", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor

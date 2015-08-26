@@ -13,6 +13,7 @@ export class Block extends Entity {
         if (!target.isWithinBoundsOfLevel(gameState.level)) { return false; }
 
         let targetTileUpper = gameState.tileMap.get(target.x, target.y, 1);
+        console.log("targetTileUpper: "+ targetTileUpper);
         let targetTileLower = gameState.tileMap.get(target.x, target.y, 2);
         let thisTileLower = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (
@@ -20,8 +21,10 @@ export class Block extends Entity {
             ((!targetTileUpper || targetTileUpper.isTransparent()) && targetTileLower && targetTileLower.shouldBlockEntity(this, direction, gameState)) ||
             (thisTileLower && thisTileLower.shouldBlockEntityExit(this, direction, gameState))
         ) {
+            console.log("CANNOT move");
             return false;
         }
+        console.log("CAN move");
         return true;
     }
     // this should NEVER be called if the block tile is on the lower layer!!
@@ -61,7 +64,7 @@ export class BlockTile extends Tile {
             }
         }
         if (entity.name === "block") {
-            return this.getEntity().canMove(direction, gameState);
+            return true;
         }
         return true;
     }
