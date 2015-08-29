@@ -1,5 +1,6 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
+let sinon = require("sinon");
 let expectations = reqlib("/testing/expectations")(expect);
 let { Wall } = reqlib("/src/tile/Wall");
 let { GameState } = reqlib("/src/core/GameState");
@@ -22,7 +23,7 @@ describe("Bomb", () => {
         `);
         let stub = sinon.stub(engine, "resetCurrentLevel");
         engine.gameState.movePlayer("DRRR");
-        expecations.expectLoss(engine.gameState);
+        expectations.expectLoss(engine.gameState);
         stub.restore();
     });
     it("should destroy and be destroyed by blocks", () => {
@@ -37,17 +38,17 @@ describe("Bomb", () => {
             .B.@.
         `);
         engine.gameState.movePlayer("RRLLDRRLLDRRLL");
-        expecations.expectTileAt(engine.gameState, 3, 0, "floor");
-        expecations.expectTileAt(engine.gameState, 3, 1, "floor");
-        expecations.expectTileAt(engine.gameState, 3, 2, "floor");
-        expecations.expectTileAt(engine.gameState, 2, 0, "floor");
-        expecations.expectTileAt(engine.gameState, 2, 1, "floor");
-        expecations.expectTileAt(engine.gameState, 2, 2, "floor");
+        expectations.expectTileAt(engine.gameState, 3, 0, "floor");
+        expectations.expectTileAt(engine.gameState, 3, 1, "floor");
+        expectations.expectTileAt(engine.gameState, 3, 2, "floor");
+        expectations.expectTileAt(engine.gameState, 2, 0, "floor");
+        expectations.expectTileAt(engine.gameState, 2, 1, "floor");
+        expectations.expectTileAt(engine.gameState, 2, 2, "floor");
     });
     it("should destroy and be destroyed by monsters", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor
-            @ block_mystery_fake
+            @ bomb
             P player-south-normal
             B bug-west
             p paramecium-west
@@ -102,7 +103,7 @@ describe("Bomb", () => {
             5 12
             5 14
         `).step().step().step().step().step().step().step().step().step().step().step().step();
-        expect(engine.gameState.monsterList.size).to.equal(0);
+        expect(engine.gameState.monsterList.length).to.equal(0);
         expectations.expectTileAt(engine.gameState, 4, 0, "floor");
         expectations.expectTileAt(engine.gameState, 4, 2, "floor");
         expectations.expectTileAt(engine.gameState, 4, 4, "floor");

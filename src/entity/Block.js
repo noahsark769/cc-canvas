@@ -27,6 +27,12 @@ export class Block extends Entity {
     // this should NEVER be called if the block tile is on the lower layer!!
     move(direction, gameState) {
         let target = direction.coordinateFor(this.position, 1);
+        let sourceTile = gameState.tileMap.get(target.x, target.y, 1);
+        if (sourceTile && sourceTile.isLethalToEntity(this)) {
+            sourceTile.entityWillOccupy(this, direction, gameState, target, gameState.engine);
+            gameState.blockMap.delete(this.position.x, this.position.y, 1);
+            return;
+        }
         this.performMove(target, direction, gameState);
         gameState.blockMap.delete(this.position.x, this.position.y, 1);
         gameState.blockMap.set(target, target, this, 1);

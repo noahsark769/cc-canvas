@@ -44,6 +44,7 @@ export class Monster extends Entity {
             (newTile && newTile.isLethalToEntity(this)) ||
             (newTile && newTile.name.indexOf("player") !== -1 && newTileSecondLayer && newTileSecondLayer.isLethalToEntity(this))
         ) {
+            newTile.entityWillOccupy(this, newDir, gameState, newCoord, gameState.engine);
             gameState.monsterList.remove(this);
             // if there was a tile under us, move it up. otherwise, replace us with floor
             if (oldTileSecondLayer) {

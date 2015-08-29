@@ -390,12 +390,13 @@ describe("GameState", () => {
             ===
             0 1
         `)]));
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         engine.enqueuePlayerMovement("right"); // first tick, player moves
         engine.enqueuePlayerMovement("right");
         engine.tick(); // doesn't move on this tick
         engine.tick(); // both move on this tick, bug does not hit player
         expectations.expectEntityAt(engine.gameState, 0, 0, "bug");
         expect(engine.gameState.isOver).to.be.false;
+        stub.restore();
     });
 });

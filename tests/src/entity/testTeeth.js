@@ -110,7 +110,7 @@ describe("Teeth", () => {
             ===
             7 1
         `)).step().step();
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAt(engine.gameState, 7, 1, "teeth");
         engine.step(); engine.step();
         expectations.expectEntityAt(engine.gameState, 6, 1, "teeth");
@@ -124,6 +124,7 @@ describe("Teeth", () => {
         expectations.expectEntityAt(engine.gameState, 2, 1, "teeth");
         engine.step(); engine.step();
         expectations.expectEntityAt(engine.gameState, 1, 1, "teeth");
+        stub.restore();
     });
     it("should prefer vertical routes to player in ties", () => {
         let engine = GameEngine.getInstance(false).loadLevelSet(LevelSet.fromSchematic(`
@@ -144,7 +145,7 @@ describe("Teeth", () => {
             ===
             3 3
         `)).step().step();
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAt(engine.gameState, 3, 3, "teeth");
         engine.step(); engine.step();
         expectations.expectEntityAt(engine.gameState, 3, 2, "teeth");
@@ -156,5 +157,6 @@ describe("Teeth", () => {
         expectations.expectEntityAt(engine.gameState, 1, 1, "teeth");
         engine.step(); engine.step();
         expectations.expectEntityAt(engine.gameState, 1, 0, "teeth");
+        stub.restore();
     });
 });

@@ -157,11 +157,12 @@ describe("Bug", () => {
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level])).step();
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "bug", new Coordinate(3, 1), "lll");
         expect(engine.gameState.isOver, "Game was not over").to.be.true;
         expect(engine.gameState.isLoss, "Game was not a loss!").to.be.true;
         expect(engine.gameState.isWin, "Game was a win when it should have been a loss").to.be.false;
+        stub.restore();
     });
     it("should treat fire as walls", () => {
         let [nothing, level] = buildLevelFromSchematic(`

@@ -126,9 +126,10 @@ describe("Paramecium", () => {
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level])).step();
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "paramecium", new Coordinate(3, 1), "ullld");
         expectations.expectLoss(engine.gameState);
+        stub.restore();
     });
     it.skip("should be killed by everything");
 });

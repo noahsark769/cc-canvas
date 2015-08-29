@@ -149,7 +149,7 @@ export class Player extends Entity {
     getTile() {
         let {TileManager} = require("../tile/TileManager");
         let tileClass;
-        if (this.state === "dead-water" || this.state === "dead-fire") {
+        if (this.state === "dead-water" || this.state === "dead-fire" || this.state === "dead-charred") {
             tileClass = TileManager.getInstance().tileClassByName("player-" + this.state);
         } else {
             tileClass = TileManager.getInstance().tileClassByName("player-" + this.direction.asStringDirection() + "-" + this.state);

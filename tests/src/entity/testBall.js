@@ -129,9 +129,10 @@ describe("Ball", () => {
         `);
         let engine = GameEngine.getInstance(false);
         engine.loadLevelSet(new LevelSet([level])).step();
-        sinon.stub(engine, "resetCurrentLevel");
+        let stub = sinon.stub(engine, "resetCurrentLevel");
         expectations.expectEntityAtCoordSequence(engine, "ball", new Coordinate(3, 1), "lll");
         expectations.expectLoss(engine.gameState);
+        stub.restore();
     });
     it.skip("should be killed by everything except fire");
 });
