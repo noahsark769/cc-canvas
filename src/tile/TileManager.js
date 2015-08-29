@@ -15,6 +15,7 @@ let { RedDoor } = require("./doors/RedDoor");
 let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
 let { ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight } = require("./ThinWall.js");
+import { BlueWallFake, BlueWallReal } from "./BlueWall.js"
 let { PlayerDeadFire, PlayerDeadWater, PlayerDeadCharred, PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
 let { FireballNorth, FireballSouth, FireballEast, FireballWest } = require("../entity/enemy/Fireball");
@@ -58,6 +59,10 @@ export class TileManager {
         }
 
         for (let tileClass of [ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+
+        for (let tileClass of [BlueWallFake, BlueWallReal]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 

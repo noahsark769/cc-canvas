@@ -101,6 +101,7 @@ describe("Blue walls", () => {
                 . floor
                 @ block
                 B block_mystery_real
+                P player-south-normal
                 ===
                 P...B.
                 ...@B.
@@ -203,6 +204,7 @@ describe("Blue walls", () => {
                 . floor
                 @ block
                 B block_mystery_fake
+                P player-south-normal
                 ===
                 P...B.
                 ...@B.
@@ -212,7 +214,7 @@ describe("Blue walls", () => {
             engine.gameState.movePlayer("RRDRRRRRURDLDRRRURDLDRRR");
             expectations.expectPlayerAt(engine.gameState, 2, 3);
             expectations.expectTileAt(engine.gameState, 3, 3, "block");
-            expectations.expectTileAt(engine.gameState, 4, 2, "block_mystery_real");
+            expectations.expectTileAt(engine.gameState, 4, 2, "block_mystery_fake");
         });
     });
 });
