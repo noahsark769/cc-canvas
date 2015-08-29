@@ -15,7 +15,7 @@ export class Bomb extends Tile {
         return true;
     }
     entityWillOccupy(entity, direction, gameState, coordinate, engine) {
-        gameState.tileMap.set(coordinate.x, coordinate.y, "floor", 1);
+        gameState.tileMap.setTileByName(coordinate.x, coordinate.y, "floor", 1);
     }
     entityWillPress(entity, direction, gameState) {
         if (entity.name === "player") {
