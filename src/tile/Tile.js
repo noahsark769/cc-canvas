@@ -18,6 +18,7 @@ export class Tile {
      */
     entityWillOccupy(entity, dir, gameState, coordinate, engine) {}
     entityWillPress(entity, dir, gameState, coordinate, engine) {}
+    entityDidPress(entity, dir, gameState, coordinate, engine) {}
     entityWillUnpress(entity, dir, gameState, coordinate, engine) {}
     isTransparent() {
         return false;

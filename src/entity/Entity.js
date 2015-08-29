@@ -52,6 +52,7 @@ export class Entity {
             newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
+            newTile.entityDidPress(this, direction, gameState, newCoord, gameState.engine);
         }
 
         let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);

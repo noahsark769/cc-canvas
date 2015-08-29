@@ -53,7 +53,7 @@ let build32x32 = function() {
 describe("GameState", () => {
     it("should import correctly", () => {});
     it("should tick correctly", () => {
-        let state = new GameState();
+        let state = build32x32();
         expect(state.currentTicks).to.equal(0);
         state.tick();
         expect(state.currentTicks).to.equal(1);
@@ -64,8 +64,9 @@ describe("GameState", () => {
         let state = new GameState();
         state.setLevel(Level.buildFromSchematic(`
             . floor
+            P player-south-normal
             ===
-            ....
+            ...P
             ....
             ....
             ....
