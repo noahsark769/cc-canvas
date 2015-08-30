@@ -8,12 +8,14 @@ export class Water extends Tile {
     shouldBlockEntity(entity, direction, gameState) {
         return false;
     }
-    // nothing happens on entity occupy, because it never happens, because water is never replaced
+    // when blocks replace and then occupy water,
     entityShouldReplace(entity) {
-        return false
+        return false;
     }
     // kills every monster except for gliders
-    // note that this method does not apply to player or block
+    // note that this method does not apply to player
+    // Note also: this applies to block, but the process of moving a block tile
+    // to a water tile is done in entity will occupy.
     isLethalToEntity(entity) {
         return entity.name !== "glider";
     }
@@ -22,6 +24,12 @@ export class Water extends Tile {
             gameState.isOver = true;
             gameState.isLoss = true;
             entity.state = "dead-water";
+        }
+    }
+    // note: this assumes dirt will always appear on the first layer
+    entityWillOccupy(entity, direction, gameState, coordinate, engine) {
+        if (entity.name === "block") {
+            gameState.tileMap.setTileByName(coordinate.x, coordinate.y, "dirt", 1);
         }
     }
 }

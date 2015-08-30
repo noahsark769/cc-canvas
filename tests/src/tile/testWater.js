@@ -25,7 +25,24 @@ describe("Water", () => {
     });
     it.skip("should not kill player with flippers");
     it.skip("should register player as swim state with flippers");
-    it.skip("should turn into dirt by block");
+    it("should turn into dirt by block", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            W water
+            @ block
+            ===
+            ..W@P
+            ..W@.
+            ..W@.
+            .....
+        `);
+        engine.gameState.movePlayer("LRDLRDL");
+        expectations.expectPlayerAt(engine.gameState, 3, 2);
+        expectations.expectTileAt(engine.gameState, 2, 0, "dirt");
+        expectations.expectTileAt(engine.gameState, 2, 1, "dirt");
+        expectations.expectTileAt(engine.gameState, 2, 2, "dirt");
+    });
     it("should kill all monsters except glider", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor

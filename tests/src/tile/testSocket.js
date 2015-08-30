@@ -24,5 +24,22 @@ describe("Socket", () => {
         expectations.expectPlayerAt(state, 2, 1);
         expect(state.tileMap.get(2, 2).name).to.equal("floor");
     });
-    it("should block blocks, even if all chips collected");
+    it("should block blocks, even if all chips collected", () => {
+        let [state, level] = buildLevelFromSchematic(`
+            . floor
+            W wall
+            P player-south-normal
+            C chip
+            S socket
+            @ block
+            ===
+            C.P
+            .W@
+            C.S
+        `);
+        state.movePlayer("D");
+        expectations.expectPlayerAt(state, 2, 0); // should have blocked
+        state.movePlayer("LLDDUURRD");
+        expectations.expectPlayerAt(state, 2, 0);
+    });
 });
