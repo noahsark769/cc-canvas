@@ -123,15 +123,18 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         O ball-east
         W wall
         E escape
+        C cement
+        B block_mystery_fake
+        b block_mystery_real
         ===
-        .........
-        .........
-        ........P
+        ....bbbbb
+        ....BBBBB
+        ....CCCCP
         .O.......
-        ........E
-        .........
-        .........
-        .........
+        ....CCCCE
+        ....bbbbb
+        ....BBBBB
+        ....WWWWW
         ===
         .........
         .........
@@ -154,9 +157,10 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         J thin_lr
         W wall
         E escape
+        @ block
         ===
         P.].[.W
-        ......W
+        .@....W
         _.-.J.W
         .....EW
         WWWWWWW

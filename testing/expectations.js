@@ -31,6 +31,10 @@ export default function expectations(expect) {
         expectPlayerAt: function(state, x, y) {
             expect(state.hasPlayerAt(x, y), "no player at " + x + ", " + y + ", instead was at " + state.getPlayerPosition().serialize()).to.be.true;
         },
+        movePlayerAndExpectAt: function(gameState, controlString, x, y, name) {
+            gameState.movePlayer(controlString);
+            this.expectPlayerAt(gameState, x, y);
+        },
         expectPlayerAndViewportCenterToMatch: function(state, viewport) {
             expect(state.getPlayerPosition().asArray()).to.deep.equals(viewport.getCenter().asArray());
         },

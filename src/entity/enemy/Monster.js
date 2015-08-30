@@ -18,12 +18,12 @@ export class Monster extends Entity {
             oldTileSecondLayer = tileMap.get(this.position.x, this.position.y, 2);
             if (
                 (oldTileSecondLayer && oldTileSecondLayer.shouldBlockEntityExit(this, dir, gameState)) ||
-                (newTileFirstLayer && newTileFirstLayer.shouldBlockEntity(this, dir, gameState)) ||
+                (newTileFirstLayer && newTileFirstLayer.shouldBlockEntity(this, dir, gameState, newCoord)) ||
                 (
                     newTileFirstLayer &&
                     newTileFirstLayer.name.indexOf("player") !== -1 &&
                     newTileSecondLayer &&
-                    newTileSecondLayer.shouldBlockEntity(this, dir, gameState)
+                    newTileSecondLayer.shouldBlockEntity(this, dir, gameState, newCoord)
                 ) ||
                 newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height
             ) {

@@ -122,10 +122,10 @@ export class Player extends Entity {
         let upperLayerDestTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         let lowerLayerDestTile = gameState.tileMap.get(newCoord.x, newCoord.y, 2);
         // TODO: special case for clone machine
-        if (upperLayerDestTile && upperLayerDestTile.shouldBlockEntity(this, direction, gameState)) {
+        if (upperLayerDestTile && upperLayerDestTile.shouldBlockEntity(this, direction, gameState, newCoord)) {
             return false;
         }
-        if ((!upperLayerDestTile || upperLayerDestTile.isTransparent()) && lowerLayerDestTile && lowerLayerDestTile.shouldBlockEntity(this, direction, gameState)) {
+        if ((!upperLayerDestTile || upperLayerDestTile.isTransparent()) && lowerLayerDestTile && lowerLayerDestTile.shouldBlockEntity(this, direction, gameState, newCoord)) {
             return false;
         }
         return newCoord;

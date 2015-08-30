@@ -5,7 +5,7 @@ export class Tile {
         renderer.renderTile(canvas, this, coordinate);
     }
 
-    shouldBlockEntity(entity) {
+    shouldBlockEntity(entity, direction, gameState, coordinate) {
         return false;
     }
 

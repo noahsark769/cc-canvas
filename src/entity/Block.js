@@ -57,12 +57,17 @@ export class BlockTile extends Tile {
         if (!this.entity) { console.warn("You tried to get the entity of a block but it hasn't been set!!"); }
         return this.entity;
     }
-    shouldBlockEntity(entity, direction, gameState) {
+    shouldBlockEntity(entity, direction, gameState, coordinate) {
         if (entity.name === "player") {
             // kinda hacky: we assume that a player will only ever check this if
             // they want to move there. TODO: figure out a more robust way to do this.
             if (this.getEntity().canMove(direction, gameState)) {
                 this.getEntity().move(direction, gameState);
+                let secondLayerTile = gameState.tileMap.get(coordinate.x, coordinate.y, 2);
+                if (secondLayerTile) {
+                    return secondLayerTile.shouldBlockEntity(entity, direction, gameState, coordinate);
+                }
+                entity.direction = direction;
                 return false;
             }
         }
