@@ -4,7 +4,7 @@
   "description": "Implementation of the game Chip's Challenge in HTML5 canvas, for learning purposes mostly.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests --recursive --compilers js:babel/register"
+    "test": "ruby scripts/test.rb"
   },
   "repository": {
     "type": "git",

@@ -199,5 +199,27 @@ describe("Keys", () => {
 });
 
 describe("Doors", () => {
-    it.skip("should block blocks");
+    it("should block blocks", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            @ block
+            1 key_green
+            2 key_yellow
+            3 key_red
+            4 key_blue
+            B door_blue
+            G door_green
+            R door_red
+            Y door_yellow
+            P player-south-normal
+            ===
+            P1..B.
+            .2.@G.
+            .3..R.
+            .4..Y.
+        `);
+        engine.gameState.movePlayer("RDDDUUURDRRRRRURDLDRRRURDLDRRR");
+        expectations.expectPlayerAt(engine.gameState, 2, 3);
+        expectations.expectTileAt(engine.gameState, 3, 3, "block");
+    });
 });

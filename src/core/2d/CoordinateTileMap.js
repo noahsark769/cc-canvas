@@ -22,7 +22,10 @@ export class CoordinateTileMap extends TwoLayerCoordinateMap {
 
     newTileInstanceByName(tileName) {
         let tileClass = TileManager.getInstance().tileClassByName(tileName);
-        if (tileClass === false) { return false; }
+        if (tileClass === false) {
+            console.warn("You tried to set a new tile called " + tileName + " but it didn't exist!");
+            return false;
+        }
         let tileInstance = new tileClass();
         return tileInstance;
     }

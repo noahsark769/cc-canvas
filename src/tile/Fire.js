@@ -8,9 +8,9 @@ export class Fire extends Tile {
     shouldBlockEntity(entity, direction, gameState) {
         return entity.name === "bug" || entity.name === "walker";
     }
-    // nothing happens on entity occupy, because it never happens, because water is never replaced
+    // nothing happens on entity occupy, because it never happens, because fire is never replaced
     entityShouldReplace(entity) {
-        return false
+        return false;
     }
     // kills every monster except for gliders
     // note that this method does not apply to player or block

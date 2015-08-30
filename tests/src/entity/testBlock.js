@@ -175,8 +175,22 @@ describe("Block", () => {
     });
     it.skip("should hold down brown buttons");
     it.skip("should should only press green and blue buttons once");
-    it.skip("should destroy bombs");
     it.skip("should be able to be rammed"); // http://chipschallenge.wikia.com/wiki/Ram
-    it.skip(": hidden monster under block should kill player");
+    it(": hidden monster under block should kill player", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            B block
+            b bug-south
+            ===
+            ..BP.
+            ===
+            ..b..
+        `);
+        let stub = sinon.stub(engine, "resetCurrentLevel");
+        engine.gameState.movePlayer("L");
+        expectations.expectLoss(engine.gameState);
+        stub.restore();
+    });
     it.skip(": blocks under floors");
 });

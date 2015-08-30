@@ -134,5 +134,4 @@ describe("Ball", () => {
         expectations.expectLoss(engine.gameState);
         stub.restore();
     });
-    it.skip("should be killed by everything except fire");
 });
