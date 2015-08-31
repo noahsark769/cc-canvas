@@ -9,7 +9,7 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Fire", () => {
-    it.skip("should import correctly");
+    it("should import correctly", () => {});
     it("should be deadly to player", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor
@@ -110,5 +110,16 @@ describe("Fire", () => {
         expectations.expectEntityAt(engine.gameState, 3, 2, "walker");
     });
     it.skip("should kill tanks");
-    it.skip("should not destroy blocks when moved on");
+    it("should not destroy blocks when moved on", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            B block
+            x fire
+            ===
+            PBx.
+        `);
+        engine.gameState.movePlayer("R");
+        expectations.expectTileAt(engine.gameState, 2, 0, "block");
+    });
 });

@@ -15,7 +15,7 @@ export class Fire extends Tile {
     // kills every monster except for gliders
     // note that this method does not apply to player or block
     isLethalToEntity(entity) {
-        return ["fireball", "walker", "bug"].indexOf(entity.name) === -1;
+        return ["fireball", "walker", "bug", "block"].indexOf(entity.name) === -1;
     }
     entityWillPress(entity, direction, gameState) {
         if (entity.name === "player") {

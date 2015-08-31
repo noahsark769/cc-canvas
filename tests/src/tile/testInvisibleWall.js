@@ -9,13 +9,56 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Invisible wall", () => {
-    it.skip("should import correctly");
+    it("should import correctly", () => {});
+
     describe("(appearing)", () => {
-        it.skip("should block monsters, blocks, and player");
-        it.skip("should appear when pushed");
+        it("should appear when pressed", () => {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                P player-south-normal
+                B wall_invisible_appearing
+                ===
+                ..B..
+                ..BP.
+                ..B..
+                .....
+            `);
+            engine.gameState.movePlayer("LLLLULLLLDDLLLLDLLURRRURRRURRR");
+            expectations.expectPlayerAt(engine.gameState, 1, 0);
+            expectations.expectTileAt(engine.gameState, 2, 0, "wall");
+            expectations.expectTileAt(engine.gameState, 2, 1, "wall");
+            expectations.expectTileAt(engine.gameState, 2, 2, "wall");
+        });
+        it("should block monsters", () => {
+            expectations.expectTileToBlockMonsters("wall_invisible_appearing");
+        });
+        it("should block blocks", () => {
+            expectations.expectTileToBlockBlocks("wall_invisible_appearing");
+        });
     });
-    describe("(invisible)", () => {
-        it.skip("should block monsters, blocks, and player");
-        it.skip("should not when pushed");
+    describe("(not appearing)", () => {
+        it("should block player", () => {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                P player-south-normal
+                B wall_invisible
+                ===
+                ..B..
+                ..BP.
+                ..B..
+                .....
+            `);
+            engine.gameState.movePlayer("LLLLULLLLDDLLLLDLLURRRURRRURRR");
+            expectations.expectPlayerAt(engine.gameState, 1, 0);
+            expectations.expectTileAt(engine.gameState, 2, 0, "wall_invisible");
+            expectations.expectTileAt(engine.gameState, 2, 1, "wall_invisible");
+            expectations.expectTileAt(engine.gameState, 2, 2, "wall_invisible");
+        });
+        it("should block monsters", () => {
+            expectations.expectTileToBlockMonsters("wall_invisible");
+        });
+        it("should block blocks", () => {
+            expectations.expectTileToBlockBlocks("wall_invisible");
+        });
     });
 });

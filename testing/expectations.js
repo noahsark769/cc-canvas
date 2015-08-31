@@ -1,6 +1,7 @@
 let reqlib = require("app-root-path").require;
 let sinon = require("sinon");
 let {Coordinate} = reqlib("/src/core/2d/Coordinate");
+let {GameEngine} = reqlib("/src/core/GameEngine");
 
 export default function expectations(expect) {
     return {
@@ -57,6 +58,90 @@ export default function expectations(expect) {
                 engine.step();
                 this.expectEntityAt(engine.gameState, coord.x, coord.y, entity);
             }
+        },
+        expectTileToBlockBlocks: function(tilename) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                @ block
+                B ${tilename}
+                P player-south-normal
+                ===
+                P...B.
+                ...@B.
+                ....B.
+                ....B.
+            `);
+            engine.gameState.movePlayer("RRDRRRRRURDLDRRRURDLDRRR");
+            this.expectPlayerAt(engine.gameState, 2, 3);
+            this.expectTileAt(engine.gameState, 3, 3, "block");
+            this.expectTileAt(engine.gameState, 4, 2, tilename);
+        },
+        expectTileToBlockMonsters: function(tilename) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                @ ${tilename}
+                P player-south-normal
+                B bug-west
+                p paramecium-west
+                F fireball-west
+                G glider-west
+                O ball-west
+                w walker-west
+                b blob-west
+                T teeth-west
+                W wall
+                ===
+                P...@BW
+                WWWWWWW
+                ....@pW
+                WWWWWWW
+                ....@FW
+                WWWWWWW
+                ....@GW
+                WWWWWWW
+                ....@OW
+                WWWWWWW
+                ....@wW
+                WWWWWWW
+                ....@bW
+                WWWWWWW
+                ....@TW
+                WWWWWWW
+                ===
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                ===
+                5 0
+                5 2
+                5 4
+                5 6
+                5 8
+                5 10
+                5 12
+                5 14
+            `).step().step().step().step().step().step().step().step().step().step().step().step();
+            this.expectEntityAt(engine.gameState, 5, 0, "bug");
+            this.expectEntityAt(engine.gameState, 5, 2, "paramecium");
+            this.expectEntityAt(engine.gameState, 5, 4, "fireball");
+            this.expectEntityAt(engine.gameState, 5, 6, "glider");
+            this.expectEntityAt(engine.gameState, 5, 8, "ball");
+            this.expectEntityAt(engine.gameState, 5, 10, "walker");
+            this.expectEntityAt(engine.gameState, 5, 12, "blob");
+            this.expectEntityAt(engine.gameState, 5, 14, "teeth");
         }
     };
 }

@@ -6,7 +6,10 @@ export class Escape extends Tile {
         this.name = "escape";
     }
     shouldBlockEntity(entity) {
-        return entity.name !== "player";
+        if (entity.name === "player" || entity.name === "block") {
+            return false;
+        }
+        return true;
     }
     entityWillPress(entity, dir, gameState, coordinate) {
         if (entity.name === "player") {

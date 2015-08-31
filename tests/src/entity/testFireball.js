@@ -110,5 +110,4 @@ describe("Fireball", () => {
         expectations.expectLoss(engine.gameState);
         stub.restore();
     });
-    it.skip("be killed by everything except fire");
 });
