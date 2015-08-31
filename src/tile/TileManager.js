@@ -19,6 +19,7 @@ import { BlueWallFake, BlueWallReal } from "./BlueWall";
 import { Bomb } from "./Bomb";
 import { Cement } from "./Cement";
 import { Dirt } from "./Dirt";
+import { Gravel } from "./Gravel";
 import { InvisibleWall, InvisibleWallAppearing } from "./InvisibleWall";
 let { PlayerDeadFire, PlayerDeadWater, PlayerDeadCharred, PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
@@ -66,7 +67,7 @@ export class TileManager {
             this.map.set((new tileClass()).name, tileClass);
         }
 
-        for (let tileClass of [BlueWallFake, BlueWallReal, Bomb, Cement, Dirt, InvisibleWall, InvisibleWallAppearing]) {
+        for (let tileClass of [BlueWallFake, BlueWallReal, Bomb, Cement, Dirt, Gravel, InvisibleWall, InvisibleWallAppearing]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 

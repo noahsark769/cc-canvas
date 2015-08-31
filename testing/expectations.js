@@ -5,6 +5,11 @@ let {GameEngine} = reqlib("/src/core/GameEngine");
 
 export default function expectations(expect) {
     return {
+        withResetLevelStub: function(fn) {
+            let stub = sinon.stub(GameEngine.getInstance(), "resetCurrentLevel");
+            fn();
+            stub.restore();
+        },
         expectNoEntityAt: function(state, x, y) {
             let found = false;
             let name;
@@ -43,6 +48,10 @@ export default function expectations(expect) {
             expect(state.isOver, "state was not game over").to.be.true;
             expect(state.isLoss, "state was not a loss").to.be.true;
             expect(state.isWin, "state was a win").to.be.false;
+        },
+        expectNotLoss: function(state) {
+            expect(state.isOver, "state was game over").to.be.false;
+            expect(state.isLoss, "state was a loss").to.be.false;
         },
         expectWin: function(state) {
             expect(state.isOver, "state was not game over").to.be.true;
