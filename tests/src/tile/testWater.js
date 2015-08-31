@@ -23,8 +23,39 @@ describe("Water", () => {
         expectations.expectLoss(engine.gameState);
         expect(engine.gameState.tileMap.get(1, 1).name).to.equal("player-dead-water");
     });
-    it.skip("should not kill player with flippers");
-    it.skip("should register player as swim state with flippers");
+    it("should not kill player with flippers", () => {
+        expectations.withResetLevelStub(() => {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                P player-south-normal
+                b boots_water
+                ~ water
+                ===
+                Pb
+                .~
+            `);
+            engine.gameState.movePlayer("RDL");
+            expectations.expectNotLoss(engine.gameState);
+            expect(engine.gameState.tileMap.get(1, 0).name).to.equal("floor");
+        });
+    });
+    it("should register player as swim state with flippers", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            b boots_water
+            ~ water
+            ===
+            Pb
+            ~~
+        `);
+        engine.gameState.movePlayer("RD");
+        expect(engine.gameState.player.state).to.equal("swim");
+        engine.gameState.movePlayer("L");
+        expect(engine.gameState.player.state).to.equal("swim");
+        engine.gameState.movePlayer("U");
+        expect(engine.gameState.player.state).to.equal("normal");
+    });
     it("should turn into dirt by block", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor

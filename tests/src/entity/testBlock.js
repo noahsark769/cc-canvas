@@ -172,6 +172,7 @@ describe("Block", () => {
         expect(engine.gameState.chipsLeft).to.equal(1);
         engine.gameState.movePlayer("L");
         expect(engine.gameState.chipsLeft).to.equal(0);
+        expect(engine.gameState.tileMap.has(2, 0, 2)).to.be.false;
     });
     it.skip("should hold down brown buttons");
     it.skip("should should only press green and blue buttons once");

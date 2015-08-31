@@ -38,6 +38,13 @@ export class GameState {
         this.blueKeys = 0;
         this.yellowKeys = 0;
         this.greenKeys = 0;
+
+        this.boots = {
+            fire: false,
+            water: false,
+            force: false,
+            ice: false
+        };
     }
 
     setLevel(level) {

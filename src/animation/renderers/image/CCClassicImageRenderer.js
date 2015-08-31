@@ -319,7 +319,9 @@ export class CCClassicImageRenderer extends ImageRenderer {
         );
     }
 
+    // deprecated, do not use
     renderEntity(canvas, entity, coordinate) {
+        console.warn("DEPRECATED!!!!!!!!!");
         if (!this.ready) {
             return false;
         }

@@ -75,28 +75,34 @@ export class PlayerWest extends PlayerTile {
     }
 }
 
-export class PlayerSwimSouth extends PlayerTile {
+class PlayerSwimTile extends PlayerTile {
+    isTransparent() {
+        return false;
+    }
+}
+
+export class PlayerSwimSouth extends PlayerSwimTile {
     constructor(...args) {
         super(...args);
         this.name = "player-south-swim";
     }
 }
 
-export class PlayerSwimNorth extends PlayerTile {
+export class PlayerSwimNorth extends PlayerSwimTile {
     constructor(...args) {
         super(...args);
         this.name = "player-north-swim";
     }
 }
 
-export class PlayerSwimEast extends PlayerTile {
+export class PlayerSwimEast extends PlayerSwimTile {
     constructor(...args) {
         super(...args);
         this.name = "player-east-swim";
     }
 }
 
-export class PlayerSwimWest extends PlayerTile {
+export class PlayerSwimWest extends PlayerSwimTile {
     constructor(...args) {
         super(...args);
         this.name = "player-west-swim";

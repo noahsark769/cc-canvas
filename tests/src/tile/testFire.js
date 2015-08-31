@@ -23,7 +23,22 @@ describe("Fire", () => {
         expectations.expectLoss(engine.gameState);
         expect(engine.gameState.tileMap.get(1, 1).name).to.equal("player-dead-fire");
     });
-    it.skip("should not kill player with fire boots");
+    it("should not kill player with fire boots", () => {
+        expectations.withResetLevelStub(() => {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                P player-south-normal
+                b boots_fire
+                x fire
+                ===
+                Pb
+                .x
+            `);
+            engine.gameState.movePlayer("RDL");
+            expectations.expectNotLoss(engine.gameState);
+            expect(engine.gameState.tileMap.get(1, 0).name).to.equal("floor");
+        });
+    });
     it("should kill all monsters except fireball (excluding walkers and bugs)", () => {
         let engine = GameEngine.fromTestSchematic(`
             . floor

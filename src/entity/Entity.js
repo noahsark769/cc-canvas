@@ -45,6 +45,12 @@ export class Entity {
 
     performMove(newCoord, direction, gameState) {
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
+        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
+
+        if (lastSecondLayer) { // necessary for changing state when getting out of water
+            lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
+        }
+
         if (!newTile || newTile.entityShouldReplace(this)) {
             if (newTile) { newTile.entityWillOccupy(this, direction, gameState, newCoord, gameState.engine); }
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
@@ -55,12 +61,11 @@ export class Entity {
             newTile.entityDidPress(this, direction, gameState, newCoord, gameState.engine);
         }
 
-        let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (!lastSecondLayer) {
             gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
         } else {
-            lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
-            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1)
+            gameState.tileMap.set(this.position.x, this.position.y, lastSecondLayer, 1);
+            gameState.tileMap.delete(this.position.x, this.position.y, 2);
         }
     }
 }

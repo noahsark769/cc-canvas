@@ -12,8 +12,12 @@ let { YellowKey } = require("./keys/YellowKey");
 let { GreenKey } = require("./keys/GreenKey");
 let { BlueDoor } = require("./doors/BlueDoor");
 let { RedDoor } = require("./doors/RedDoor");
-let { YellowDoor } = require("./doors/YellowDoor");
 let { GreenDoor } = require("./doors/GreenDoor");
+let { YellowDoor } = require("./doors/YellowDoor");
+let { FireBoot } = require("./boots/FireBoot");
+let { ForceBoot } = require("./boots/ForceBoot");
+let { IceBoot } = require("./boots/IceBoot");
+let { WaterBoot } = require("./boots/WaterBoot");
 let { ThinWallBottom, ThinWallTop, ThinWallLeft, ThinWallRight, ThinWallLowerRight } = require("./ThinWall");
 import { BlueWallFake, BlueWallReal } from "./BlueWall";
 import { Bomb } from "./Bomb";
@@ -60,6 +64,10 @@ export class TileManager {
         this.map.set("block", BlockTile);
 
         for (let tileClass of [Water, Fire]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+
+        for (let tileClass of [FireBoot, WaterBoot, IceBoot, ForceBoot]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 

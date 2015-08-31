@@ -18,7 +18,7 @@ export class Fire extends Tile {
         return ["fireball", "walker", "bug", "block"].indexOf(entity.name) === -1;
     }
     entityWillPress(entity, direction, gameState) {
-        if (entity.name === "player") {
+        if (entity.name === "player" && !gameState.boots.fire) {
             gameState.isOver = true;
             gameState.isLoss = true;
             entity.state = "dead-fire";

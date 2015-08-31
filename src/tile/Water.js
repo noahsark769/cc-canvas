@@ -15,15 +15,22 @@ export class Water extends Tile {
     // kills every monster except for gliders
     // note that this method does not apply to player
     // Note also: this applies to block, but the process of moving a block tile
-    // to a water tile is done in entity will occupy.
+    // to a water tile is done in entityWillOccupy.
     isLethalToEntity(entity) {
         return entity.name !== "glider";
     }
     entityWillPress(entity, direction, gameState) {
-        if (entity.name === "player") {
+        if (entity.name === "player" && !gameState.boots.water) {
             gameState.isOver = true;
             gameState.isLoss = true;
             entity.state = "dead-water";
+        } else if (entity.name === "player") {
+            entity.state = "swim";
+        }
+    }
+    entityWillUnpress(entity, direction, gameState) {
+        if (entity.name === "player") {
+            entity.state = "normal";
         }
     }
     // note: this assumes dirt will always appear on the first layer
