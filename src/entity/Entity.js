@@ -46,6 +46,7 @@ export class Entity {
     performMove(newCoord, direction, gameState) {
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         let lastSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        let newSecondLayer = gameState.tileMap.get(newCoord.x, newCoord.y, 2);
 
         if (lastSecondLayer) { // necessary for changing state when getting out of water
             lastSecondLayer.entityWillUnpress(this, direction, gameState, this.position, gameState.engine)
@@ -56,6 +57,9 @@ export class Entity {
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else {
             newTile.entityWillPress(this, direction, gameState, newCoord, gameState.engine);
+            if (newSecondLayer) {
+                newSecondLayer.entityWillRemoveFromMap(this, direction, gameState, newCoord, gameState.engine);
+            }
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
             newTile.entityDidPress(this, direction, gameState, newCoord, gameState.engine);

@@ -62,8 +62,8 @@ export class BlockTile extends Tile {
             // kinda hacky: we assume that a player will only ever check this if
             // they want to move there. TODO: figure out a more robust way to do this.
             if (this.getEntity().canMove(direction, gameState)) {
-                this.getEntity().move(direction, gameState);
                 let secondLayerTile = gameState.tileMap.get(coordinate.x, coordinate.y, 2);
+                this.getEntity().move(direction, gameState);
                 if (secondLayerTile) {
                     return secondLayerTile.shouldBlockEntity(entity, direction, gameState, coordinate);
                 }

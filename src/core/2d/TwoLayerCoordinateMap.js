@@ -40,4 +40,10 @@ export class TwoLayerCoordinateMap {
             dest.set(x2, y2, obj);
         }
     }
+    *entries(layer) {
+        let map = this.getLayer(layer);
+        for (let [x, y, val] of map.entries()) {
+            yield [x, y, val];
+        }
+    }
 }

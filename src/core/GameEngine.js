@@ -183,6 +183,7 @@ export class GameEngine {
             if (this.gameState.even() && this.gameState.currentTicks !== 0) {
                 this.gameState.advanceEntities();
             }
+            this.gameState.toggleWallsIfNeeded();
             if (this.pendingPlayerMovement === null) {
                 this.playerMovedOnLastTick = false;
                 this.ticksSincePlayerMove++;

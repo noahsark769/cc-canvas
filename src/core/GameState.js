@@ -25,6 +25,8 @@ export class GameState {
         // exact proxy to the level, nothing else
         this.monsterList = new ObjectLinkedList("monsters");
         this.blockMap = new TwoLayerCoordinateMap();
+        this.toggleWallMap = new CoordinateMap();
+        this.needsWallToggle = null;
         this.level = null;
         this.currentTicks = 0; // the number of ticks since the currently playing level began
         this.viewport = null;
@@ -90,6 +92,13 @@ export class GameState {
             if (tile.name !== "block") { console.warn("You tried to put a block entity over a non-block tile!"); }
             tile.entity = newBlock;
         }
+
+        // init toggle walls
+        for (let [x, y, firstLayerTile] of this.tileMap.entries(1)) {
+            if (firstLayerTile.name.indexOf("toggle") !== -1) {
+                this.toggleWallMap.set(x, y, 1);
+            }
+        }
     }
 
     getPlayerPosition() {
@@ -145,6 +154,28 @@ export class GameState {
             if (newCoord) {
                 entity.advance(newDir, newCoord, this);
             }
+        }
+    }
+
+    requestWallToggle() {
+        if (this.needsWallToggle === null) {
+            this.needsWallToggle = true;
+        } else {
+            this.needsWallToggle = !this.needsWallToggle;
+        }
+    }
+
+    toggleWallsIfNeeded() {
+        if (this.needsWallToggle) {
+            this.toggleWalls();
+        }
+        this.needsWallToggle = null;
+    }
+
+    toggleWalls() {
+        for (let [x, y, layer] of this.toggleWallMap.entries()) {
+            let toggleWallTile = this.tileMap.get(x, y, layer);
+            this.tileMap.set(x, y, toggleWallTile.getToggledTile(), layer);
         }
     }
 

@@ -24,6 +24,8 @@ import { Bomb } from "./Bomb";
 import { Cement } from "./Cement";
 import { Dirt } from "./Dirt";
 import { Gravel } from "./Gravel";
+import { GreenButton } from "./buttons/GreenButton";
+import { ToggleWallOpen, ToggleWallClosed } from "./ToggleWall";
 import { InvisibleWall, InvisibleWallAppearing } from "./InvisibleWall";
 let { PlayerDeadFire, PlayerDeadWater, PlayerDeadCharred, PlayerSouth, PlayerNorth, PlayerWest, PlayerEast, PlayerSwimSouth, PlayerSwimEast, PlayerSwimWest, PlayerSwimNorth } = require("../entity/Player");
 let { BugNorth, BugSouth, BugEast, BugWest } = require("../entity/enemy/Bug");
@@ -64,6 +66,10 @@ export class TileManager {
         this.map.set("block", BlockTile);
 
         for (let tileClass of [Water, Fire]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+
+        for (let tileClass of [GreenButton, ToggleWallOpen, ToggleWallClosed]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 

@@ -85,6 +85,30 @@ export default function expectations(expect) {
             this.expectTileAt(engine.gameState, 3, 3, "block");
             this.expectTileAt(engine.gameState, 4, 2, tilename);
         },
+        expectTileToBlockPlayer: function(tilename) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                B ${tilename}
+                P player-south-normal
+                ===
+                P...B.
+            `);
+            engine.gameState.movePlayer("RRRRRRRRRRRR");
+            this.expectPlayerAt(engine.gameState, 3, 0);
+            this.expectTileAt(engine.gameState, 4, 0, tilename);
+        },
+        expectTileNotToBlockPlayer: function(tilename) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                B ${tilename}
+                P player-south-normal
+                ===
+                P...B.
+            `);
+            engine.gameState.movePlayer("RRRRRRRRRRRR");
+            this.expectPlayerAt(engine.gameState, 5, 0);
+            this.expectTileAt(engine.gameState, 4, 0, tilename);
+        },
         expectTileToBlockMonsters: function(tilename) {
             let engine = GameEngine.fromTestSchematic(`
                 . floor
@@ -151,6 +175,77 @@ export default function expectations(expect) {
             this.expectEntityAt(engine.gameState, 5, 10, "walker");
             this.expectEntityAt(engine.gameState, 5, 12, "blob");
             this.expectEntityAt(engine.gameState, 5, 14, "teeth");
+        },
+        expectTileNotToBlockMonsters: function(tilename) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                @ ${tilename}
+                P player-south-normal
+                B bug-west
+                p paramecium-west
+                F fireball-west
+                G glider-west
+                O ball-west
+                w walker-west
+                b blob-west
+                T teeth-west
+                W wall
+                g gravel
+                ===
+                P...@BW
+                WWWWWWW
+                ....@pW
+                WWWWWWW
+                ....@FW
+                WWWWWWW
+                ....@GW
+                WWWWWWW
+                ....@OW
+                WWWWWWW
+                ....@wW
+                WWWWWWW
+                ....@bW
+                WWWWWWW
+                ....@TW
+                WWWWWWW
+                ===
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .....g.
+                .......
+                .......
+                .......
+                ===
+                5 0
+                5 2
+                5 4
+                5 6
+                5 8
+                5 10
+                5 12
+                5 14
+            `);
+            this.withResetLevelStub(() => {
+                engine.step().step().step().step();
+                this.expectTileAt(engine.gameState, 5, 0, "floor");
+                this.expectTileAt(engine.gameState, 5, 2, "floor");
+                this.expectTileAt(engine.gameState, 5, 4, "floor");
+                this.expectTileAt(engine.gameState, 5, 6, "floor");
+                this.expectTileAt(engine.gameState, 5, 8, "floor");
+                this.expectTileAt(engine.gameState, 5, 10, "floor");
+                this.expectTileAt(engine.gameState, 5, 12, "gravel");
+                this.expectTileAt(engine.gameState, 5, 14, "floor");
+            });
         }
     };
 }

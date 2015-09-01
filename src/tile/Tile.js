@@ -20,6 +20,7 @@ export class Tile {
     entityWillPress(entity, dir, gameState, coordinate, engine) {}
     entityDidPress(entity, dir, gameState, coordinate, engine) {}
     entityWillUnpress(entity, dir, gameState, coordinate, engine) {}
+    entityWillRemoveFromMap(entity, direction, gameState, newCoord, engine) {}
     isTransparent() {
         return false;
     }
