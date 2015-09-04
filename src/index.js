@@ -164,6 +164,18 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         _.-.J.W
         .....EW
         WWWWWWW
+    `),
+    Level.buildFromSchematic(`
+        P player-south-normal
+        . floor
+        T toggle_closed
+        t toggle_open
+        g button_green
+        @ block
+        ===
+        Pt@g
+        ===
+        ..W.
     `)
     ]));
 });

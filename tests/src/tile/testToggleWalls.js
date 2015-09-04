@@ -80,9 +80,97 @@ describe("Toggle walls", () => {
         expectations.expectPlayerAt(engine.gameState, 0, 0);
     });
     it("should never switch if starts on top of clone machine");
-    it("should not switch if starts on lower level");
-    it("should switch if starts on upper level but dropped to lower level by entity");
-    it(": on multiple green button press per turn, should only switch if odd number pressed");
+    it("should not switch if starts on lower level", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            P player-south-normal
+            . floor
+            T toggle_closed
+            t toggle_open
+            g button_green
+            @ block
+            ===
+            Pg..
+            ===
+            ..t.
+        `);
+        engine.enqueuePlayerMovement("r");
+        engine.step();
+        engine.enqueuePlayerMovement("r");
+        engine.step().step();
+        expect(engine.gameState.tileMap.get(2, 0, 2).name).to.equal("toggle_open");
+        engine.enqueuePlayerMovement("r");
+        engine.step().step();
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
+    });
+    it("should switch if starts on upper level but dropped to lower level by entity", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            P player-south-normal
+            . floor
+            T toggle_closed
+            t toggle_open
+            g button_green
+            @ block
+            W wall
+            ===
+            Pt@g
+            ===
+            ..W.
+        `);
+        engine.enqueuePlayerMovement("r");
+        engine.step();
+        engine.enqueuePlayerMovement("r");
+        engine.step().step();
+        expect(engine.gameState.tileMap.get(1, 0, 2).name).to.equal("toggle_closed");
+        engine.enqueuePlayerMovement("r");
+        engine.step().step();
+        expectations.expectPlayerAt(engine.gameState, 1, 0);
+    });
+    it(": on multiple green button press per turn, should switch if odd number pressed", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            P player-south-normal
+            . floor
+            T toggle_closed
+            t toggle_open
+            g button_green
+            @ block
+            W wall
+            F fireball-north
+            ===
+            gggtWP
+            FFFWWW
+            ===
+            ......
+            ......
+            ===
+            0 1
+            1 1
+            2 1
+        `).step().step();
+        expectations.expectTileAt(engine.gameState, 3, 0, "toggle_closed");
+    });
+    it(": on multiple green button press per turn, should not switch if even number pressed", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            P player-south-normal
+            . floor
+            T toggle_closed
+            t toggle_open
+            g button_green
+            @ block
+            W wall
+            F fireball-north
+            ===
+            gg.tWP
+            FFFWWW
+            ===
+            ......
+            ......
+            ===
+            0 1
+            1 1
+            2 1
+        `).step().step();
+        expectations.expectTileAt(engine.gameState, 3, 0, "toggle_open");
+    });
     it(": Button Smash Glitch"); // http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch
     it(": scenario from http://chipschallenge.wikia.com/wiki/Button_Smash_Glitch");
 });
