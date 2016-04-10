@@ -6,12 +6,15 @@
   </head>
   <body>
       <div class="container" style="width: 900px; margin: 50px auto 0 auto;">
-          <div class="canvas" style="display: inline-block; vertical-align: top">
-              <canvas id="main-canvas" width="288" height="288" style="border: 1px solid black">
-                  Sorry, your browser doesn't support HTML5 canvas. Unfortunately, you won't be able to play the game.
-              </canvas>
+          <div class="canvas-container" style="display: block; height: 394px; width: 517px; margin: 0 auto">
+            <div class="canvas" style="display: inline-block; vertical-align: top; position: relative;">
+                <img src="assets/background.png" style="display: block; position: absolute; top: 0; left: 0;">
+                <canvas id="main-canvas" width="288" height="288" style="position: absolute; top: 72px; left: 35px;">
+                    Sorry, your browser doesn't support HTML5 canvas. Unfortunately, you won't be able to play the game.
+                </canvas>
+            </div>
           </div>
-          <div class="stats" style="display: inline-block; vertical-align: top">
+          <div class="stats" style="display: block; vertical-align: top">
               <p>Chips left: <span class="chips-left" id="chips-left"></span></p>
               <p>
                   Ticks: <span id="engine-ticks"></span>

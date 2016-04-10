@@ -5,6 +5,8 @@ Implementation of the game Chip's Challenge in HTML5 canvas.
 1. Clone the repo
 2. Change your files
 3. To compile, run `grunt build`
+4. `python -m SimpleHTTPServer`
+5. Go to localhost:8000
 
 Running `grunt` will watch files for changes and build when they change.
 
