@@ -109,11 +109,30 @@ export class PlayerSwimWest extends PlayerSwimTile {
     }
 }
 
+/**
+ * The main class which represents a player currently playing a level.
+ *
+ * A player is different from a monster in a few ways: it stores it's state, which might be "swim" or "dead"
+ * etc, and it can render the correct tile based on state. Also, it manages slipping internally.
+ * 
+ * Note on slipping: the player is never put on the sliplist. Instead, Player stores a property
+ * called slipDirection, which may be any Direction. You can find out if a Player is slipping currently
+ * (on force floors or on ice) using isSlipping(). You can find out whether a player can step away to stop
+ * slipping (e.g. on force floors) with canCancelSlipWithStepInDirection(). You can cause a player to start
+ * slipping with .startSlipping(direction, type)
+ *
+ * GameState has a method called tickPlayerSlip() which looks at the player, assumes it's slipping, and
+ * moves it for one tick based on the slip direction.
+ *
+ * Note that monsters slip in an entirely different fashion, using the sliplist.
+ */
 export class Player extends Entity {
     constructor(state, ...args) {
         super(...args);
         this.state = state;
         this.name = "player";
+        this.slipDirection = null;
+        this.slipType = null;
     }
 
     chooseMove(direction, gameState) {
@@ -152,6 +171,33 @@ export class Player extends Entity {
         this.position = newCoord;
     }
 
+    /**
+     * @return {Boolean} Whether the player is slipping or not.
+     */
+    isSlipping() {
+        return this.slipDirection !== null;
+    }
+
+    /**
+     * @param  {Direction} direction The direction to check
+     * @return {Boolean} Whether this player can step off the slipping surface in the given direction.
+     */
+    canCancelSlipWithStepInDirection(direction) {
+        // TODO(force floors): implement this.
+        return false
+    }
+
+    /**
+     * Cause the player to start slipping in the given direction annd type.
+     */
+    startSlipping(direction, type) {
+        self.slipDirection = direction;
+        selt.slipType = type;
+    }
+
+    /**
+     * Return a Tile to display the Player entity as.
+     */
     getTile() {
         let {TileManager} = require("../tile/TileManager");
         let tileClass;

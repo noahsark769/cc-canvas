@@ -110,23 +110,45 @@ export class GameState {
         this.tileMap.set(this.player.position.x, this.player.position.y, this.player.getTile(), 1)
     }
 
+    /**
+     * Move the player to the given coordiante, taking care of anything else about the game state
+     * which needs to change (including viewport, etc). Note that this does not account for whether
+     * or not the player is actually allowed to move to the given coordinate. That check should be
+     * performed by the caller.
+     * @param  {Coordinate} newCoord The coordinate to move to
+     * @param {Direction} direction The direction to move in
+     * @param {Coordinate} prevPlayerPosition The position the player was in before the move.
+     */
+    movePlayerToCoordinate(newCoord, direction, prevPlayerPosition) {
+        this.player.move(direction, newCoord, this);
+        if (direction.isSouth() && prevPlayerPosition.y >= this.viewport.getCenter().y) {
+            this.viewport.shiftDownBounded(1, this.level.height);
+        } else if (direction.isNorth() && prevPlayerPosition.y <= this.viewport.getCenter().y) {
+            this.viewport.shiftUpBounded(1, -1);
+        } else if (direction.isWest() && prevPlayerPosition.x <= this.viewport.getCenter().x) {
+            this.viewport.shiftLeftBounded(1, -1);
+        } else if (direction.isEast() && prevPlayerPosition.x >= this.viewport.getCenter().x) {
+            this.viewport.shiftRightBounded(1, this.level.width);
+        }
+    }
+
+    /**
+     * Move the player in a given direction, 
+     * @param  {[type]} direction [description]
+     * @return {[type]}           [description]
+     */
     movePlayerByDirection(direction) {
         let prevPlayerPosition = this.player.position;
         let newCoord = this.player.chooseMove(direction, this);
         if (newCoord) {
-            this.player.move(direction, newCoord, this);
-            if (direction.isSouth() && prevPlayerPosition.y >= this.viewport.getCenter().y) {
-                this.viewport.shiftDownBounded(1, this.level.height);
-            } else if (direction.isNorth() && prevPlayerPosition.y <= this.viewport.getCenter().y) {
-                this.viewport.shiftUpBounded(1, -1);
-            } else if (direction.isWest() && prevPlayerPosition.x <= this.viewport.getCenter().x) {
-                this.viewport.shiftLeftBounded(1, -1);
-            } else if (direction.isEast() && prevPlayerPosition.x >= this.viewport.getCenter().x) {
-                this.viewport.shiftRightBounded(1, this.level.width);
-            }
+            this.movePlayerToCoordinate(newCoord, direction, prevPlayerPosition);
         }
     }
 
+    /**
+     * Move player based on a control string, like "lrduurdu", etc.
+     * @param  {String} controlString
+     */
     movePlayer(controlString) {
         for (let char of controlString) {
             switch (char.toUpperCase()) {
@@ -145,6 +167,34 @@ export class GameState {
                 default:
             }
         }
+    }
+
+    /**
+     * If the player is not slipping, do nothing. Otherwise, move the player based on the slip direction.
+     * @param {Direction|null} The direction that the player was requested to move in for this tick. This
+     *   function can process that direction to move the player if it can step off a force floor, etc.
+     * @todo(force floors) take advangate of requested player movement here.
+     */
+    movePlayerBySlip(requestedPlayerMovement) {
+        if (!this.player.isSlipping() || !this.player.slipDirection) {
+            console.warn("Tried to slip a player when it was not slipping!");
+            return;
+        }
+        let prevPlayerPosition = this.player.position;
+        let newCoord = this.player.chooseMove(this.player.slipDirection, this);
+        if (newCoord) {
+            this.movePlayerToCoordinate(newCoord, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
+        } else {
+            this.player.slipDirection = this.player.slipDirection.opposite();
+            let oppositeCoord = this.player.chooseMove(this.player.slipDirection, this);
+            if (oppositeCoord) {
+                this.movePlayerToCoordinate(oppositeCoord, this.player.slipDirection, prevPlayerPosition);
+            }
+        }
+    }
+
+    shouldSlipPlayer() {
+        return this.player && this.player.isSlipping();
     }
 
     advanceEntities() {

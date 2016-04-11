@@ -179,26 +179,34 @@ export class GameEngine {
                 this.resetCurrentLevel();
             }
         }
+
         if (this.state === LEVEL_ACTIVE) {
             if (this.gameState.even() && this.gameState.currentTicks !== 0) {
                 this.gameState.advanceEntities();
             }
             this.gameState.toggleWallsIfNeeded();
-            if (this.pendingPlayerMovement === null) {
-                this.playerMovedOnLastTick = false;
-                this.ticksSincePlayerMove++;
-                if (this.ticksSincePlayerMove >= 4 && this.gameState.player && !this.gameState.isOver) {
-                    this.gameState.player.direction = Direction.south();
-                    this.gameState.updatePlayerTile();
-                }
+            if (this.gameState.shouldSlipPlayer()) {
+                this.gameState.movePlayerBySlip(this.pendingPlayerMovement);
+                this.pendingPlayerMovement = null;
+                this.playerMovedOnLastTick = true;
+                this.ticksSincePlayerMove = 0;
             } else {
-                if (!this.playerMovedOnLastTick && !this.gameState.isOver) {
-                    this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
-                    this.pendingPlayerMovement = null;
-                    this.playerMovedOnLastTick = true;
-                    this.ticksSincePlayerMove = 0;
-                } else {
+                if (this.pendingPlayerMovement === null) {
                     this.playerMovedOnLastTick = false;
+                    this.ticksSincePlayerMove++;
+                    if (this.ticksSincePlayerMove >= 4 && this.gameState.player && !this.gameState.isOver) {
+                        this.gameState.player.direction = Direction.south();
+                        this.gameState.updatePlayerTile();
+                    }
+                } else {
+                    if (!this.playerMovedOnLastTick && !this.gameState.isOver) {
+                        this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
+                        this.pendingPlayerMovement = null;
+                        this.playerMovedOnLastTick = true;
+                        this.ticksSincePlayerMove = 0;
+                    } else {
+                        this.playerMovedOnLastTick = false;
+                    }
                 }
             }
             this.drawFrame();
@@ -220,7 +228,7 @@ export class GameEngine {
     }
 
     unpause() {
-        // note: here we assume you can only pause from a level active state.
+        // todo: here we assume you can only pause from a level active state.
         // may need to change this later.
         this.state = LEVEL_ACTIVE;
     }
