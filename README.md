@@ -10,7 +10,7 @@ Implementation of the game Chip's Challenge in HTML5 canvas.
 
 Running `grunt` will watch files for changes and build when they change.
 
-This project is build in javascript es6, please use es6 syntax when developing. es6 is compile to es5 with [Babel](https://babeljs.io/.). Running `grunt watch` will compile everything and kick off a new compile when files change, but the compilation step can take a long time, so be wary.
+This project is build in javascript es6, please use es6 syntax when developing. es6 is compiled to es5 with [Babel](https://babeljs.io/.). Running `grunt watch` will compile everything and kick off a new compile when files change, but the compilation step can take a long time, so be wary.
 
 If you add a feature or fix a bug, please add a test for it.
 
