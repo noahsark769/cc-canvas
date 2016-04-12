@@ -103,6 +103,14 @@ export class Direction {
      */
     isEast() { return this.equals(new Direction(EAST)); }
 
+    isVertical() {
+        return this.isNorth() || this.isSouth();
+    }
+
+    isHorizontal() {
+        return this.isEast() || this.isWest();
+    }
+
     /**
      * @return {String} This direction as a string, like "north".
      */

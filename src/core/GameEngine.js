@@ -165,6 +165,10 @@ export class GameEngine {
         }
     }
 
+    /**
+     * Advance the game by one tick. Note that there are ten ticks per second.
+     * @return {GameEngine} Self, for purposes of engine.tick().tick().tick()
+     */
     tick() {
         // for tests, if we're idle and we tick, then we make ourselves LEVEL_ACTIVE
         if (this.state === IDLE || this.state == LEVEL_READY) { this.state = LEVEL_ACTIVE; }
@@ -212,7 +216,8 @@ export class GameEngine {
             this.drawFrame();
             this.gameState.tick();
         }
-        this.interface("update")
+        this.interface("update");
+        return this;
     }
 
     // for testing purposes only

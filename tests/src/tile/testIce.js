@@ -7,6 +7,7 @@ let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
+let { Direction } = reqlib("/src/core/2d/directions");
 
 describe("Ice", () => {
     it("should import correctly", () => {});
@@ -73,8 +74,126 @@ describe("Ice", () => {
         expectations.expectPlayerAt(engine.gameState, 1, 6);
     });
 
-    it("should propel player around corners");
-    it("should cause player direction to change");
+    it("should propel player around corners", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            I ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            ] ice_ur
+            ===
+            ......
+            ./IIP]
+            .I..I.
+            .I..I.
+            .I..I.
+            .>II^.
+            ......
+        `);
+
+        let tickAndExpectPlayerAt = function(x, y) {
+            engine.tick();
+            expectations.expectPlayerAt(engine.gameState, x, y);
+        };
+        engine.enqueuePlayerMovement("left");
+        expectations.expectPlayerAt(engine.gameState, 3, 1);
+        tickAndExpectPlayerAt(2, 1);
+        tickAndExpectPlayerAt(1, 1);
+        tickAndExpectPlayerAt(1, 2);
+        tickAndExpectPlayerAt(1, 3);
+        tickAndExpectPlayerAt(1, 4);
+        tickAndExpectPlayerAt(1, 5);
+        tickAndExpectPlayerAt(2, 5);
+        tickAndExpectPlayerAt(3, 5);
+        tickAndExpectPlayerAt(4, 5);
+        tickAndExpectPlayerAt(4, 4);
+        tickAndExpectPlayerAt(4, 3);
+        tickAndExpectPlayerAt(4, 2);
+        tickAndExpectPlayerAt(4, 1);
+
+        tickAndExpectPlayerAt(4, 1);
+        tickAndExpectPlayerAt(4, 1);
+        tickAndExpectPlayerAt(4, 1);
+        engine.enqueuePlayerMovement("right");
+        tickAndExpectPlayerAt(5, 1);
+        tickAndExpectPlayerAt(5, 2);
+    });
+
+    it("should change player direction", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            I ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            ] ice_ur
+            ===
+            ......
+            ./IIP]
+            .I..I.
+            .I..I.
+            .I..I.
+            .>II^.
+            ......
+        `);
+
+        function expectPlayerDirectionToBe(dir) {
+            expect(engine.gameState.player.direction.equals(dir)).to.be.true;
+        }
+
+        engine.enqueuePlayerMovement("left");
+        engine.tick();
+        expectPlayerDirectionToBe(Direction.west());
+        engine.tick();
+        // should be south, on corner
+        expectPlayerDirectionToBe(Direction.south());
+        engine.tick();
+        expectPlayerDirectionToBe(Direction.south());
+        engine.tick().tick().tick();
+        expectPlayerDirectionToBe(Direction.east());
+        engine.tick();
+        expectPlayerDirectionToBe(Direction.east());
+        engine.tick().tick();
+        expectPlayerDirectionToBe(Direction.north());
+        engine.tick().tick();
+        expectPlayerDirectionToBe(Direction.north());
+    });
+    it(": ice corners should block player", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            I ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            ] ice_ur
+            ===
+            .......
+            ./IIP].
+            .I..I..
+            .I..I..
+            .I..I..
+            .>II^..
+            .......
+        `);
+        engine.gameState.movePlayer("ulllddddddd");
+        expectations.expectPlayerAt(engine.gameState, 1, 0);
+        engine.gameState.movePlayer("ldrrrrrrrrrr");
+        expectations.expectPlayerAt(engine.gameState, 0, 1);
+        engine.gameState.movePlayer("ddddrrrrrrrr");
+        expectations.expectPlayerAt(engine.gameState, 0, 5);
+        engine.gameState.movePlayer("druuuuuuuuuu");
+        expectations.expectPlayerAt(engine.gameState, 1, 6);
+        engine.gameState.movePlayer("rrruuuuuuuuu");
+        expectations.expectPlayerAt(engine.gameState, 4, 6);
+        engine.gameState.movePlayer("rruuuuullllll");
+        expectations.expectPlayerAt(engine.gameState, 6, 1);
+        engine.gameState.movePlayer("ulddddddddddd");
+        expectations.expectPlayerAt(engine.gameState, 5, 0);
+    });
 
     it("should cause monsters to slide");
     it("should cause blocks to slide");

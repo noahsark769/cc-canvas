@@ -2,7 +2,7 @@ let { Floor } = require("./Floor");
 let { Wall } = require("./Wall");
 let { Water } = require("./Water");
 let { Fire } = require("./Fire");
-let { Ice } = require("./Ice");
+let { Ice, IceUpperLeft, IceLowerLeft, IceUpperRight, IceLowerRight } = require("./Ice");
 let { Chip } = require("./Chip");
 let { Escape } = require("./Escape");
 let { Socket } = require("./Socket");
@@ -66,7 +66,7 @@ export class TileManager {
         this.map.set("door_green", GreenDoor);
         this.map.set("block", BlockTile);
 
-        for (let tileClass of [Water, Fire, Ice]) {
+        for (let tileClass of [Water, Fire, Ice, IceUpperLeft, IceLowerLeft, IceUpperRight, IceLowerRight]) {
             this.map.set((new tileClass()).name, tileClass);
         }
 
