@@ -28,7 +28,10 @@ export class Ice extends Tile {
         }
     }
 
-    directionForEntityToSlip(entity, direction) {
+    directionForEntityToSlip(entity, direction, gameState) {
+        if (entity.name === "player" && gameState.boots.ice) {
+            return null;
+        }
         return this.propellingDirectionFromMovementDirection(direction);
     }
 

@@ -3,7 +3,7 @@ let {Tile} = require("../tile/Tile");
 
 export class PlayerTile extends Tile {
     shouldBlockEntity(entity, direction, gameState) {
-        return entity.name === "player" || entity.name === "block";
+        return entity.name === "player";
     }
     entityShouldReplace() {
         return false;
@@ -114,7 +114,7 @@ export class PlayerSwimWest extends PlayerSwimTile {
  *
  * A player is different from a monster in a few ways: it stores it's state, which might be "swim" or "dead"
  * etc, and it can render the correct tile based on state. Also, it manages slipping internally.
- * 
+ *
  * Note on slipping: the player is never put on the sliplist. Instead, Player stores a property
  * called slipDirection, which may be any Direction. You can find out if a Player is slipping currently
  * (on force floors or on ice) using isSlipping(). You can find out whether a player can step away to stop

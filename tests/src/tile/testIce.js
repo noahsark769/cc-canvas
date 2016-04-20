@@ -377,8 +377,62 @@ describe("Ice", () => {
         tickAndExpectBlockAt(4, 0);
     });
 
-    it(": player should be killed by sliding blocks");
-    it(": player should not slide with ice skates");
+    it(": player should be killed by sliding blocks", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            I ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            < ice_ur
+            P player-south-normal
+            B block
+            ===
+            .../IBP
+            ...>II^
+        `);
+
+        engine.enqueuePlayerMovement("left");
+        engine.enqueuePlayerMovement("right");
+        engine.tick().tick().tick().tick().tick().tick()
+        expect(engine.gameState.isOver).to.be.true;
+        expect(engine.gameState.isLoss).to.be.true;
+    });
+
+    it(": player should not slide with ice skates", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            I ice
+            B boots_ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            ] ice_ur
+            ===
+            ....I.
+            ./IIP]
+            .II.I.
+            .I..I.
+            .I..I.
+            .>II^.
+            ......
+        `);
+        function enqueueAndStep(movement) {
+            engine.enqueuePlayerMovement(movement);
+            engine.step();
+        }
+        function enqueueControlString(control) {
+            for (let letter of control) {
+                enqueueAndStep(letter);
+            }
+        }
+        engine.enqueuePlayerMovement("up");
+        engine.tick();
+        enqueueControlString("dludduluddlllllrruldrddllrrdlurrrruull");
+        expectations.expectPlayerAt(engine.gameState, 2, 2);
+    });
+
     it(": player can step over corners with ice skates but not back");
     it("should slide player before blocks"); // http://chipschallenge.wikia.com/wiki/Ice
     it(": player should be able to move off an ice corner at start");
