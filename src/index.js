@@ -166,6 +166,26 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         WWWWWWW
     `),
     Level.buildFromSchematic(`
+        . floor
+        P player-south-normal
+        I ice
+        / ice_ul
+        > ice_ll
+        ^ ice_lr
+        < ice_ur
+        B block
+        W wall
+        ===
+        WWWWWWWW
+        W/IIIBPW
+        W>II<..W
+        W./II<IW
+        W.>I^IIW
+        W/III^IW
+        W>IIII^W
+        WWWWWWWW
+    `),
+    Level.buildFromSchematic(`
         P player-south-normal
         . floor
         T toggle_closed
