@@ -350,7 +350,70 @@ describe("GameState", () => {
         expectations.expectEntityAt(engine.gameState, 3, 1, "bug");
         expectations.expectEntityAt(engine.gameState, 1, 2, "bug");
     });
-    it.skip("should remove monster from monster list on death of monster");
+    it("should remove monster from monster list on death of monster", function () {
+        it("should block monsters", () => {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                W water
+                x fire
+                P player-south-normal
+                B bug-west
+                p paramecium-west
+                F fireball-west
+                G glider-west
+                O ball-west
+                w walker-west
+                b blob-west
+                T teeth-west
+                W wall
+                ===
+                P..WxBW
+                WWWWWWW
+                ...WxpW
+                WWWWWWW
+                ...WxFW
+                WWWWWWW
+                ...WxGW
+                WWWWWWW
+                ...WxOW
+                WWWWWWW
+                ...WxwW
+                WWWWWWW
+                ...WxbW
+                WWWWWWW
+                ...WxTW
+                WWWWWWW
+                ===
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                ===
+                5 0
+                5 2
+                5 4
+                5 6
+                5 8
+                5 10
+                5 12
+                5 14
+            `).step().step().step().step().step().step().step().step().step().step().step().step();
+            expect(engine.gameState.monsterList.length).to.equal(0);
+            expect(engine.gameState.monsterList.asArray().length).to.equal(0);
+        });
+    });
     it.skip("should add monster to the monster list when it's cloned");
     it.skip("should add monster to the monster list when cloned even when not on a clone machine"); // http://chipschallenge.wikia.com/wiki/Monster_list
     it("should not add monsters to the monster list if they're on the bottom level", () => {
