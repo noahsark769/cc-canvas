@@ -18,7 +18,7 @@ describe("Boots", () => {
             3 boots_ice
             4 boots_force
             ===
-            p.1234
+            P.1234
         `);
         expect(engine.gameState.boots.water).to.be.false;
         expect(engine.gameState.boots.fire).to.be.false;
