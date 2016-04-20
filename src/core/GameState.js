@@ -233,9 +233,18 @@ export class GameState {
             if (!slipDirection) {
                 console.warn("Entity " + entity + " had no slip direction when slipping!");
             }
-            let [newCoord, newDir] = entity.chooseMoveSlippingInDirection(slipDirection, this);
-            if (newCoord) {
-                entity.advance(newDir, newCoord, this);
+            // TODO: this logic is hella dirty
+            if (entity.name === "block") {
+                if (entity.canMove(slipDirection, this)) {
+                    entity.move(slipDirection, this);
+                } else if (entity.canMove(slipDirection.opposite(), this)) {
+                    entity.move(slipDirection.opposite(), this);
+                }
+            } else {
+                let [newCoord, newDir] = entity.chooseMoveSlippingInDirection(slipDirection, this);
+                if (newCoord) {
+                    entity.advance(newDir, newCoord, this);
+                }
             }
         }
     }
@@ -257,7 +266,12 @@ export class GameState {
                 return;
             }
             // TODO: just use a SlipList object instead of having two linked lists
-            this.monsterList.remove(entity);
+
+            // NOTE: this function can set both blocks and monsters to be slipping,
+            // but only monsters should be removed from the monster list.
+            if (entity.name !== "block") {
+                this.monsterList.remove(entity);
+            }
             this.slipList.append(entity);
             this.slipDirections.set(entity.id, direction);
             entity.direction = direction;
@@ -290,7 +304,12 @@ export class GameState {
             }
             // TODO: just use a SlipList object instead of having two linked lists
             this.slipList.remove(entity);
-            this.monsterList.append(entity);
+
+            // NOTE: this function can set both blocks and monsters to be not slipping,
+            // but only monsters should be added to the monster list.
+            if (entity.name !== "block") {
+                this.monsterList.append(entity);
+            }
             this.slipDirections.delete(entity.id);
         }
     }
