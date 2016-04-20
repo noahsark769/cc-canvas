@@ -342,6 +342,42 @@ describe("Ice", () => {
         tickAndExpectBlockAt(1, 2);
     });
 
+    it(": block should bounce off walls when sliding", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            I ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            < ice_ur
+            P player-south-normal
+            B block
+            W wall
+            ===
+            WIIIIBP
+            .......
+            .......
+            .......
+            .......
+            .......
+        `);
+
+        let tickAndExpectBlockAt = function(x, y) {
+            engine.tick();
+            expectations.expectTileAt(engine.gameState, x, y, "block");
+        };
+
+        engine.enqueuePlayerMovement("left");
+        expectations.expectTileAt(engine.gameState, 4, 0, "block");
+        tickAndExpectBlockAt(3, 0);
+        tickAndExpectBlockAt(2, 0);
+        tickAndExpectBlockAt(1, 0);
+        tickAndExpectBlockAt(2, 0);
+        tickAndExpectBlockAt(3, 0);
+        tickAndExpectBlockAt(4, 0);
+    });
+
+    it(": player should be killed by sliding blocks");
     it(": player should not slide with ice skates");
     it(": player can step over corners with ice skates but not back");
     it("should slide player before blocks"); // http://chipschallenge.wikia.com/wiki/Ice
