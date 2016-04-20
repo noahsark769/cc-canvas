@@ -1,5 +1,8 @@
 let { Tile } = require("./Tile");
 
+/**
+ * A tile that becomes a wall once a player has stepped on it. Cement blocks all monsters and blocks.
+ */
 export class Cement extends Tile {
     constructor(...args) {
         super(...args);

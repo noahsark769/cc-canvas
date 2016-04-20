@@ -49,6 +49,11 @@ let TICK_INTERVAL = 100; // one tenth of a second, see http://chips.kaseorg.com/
  * load. As such, it should only be accessed with GameEngine.getInstance().
  */
 export class GameEngine {
+    /**
+     * Create a new game engine.
+     * @param userIntervals {Boolean} Whether to automatically tick at the set interval
+     * once ticking has started.
+     */
     constructor(useIntervals = true) {
         this.useIntervals = useIntervals;
         this.state = IDLE;
@@ -65,6 +70,10 @@ export class GameEngine {
         SINGLETON_INSTANCE = this;
     }
 
+    /**
+     * Send a message to the document interface.
+     * @todo Use an enum here instead of a string.
+     */
     interface(message) {
         if (this.documentInterface) {
             switch (message) {
@@ -89,6 +98,10 @@ export class GameEngine {
         }
     }
 
+    /**
+     * Based on the currently playing game, draw a frame. If no animator is set,
+     * this method does nothing.
+     */
     drawFrame() {
         if (this.animator) {
             this.animator.clear();
@@ -96,6 +109,9 @@ export class GameEngine {
         }
     }
 
+    /**
+     * Load a level set to be played.
+     */
     loadLevelSet(levelSet) {
         this.stopTicking();
         this.gameState.reset();
@@ -115,6 +131,9 @@ export class GameEngine {
         return this; // for testing
     }
 
+    /**
+     * Stop play and load the next level, or set a win state if this is the last level.
+     */
     loadNextLevel() {
         this.stopTicking();
         if (this.currentLevelInSet + 1 >= this.levelSet.numLevels) {
@@ -131,6 +150,9 @@ export class GameEngine {
         this.interface("update")
     }
 
+    /**
+     * Stop play and load the previous level, or do nothing if this is the first level.
+     */
     loadPreviousLevel() {
         this.stopTicking();
         if (this.currentLevelInSet - 1 < 0) {
@@ -146,6 +168,9 @@ export class GameEngine {
         this.interface("update")
     }
 
+    /**
+     * Stop play and reset the current level.
+     */
     resetCurrentLevel() {
         this.stopTicking();
         this.gameState.reset();
@@ -157,6 +182,11 @@ export class GameEngine {
         this.interface("update");
     }
 
+    /**
+     * Register that the player would like to move in the given direction.
+     * @param movement {String} "left", "right", "down", "up"
+     * @todo use Direction instead of strings here
+     */
     enqueuePlayerMovement(movement) {
         this.pendingPlayerMovement = movement;
         if (this.state === LEVEL_READY) {
@@ -185,9 +215,8 @@ export class GameEngine {
         }
 
         if (this.state === LEVEL_ACTIVE) {
-            if (this.gameState.even() && this.gameState.currentTicks !== 0) {
-                this.gameState.advanceEntities();
-            }
+            let shouldAdvanceEntities = (this.gameState.even() && this.gameState.currentTicks !== 0);
+            this.gameState.advanceEntities(shouldAdvanceEntities);
             this.gameState.toggleWallsIfNeeded();
             if (this.gameState.shouldSlipPlayer()) {
                 this.gameState.movePlayerBySlip(this.pendingPlayerMovement);
@@ -227,17 +256,26 @@ export class GameEngine {
         return this;
     }
 
+    /**
+     * Pause the game.
+     */
     pause() {
         this.stopTicking();
         this.state = PAUSED;
     }
 
+    /**
+     * Unpause the game.
+     */
     unpause() {
         // todo: here we assume you can only pause from a level active state.
         // may need to change this later.
         this.state = LEVEL_ACTIVE;
     }
 
+    /**
+     * Pause the game if it's not pause, unpause if paused.
+     */
     togglePause() {
         if (this.state === PAUSED) {
             this.unpause();
@@ -246,6 +284,11 @@ export class GameEngine {
         }
     }
 
+    /**
+     * Start the game loop. If the engine is configured to tick automatically at
+     * intervals, then this will start the automatic ticking. Otherwise, ticks must
+     * be done manually by calling tick().
+     */
     startTicking() {
         this.ticksSincePlayerMove = 0;
         if (this.useIntervals) {
@@ -256,6 +299,9 @@ export class GameEngine {
         this.tick();
     }
 
+    /**
+     * Stop automatic ticking.
+     */
     stopTicking() {
         if (this.useIntervals) {
             clearInterval(this.intervalId);
@@ -276,12 +322,20 @@ GameEngine.getInstance = (useIntervals = true) => {
     return SINGLETON_INSTANCE;
 };
 
+/**
+ * Reset the game engine to a fresh one and return it.
+ */
 GameEngine.reset = (useIntervals = true) => {
     SINGLETON_INSTANCE = new GameEngine(useIntervals);
     return SINGLETON_INSTANCE;
 };
 
-// for testing
+/**
+ * For testing: return the singleton game engine loaded with a level set of one
+ * level, consisting of the given schematic.
+ * @todo use a schematic object instead of string?
+ * @param schematic {String} the test level schematic
+ */
 GameEngine.fromTestSchematic = (schematic) => {
     let engine = GameEngine.getInstance(false);
     engine.loadLevelSet(LevelSet.fromSchematic(schematic));

@@ -1,5 +1,8 @@
 let { Tile } = require("./Tile");
 
+/**
+ * A bomb. Destroys anything that touches it.
+ */
 export class Bomb extends Tile {
     constructor(...args) {
         super(...args);

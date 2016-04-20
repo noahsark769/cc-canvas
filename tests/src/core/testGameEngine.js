@@ -99,6 +99,7 @@ describe("GameEngine", () => {
         // now should have moved again
         expectations.expectPlayerAt(engine.gameState, 2, 0);
     });
+    it("should set player direction even if blocked when key pressed");
     it("should support level sets and loading next levels", () => {
         let set = new LevelSet();
         let level1 = Level.buildFromSchematic(`

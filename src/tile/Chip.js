@@ -1,5 +1,10 @@
 let { Tile } = require("./Tile");
 
+/**
+ * A chip (for collecting by the player). The point of the game is to get to the escape square,
+ * which is usually guarded by a Socket, which can only be removed if the required amount of chips
+ * in the level have been collected.
+ */
 export class Chip extends Tile {
     constructor(...args) {
         super(...args);

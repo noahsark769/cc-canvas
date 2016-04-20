@@ -6,9 +6,9 @@ export class Monster extends Entity {
         super(...args);
     }
 
-    chooseMove(gameState) {
+    _chooseMove(gameState, directions) {
         let tileMap = gameState.tileMap;
-        let dirsToTry = this.getDirectionsInOrder(gameState);
+        let dirsToTry = directions;
 
         let newCoord, newTileFirstLayer, newTileSecondLayer, oldTileSecondLayer;
         for (let dir of dirsToTry) {
@@ -34,6 +34,15 @@ export class Monster extends Entity {
             }
         }
         return [false, false];
+    }
+
+    chooseMove(gameState) {
+        return this._chooseMove(gameState, this.getDirectionsInOrder(gameState));
+    }
+
+    chooseMoveSlippingInDirection(dir, gameState) {
+        let directions = [dir, dir.opposite()];
+        return this._chooseMove(gameState, directions);
     }
 
     advance(newDir, newCoord, gameState) {

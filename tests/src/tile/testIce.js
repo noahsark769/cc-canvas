@@ -195,7 +195,75 @@ describe("Ice", () => {
         expectations.expectPlayerAt(engine.gameState, 5, 0);
     });
 
-    it("should cause monsters to slide");
+    it(": player should bounce off walls after sliding");
+
+    it("should cause monsters to slide", function() {
+        let expectEntityToSlide = function(entityName) {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                I ice
+                / ice_ul
+                > ice_ll
+                ^ ice_lr
+                < ice_ur
+                P player-south-normal
+                B ${entityName}-west
+                W wall
+                ===
+                P./IIBW
+                ./II<W.
+                W.>I^..
+                W.W....
+                W.W....
+                WWW....
+                ===
+                .......
+                .......
+                .......
+                .......
+                .......
+                .......
+                ===
+                5 0
+            `);
+
+            let name = entityName;
+            let tickAndExpectEntityAt = function(x, y, dir, useMonsterList = false) {
+                engine.tick();
+                expectations.expectEntityAt(engine.gameState, x, y, name);
+                // todo: this next line is ugly
+                let list;
+                if (useMonsterList) {
+                    list = engine.gameState.monsterList;
+                } else {
+                    list = engine.gameState.slipList;
+                }
+                let actualDirection = list.asArray()[0].direction;
+                expect(actualDirection.equals(dir), "Direction " + actualDirection + " did not equal expected direction " + dir).to.be.true;
+            };
+
+            expectations.expectEntityAt(engine.gameState, 5, 0, name);
+            engine.step().tick();
+            expectations.expectEntityAt(engine.gameState, 4, 0, name);
+            // todo: this next line is ugly
+            let actualDirection = engine.gameState.slipList.asArray()[0].direction;
+            expect(actualDirection.isWest(), "Direction " + actualDirection + " did not equal expected direction west").to.be.true;
+            tickAndExpectEntityAt(3, 0, Direction.west());
+            tickAndExpectEntityAt(2, 0, Direction.south());
+            tickAndExpectEntityAt(2, 1, Direction.south());
+            tickAndExpectEntityAt(2, 2, Direction.east());
+            tickAndExpectEntityAt(3, 2, Direction.east());
+            tickAndExpectEntityAt(4, 2, Direction.north());
+            tickAndExpectEntityAt(4, 1, Direction.west());
+            tickAndExpectEntityAt(3, 1, Direction.west());
+            tickAndExpectEntityAt(2, 1, Direction.west());
+            tickAndExpectEntityAt(1, 1, Direction.south());
+            tickAndExpectEntityAt(1, 2, Direction.south(), true);
+        };
+        for (let entity of ["bug"]) {
+            expectEntityToSlide(entity);
+        }
+    });
     it("should cause blocks to slide");
     it("should propel over corners");
     it(": player should not slide with ice skates");
@@ -207,4 +275,5 @@ describe("Ice", () => {
     it("should support boosting");
     it("should support slide delay");
     it("should support sliplist mechanics");
+    it("should support spring slide");
 });

@@ -28,17 +28,8 @@ export class Ice extends Tile {
         }
     }
 
-    entityWillPress(entity, direction, gameState, coordinate, engine) {
-        if (entity.name === "player") {
-            entity.slipDirection = this.propellingDirectionFromMovementDirection(direction);
-            entity.direction = entity.slipDirection;
-        }
-    }
-
-    entityWillUnpress(entity, direction, gameState, coordinate, engine) {
-        if (entity.name === "player") {
-            entity.slipDirection = null;
-        }
+    directionForEntityToSlip(entity, direction) {
+        return this.propellingDirectionFromMovementDirection(direction);
     }
 
     shouldBlockEntity(entity, direction, gameState, coordinate) {

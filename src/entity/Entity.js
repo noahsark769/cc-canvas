@@ -13,6 +13,7 @@ export class Entity {
         CURR_ID++;
         ENTITY_MASTER_MAP.set(this.id, this);
     }
+
     /**
      * Return a new copy of this entity. Note that this entity will have still
      * NOT have the same id of the original.
@@ -23,22 +24,27 @@ export class Entity {
         entity.state = this.state;
         return entity;
     }
+
     render(canvas, renderer, coordinate) {
         renderer.renderEntity(canvas, this, coordinate);
     }
+
     chooseMove(tileMap, entityMap, coordinate) {
         // do nothing by default
         return false;
     }
+
     // return whether the given entity should block the path of THIS entity.
     shouldBlockEntity(entity) {
         return true;
     }
+
     getTile() {
         let {TileManager} = require("../tile/TileManager");
         let tileClass = TileManager.getInstance().tileClassByName(this.name + "-" + this.direction.asStringDirection());
         return new tileClass();
     }
+
     toString() {
         return "<Entity (" + this.name + ") with direction " + this.direction + " at " + this.position.serialize() + ">";
     }
@@ -63,6 +69,12 @@ export class Entity {
             gameState.tileMap.set(newCoord.x, newCoord.y, gameState.tileMap.get(newCoord.x, newCoord.y, 1), 2);
             gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
             newTile.entityDidPress(this, direction, gameState, newCoord, gameState.engine);
+        }
+
+        if (newTile && newTile.directionForEntityToSlip(this, direction, gameState)) {
+            gameState.setEntitySlipping(this, newTile.directionForEntityToSlip(this, direction, gameState));
+        } else if (gameState.isEntitySlipping(this)) {
+            gameState.setEntityNotSlipping(this);
         }
 
         if (!lastSecondLayer) {

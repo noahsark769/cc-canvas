@@ -24,6 +24,8 @@ export class GameState {
         this.tileMap = new CoordinateTileMap();
         // exact proxy to the level, nothing else
         this.monsterList = new ObjectLinkedList("monsters");
+        this.slipList = new ObjectLinkedList("slipping");
+        this.slipDirections = new Map();
         this.blockMap = new TwoLayerCoordinateMap();
         this.toggleWallMap = new CoordinateMap();
         this.needsWallToggle = null;
@@ -133,7 +135,7 @@ export class GameState {
     }
 
     /**
-     * Move the player in a given direction, 
+     * Move the player in a given direction,
      * @param  {[type]} direction [description]
      * @return {[type]}           [description]
      */
@@ -193,20 +195,109 @@ export class GameState {
         }
     }
 
+    /**
+     * Return whether the player should slip this tick.
+     */
     shouldSlipPlayer() {
         return this.player && this.player.isSlipping();
     }
 
-    advanceEntities() {
-        for (let entity of this.monsterList.objects()) {
-            let [newCoord, newDir] = entity.chooseMove(this);
+    /**
+     * Advance all entites (those slipping and optionally those not slipping).
+     * @param includeNonSlipping {Boolean} Whether to advance entities which are not
+     * slipping.
+     */
+    advanceEntities(includeNonSlipping) {
+        let entityIdsOriginallyInSlipList = Array.from(this.slipList.objects()).map(function (e) { return e.id; });
+        this.advanceSlippingEntities();
+        if (includeNonSlipping) {
+            for (let entity of this.monsterList.objects()) {
+                if (entityIdsOriginallyInSlipList.indexOf(entity.id) !== -1) {
+                    continue;
+                }
+                let [newCoord, newDir] = entity.chooseMove(this);
 
+                if (newCoord) {
+                    entity.advance(newDir, newCoord, this);
+                }
+            }
+        }
+    }
+
+    /**
+     * Advance all entities that are slipping by one move.
+     */
+    advanceSlippingEntities() {
+        for (let entity of this.slipList.objects()) {
+            let slipDirection = this.slipDirections.get(entity.id);
+            if (!slipDirection) {
+                console.warn("Entity " + entity + " had no slip direction when slipping!");
+            }
+            let [newCoord, newDir] = entity.chooseMoveSlippingInDirection(slipDirection, this);
             if (newCoord) {
                 entity.advance(newDir, newCoord, this);
             }
         }
     }
 
+    /**
+     * Set an entity to be slipping. Note that if the entity is already slipping, this
+     * will have no effect except to change their slip direction (slip direction is implemented
+     * differently for monsters and player).
+     * @param {Entity} entity Entity to slip
+     */
+    setEntitySlipping(entity, direction) {
+        if (entity.name === "player") {
+            entity.slipDirection = direction;
+            entity.direction = entity.slipDirection;
+        } else {
+            if (this.slipList.contains(entity)) {
+                this.slipDirections.set(entity.id, direction);
+                entity.direction = direction;
+                return;
+            }
+            // TODO: just use a SlipList object instead of having two linked lists
+            this.monsterList.remove(entity);
+            this.slipList.append(entity);
+            this.slipDirections.set(entity.id, direction);
+            entity.direction = direction;
+        }
+    }
+
+    /**
+     * Return whether a given entity is slipping or not.
+     */
+    isEntitySlipping(entity) {
+        if (entity.name === "player") {
+            return this.player.isSlipping();
+        } else {
+            return this.slipList.contains(entity);
+        }
+    }
+
+    /**
+     * Set that the given entity is no longer slipping. If the entity was already not
+     * slipping, this will have no effect.
+     * @param {Entity} entity Entity to unslip.
+     */
+    setEntityNotSlipping(entity) {
+        if (entity.name === "player") {
+            entity.slipDirection = null;
+        } else {
+            if (this.monsterList.contains(entity)) {
+                console.warn("Attempt to reinsert " + entity + " into the monster list when it was already there.")
+                return;
+            }
+            // TODO: just use a SlipList object instead of having two linked lists
+            this.slipList.remove(entity);
+            this.monsterList.append(entity);
+            this.slipDirections.delete(entity.id);
+        }
+    }
+
+    /**
+     * Tell the game state that walls need to be toggled on the next tick.
+     */
     requestWallToggle() {
         if (this.needsWallToggle === null) {
             this.needsWallToggle = true;
@@ -215,6 +306,9 @@ export class GameState {
         }
     }
 
+    /**
+     * If toggle walls need to be toggled, toggle them.
+     */
     toggleWallsIfNeeded() {
         if (this.needsWallToggle) {
             this.toggleWalls();
@@ -222,6 +316,9 @@ export class GameState {
         this.needsWallToggle = null;
     }
 
+    /**
+     * For every toggle wall in the current level, force it to flip its state.
+     */
     toggleWalls() {
         for (let [x, y, layer] of this.toggleWallMap.entries()) {
             let toggleWallTile = this.tileMap.get(x, y, layer);
@@ -229,14 +326,25 @@ export class GameState {
         }
     }
 
+    /**
+     * Advance the number of ticks in the game.
+     */
     tick() {
         this.currentTicks++;
     }
 
+    /**
+     * @return {Boolean} Whether the gameState is on an even tick.
+     * @todo Rename to isEven()
+     */
     even() {
         return !(this.currentTicks & 1);
     }
 
+    /**
+     * @return {Boolean} Whether the gameState is on an odd tick.
+     * @todo Rename to isOdd()
+     */
     odd() {
         return this.currentTicks & 1;
     }

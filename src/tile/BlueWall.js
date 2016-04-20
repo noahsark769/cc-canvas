@@ -1,5 +1,8 @@
 let { Tile } = require("./Tile");
 
+/**
+ * A blue wall that blocks movement of everything but becomes floor when touched by a player.
+ */
 export class BlueWallFake extends Tile {
     constructor(...args) {
         super(...args);
@@ -13,6 +16,9 @@ export class BlueWallFake extends Tile {
     }
 }
 
+/**
+ * A wall that looks and behaes like a fake blue wall, but becomes real when touched by a player.
+ */
 export class BlueWallReal extends Tile {
     constructor(...args) {
         super(...args);

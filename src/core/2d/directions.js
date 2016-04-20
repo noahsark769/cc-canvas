@@ -43,7 +43,7 @@ export class Direction {
      * @return {Direction} The direction opposite this one.
      */
     opposite() {
-        return self.clockwise().clockwise();
+        return this.clockwise().clockwise();
     }
 
     /**

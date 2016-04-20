@@ -13,6 +13,10 @@ export class Tile {
         return false;
     }
 
+    directionForEntityToSlip(entity, direction, gameState) {
+        return null;
+    }
+
     /**
      * Will be called when the entity moves into this tile.
      */

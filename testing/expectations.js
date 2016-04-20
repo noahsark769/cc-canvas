@@ -28,7 +28,13 @@ export default function expectations(expect) {
                     found = true;
                 }
             }
-            expect(found, "no " + name + " found at " + x + ", " + y + ", monster list was: " + state.monsterList.asArray().map((entity) => { return entity.position.toString(); }).join(", ")).to.be.true;
+            for (let entity of state.slipList.objects()) {
+                if (entity.position.equals(new Coordinate(x, y)) && entity.name === name) {
+                    found = true;
+                }
+            }
+            expect(found, "no " + name + " found at " + x + ", " + y + ", monster list was: " + state.monsterList + ", slip list was: " + state.slipList).to.be.true;
+            // expect(found, "no " + name + " found at " + x + ", " + y + ", monster list was: " + state.monsterList.asArray().map((entity) => { return entity.position.toString(); } + ", slip list was: " + state.slipList.asArray().map((entity) => { return entity.position.toString(); }).join(", ")).to.be.true;
         },
         expectTileAt: function(state, x, y, name) {
             expect(state.hasTileAt(x, y), "no " + name + " at " + x + ", " + y).to.be.true;
