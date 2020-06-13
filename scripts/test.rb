@@ -1,5 +1,5 @@
 if ARGV.length == 0
-  exec "mocha tests --recursive --compilers js:babel/register"
+  exec "mocha tests --recursive --compilers js:babel-core/register"
 end
 
 name = `find tests -name "*.js" | grep #{ARGV[0]}`

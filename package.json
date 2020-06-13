@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/noahsark769/cc-canvas",
   "devDependencies": {
+    "@babel/register": "^7.10.1",
     "app-root-path": "^1.0.0",
     "babelify": "^6.1.0",
     "chai": "^3.0.0",
