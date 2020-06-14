@@ -196,6 +196,24 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         Pt@g
         ===
         ..W.
+    `),
+    Level.buildFromSchematic(`
+        P player-south-normal
+        . floor
+        > force_right
+        < force_left
+        _ force_down
+        ^ force_up
+        @ block
+        ===
+        ._<<<<..
+        ._.P.^..
+        ._..@...
+        ._....^.
+        ._....^.
+        ._....^.
+        .>>>>>^.
+        ........
     `)
     ]));
 });
