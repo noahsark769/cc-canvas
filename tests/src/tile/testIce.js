@@ -410,7 +410,7 @@ describe("Ice", () => {
             ^ ice_lr
             ] ice_ur
             ===
-            ....I.
+            ....B.
             ./IIP]
             .II.I.
             .I..I.
@@ -427,10 +427,10 @@ describe("Ice", () => {
                 enqueueAndStep(letter);
             }
         }
-        engine.enqueuePlayerMovement("up");
+        engine.enqueuePlayerMovement("up"); // get the ice boots
         engine.tick();
-        enqueueControlString("dludduluddlllllrruldrddllrrdlurrrruull");
-        expectations.expectPlayerAt(engine.gameState, 2, 2);
+        enqueueControlString("dllullddrrrrrlluul");
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
     });
 
     it(": player can step over corners with ice skates but not back");
