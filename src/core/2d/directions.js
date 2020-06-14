@@ -3,6 +3,16 @@ export const SOUTH = "south";
 export const EAST = "east";
 export const WEST = "west";
 
+function _directionFrom(rawDir) {
+    switch (rawDir) {
+        case NORTH: return Direction.north();
+        case SOUTH: return Direction.south();
+        case EAST: return Direction.east();
+        case WEST: return Direction.west();
+        default: return null;
+    }
+}
+
 /**
  * A class representing a north, south, east, or west direction. Note that a direction in the game
  * corresponds 1:1 with left, right, up, down. Note: you shouldn't need to instantiate this class
@@ -23,7 +33,7 @@ export class Direction {
         if (index === -1) {
             console.warn("Calling clockwise could not find direction...");
         }
-        return new Direction(dirs[index + 1]);
+        return _directionFrom(dirs[index + 1]);
     }
 
     /**
@@ -36,7 +46,7 @@ export class Direction {
         if (index === -1) {
             console.warn("Calling counterclockwise could not find direction...");
         }
-        return new Direction(dirs[index + 1]);
+        return _directionFrom(dirs[index + 1]);
     }
 
     /**
@@ -86,22 +96,22 @@ export class Direction {
     /**
      * @return {Boolean} Whether this coordinate is west.
      */
-    isWest() { return this.equals(new Direction(WEST)); }
+    isWest() { return this.equals(_directionFrom(WEST)); }
 
     /**
      * @return {Boolean} Whether this coordinate is south.
      */
-    isSouth() { return this.equals(new Direction(SOUTH)); }
+    isSouth() { return this.equals(_directionFrom(SOUTH)); }
 
     /**
      * @return {Boolean} Whether this coordinate is north.
      */
-    isNorth() { return this.equals(new Direction(NORTH)); }
+    isNorth() { return this.equals(_directionFrom(NORTH)); }
 
     /**
      * @return {Boolean} Whether this coordinate is east.
      */
-    isEast() { return this.equals(new Direction(EAST)); }
+    isEast() { return this.equals(_directionFrom(EAST)); }
 
     isVertical() {
         return this.isNorth() || this.isSouth();
@@ -119,13 +129,24 @@ export class Direction {
     }
 }
 
+const singletons = {
+    "NORTH": new Direction(NORTH),
+    "SOUTH": new Direction(SOUTH),
+    "WEST": new Direction(WEST),
+    "EAST": new Direction(EAST),
+};
+
 /*
    Defined directions.
  */
-Direction.south = function() { return new Direction(SOUTH); }
-Direction.north = function() { return new Direction(NORTH); }
-Direction.east = function() { return new Direction(EAST); }
-Direction.west = function() { return new Direction(WEST); }
+Direction.south = function() { return singletons["SOUTH"]; }
+Direction.north = function() { return singletons["NORTH"]; }
+Direction.east = function() { return singletons["EAST"]; }
+Direction.west = function() { return singletons["WEST"]; }
+
+Direction.fromRaw = function(value) {
+    return _directionFrom(value);
+}
 
 Direction.fromControlString = function(string) {
     const char = string.charAt(0).toUpperCase();

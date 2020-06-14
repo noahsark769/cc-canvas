@@ -21,4 +21,16 @@ describe("Directions", () => {
         expect(Direction.east().opposite().equals(Direction.west()));
         expect(Direction.north().opposite().equals(Direction.south())); 
     });
+
+    it("should work with equality", function() {
+        expect([Direction.west()].includes(Direction.west()));
+        expect([Direction.north()].includes(Direction.north()));
+        expect([Direction.east()].includes(Direction.east()));
+        expect([Direction.south()].includes(Direction.south()));
+
+        expect([Direction.south()].includes(Direction.west())).equals(false);
+        expect([Direction.south()].includes(Direction.east())).equals(false);
+        expect([Direction.south()].includes(Direction.north())).equals(false);
+        
+    })
 });

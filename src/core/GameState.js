@@ -64,7 +64,7 @@ export class GameState {
                 let [name, dir] = tile.name.split("-");
                 let entityClass = EntityManager.getInstance().entityClassByName(name);
                 if (entityClass) {
-                    let entityInstance = new entityClass(new Direction(dir), coord);
+                    let entityInstance = new entityClass(Direction.fromRaw(dir), coord);
                     this.monsterList.append(entityInstance);
                 } else {
                     console.warn("The entity class could not be found in manager for name " + name);
@@ -79,7 +79,7 @@ export class GameState {
         let playerTile = this.tileMap.get(playerCoord.x, playerCoord.y, 1);
         if (playerTile && playerTile.name.indexOf("player") !== -1) {
             let [name, dir, state] = playerTile.name.split("-");
-            this.player = new Player(state, new Direction(dir), playerCoord);
+            this.player = new Player(state, Direction.fromRaw(dir), playerCoord);
         } else {
             console.warn("You tried to make a player without a player tile. I'm gunna put it at 0, 0 south.");
             this.player = new Player("normal", Direction.south(), playerCoord);
@@ -174,13 +174,14 @@ export class GameState {
         let prevPlayerPosition = this.player.position;
         let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
 
+        console.log(`Slip dir: ${this.player.slipDirection}, requested ${requestedPlayerMovementDirection}, valid ${requestedPlayerMovementDirection && this.player.slipType.directionsPlayerCanCancel(this.player.slipDirection).includes(requestedPlayerMovementDirection)}`)
         if (
             !playerMovedByInputOnLastTick &&
             requestedPlayerMovementDirection &&
-            this.player.slipType.directionsPlayerCanCancel().includes(requestedPlayerMovementDirection) &&
+            this.player.slipType.directionsPlayerCanCancel(this.player.slipDirection).includes(requestedPlayerMovementDirection) &&
             requestedPlayerMovementDirection !== null
         ) {
-            this.movePlayer(requestedPlayerMovement);
+            this.movePlayerByDirection(requestedPlayerMovementDirection);
         } else if (newCoordForSlip) {
             this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
         } else if (this.player.slipType.shouldBounceBackward()) {

@@ -198,7 +198,7 @@ describe("Force floors", () => {
 
     it.skip("should cause blocks to slide");
 
-    it.skip("should let player override if involuntary", function() {
+    it("should let player override if involuntary", function() {
         let engine = GameEngine.fromTestSchematic(`
             . floor
             > force_right
@@ -217,7 +217,24 @@ describe("Force floors", () => {
         expectations.expectPlayerAt(engine.gameState, 2, 1);    
     });
 
-    it.skip("should not let player override backwards");
+    it("should not let player override backwards", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            > force_right
+            P player-south-normal
+            W wall
+            ===
+            P>>>>.
+            ......
+        `);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.enqueuePlayerMovement("left");
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 4, 0);   
+    });
+
     it.skip("should let player override in ANY direction if sliding from ice");
     it.skip("should let player override if stuck at wall");
     it.skip(": overriding the same way as sliding should have no effect");
