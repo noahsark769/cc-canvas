@@ -3,6 +3,7 @@ let { Wall } = require("./Wall");
 let { Water } = require("./Water");
 let { Fire } = require("./Fire");
 let { Ice, IceUpperLeft, IceLowerLeft, IceUpperRight, IceLowerRight } = require("./Ice");
+let { ForceUp, ForceLeft, ForceRight, ForceDown } = require('./Force');
 let { Chip } = require("./Chip");
 let { Escape } = require("./Escape");
 let { Socket } = require("./Socket");
@@ -112,6 +113,9 @@ export class TileManager {
             this.map.set((new tileClass()).name, tileClass);
         }
         for (let tileClass of [TeethNorth, TeethSouth, TeethEast, TeethWest]) {
+            this.map.set((new tileClass()).name, tileClass);
+        }
+        for (let tileClass of [ForceUp, ForceDown, ForceLeft, ForceRight]) {
             this.map.set((new tileClass()).name, tileClass);
         }
     }

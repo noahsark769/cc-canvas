@@ -433,7 +433,39 @@ describe("Ice", () => {
         expectations.expectPlayerAt(engine.gameState, 2, 0);
     });
 
-    it(": player can step over corners with ice skates but not back");
+    it(": player can step over corners with ice skates but not back", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            I ice
+            B boots_ice
+            / ice_ul
+            > ice_ll
+            ^ ice_lr
+            ] ice_ur
+            ===
+            ....B.
+            ./IIP]
+            .II.I.
+            .I..I.
+            .I..I.
+            .>II^.
+            ......
+        `);
+        function enqueueAndStep(movement) {
+            engine.enqueuePlayerMovement(movement);
+            engine.step();
+        }
+        function enqueueControlString(control) {
+            for (let letter of control) {
+                enqueueAndStep(letter);
+            }
+        }
+        engine.enqueuePlayerMovement("up"); // get the ice boots
+        engine.tick();
+        enqueueControlString("dllllrrrrrurdddddrddldddduuuuurrurrllllldluuuuuluuuuuu");
+        expectations.expectPlayerAt(engine.gameState, 3, 0);
+    });
     it("should slide player before blocks"); // http://chipschallenge.wikia.com/wiki/Ice
     it(": player should be able to move off an ice corner at start");
     it(": monster should be able to move off an ice corner at start");

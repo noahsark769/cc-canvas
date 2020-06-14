@@ -1,7 +1,7 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
-let { Wall } = reqlib("/src/tile/Wall");
+let { ForceLeft, ForceRight, ForceUp, ForceDown } = reqlib("/src/tile/Force");
 let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
@@ -9,8 +9,35 @@ let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
 
 describe("Force floors", () => {
-    it.skip("should import correctly");
-    it.skip("should cause player to slide at 10 m/s");
+    it("should import correctly", () => {});
+    it("should cause player to slide at 10 m/s", () => {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            < force_left
+            _ force_down
+            > force_right
+            ^ force_up
+            ===
+            .....
+            ._<P.
+            .>>^
+            .....
+        `);
+        expectations.expectPlayerAt(engine.gameState, 3, 1);
+        engine.enqueuePlayerMovement("left");
+        expectations.expectPlayerAt(engine.gameState, 2, 1);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 1, 1);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 1, 2);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 2);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 3, 2);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 3, 1);
+    });
     it.skip("should not slide player with force boots");
     it.skip("should cause monsters to slide");
     it.skip("should cause blocks to slide");
