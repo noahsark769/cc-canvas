@@ -7,6 +7,7 @@ let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
+let { Direction } = reqlib("/src/core/2d/directions");
 
 describe("Force floors", () => {
     it("should import correctly", () => {});
@@ -38,8 +39,107 @@ describe("Force floors", () => {
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 3, 1);
     });
-    it.skip("should not slide player with force boots");
-    it.skip("should cause monsters to slide");
+
+    it("should not slide player with force boots", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            < force_left
+            _ force_down
+            > force_right
+            ^ force_up
+            B boots_force
+            ===
+            ...B.
+            ._<P.
+            .>>^
+            .....
+        `);
+        expectations.expectPlayerAt(engine.gameState, 3, 1);
+        function enqueueAndStep(movement) {
+            engine.enqueuePlayerMovement(movement);
+            engine.step();
+        }
+        function enqueueControlString(control) {
+            for (let letter of control) {
+                enqueueAndStep(letter);
+            }
+        }
+        enqueueControlString("udluldddruurdlluu");
+        expectations.expectPlayerAt(engine.gameState, 1, 0);
+    });
+
+    let expectEntityToSlide = function(entityName) {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            I ice
+            < force_left
+            > force_right
+            ^ force_up
+            _ force_down
+            P player-south-normal
+            B ${entityName}-west
+            W wall
+            ===
+            P._<<BW
+            .._.<W.
+            W.>>^..
+            W.W....
+            W.W....
+            WWW....
+            ===
+            .......
+            .......
+            .......
+            .......
+            .......
+            .......
+            ===
+            5 0
+        `);
+
+        let name = entityName;
+        let tickAndExpectEntityAt = function(x, y, dir, useMonsterList = false) {
+            engine.tick();
+            expectations.expectEntityAt(engine.gameState, x, y, name);
+            // todo: this next line is ugly
+            let list;
+            if (useMonsterList) {
+                list = engine.gameState.monsterList;
+            } else {
+                list = engine.gameState.slipList;
+            }
+            let actualDirection = list.asArray()[0].direction;
+            expect(actualDirection.equals(dir), "Direction " + actualDirection + " did not equal expected direction " + dir).to.be.true;
+        };
+
+        expectations.expectEntityAt(engine.gameState, 5, 0, name);
+
+        engine.step();
+        if (["blob", "teeth"].indexOf(entityName) !== -1) {
+            engine.step();
+        }
+        engine.tick();
+        expectations.expectEntityAt(engine.gameState, 4, 0, name);
+        // todo: this next line is ugly
+        let actualDirection = engine.gameState.slipList.asArray()[0].direction;
+        expect(actualDirection.isWest(), "Direction " + actualDirection + " did not equal expected direction west").to.be.true;
+        tickAndExpectEntityAt(3, 0, Direction.west());
+        tickAndExpectEntityAt(2, 0, Direction.south());
+        tickAndExpectEntityAt(2, 1, Direction.south());
+        tickAndExpectEntityAt(2, 2, Direction.east());
+        tickAndExpectEntityAt(3, 2, Direction.east());
+        tickAndExpectEntityAt(4, 2, Direction.north());
+        tickAndExpectEntityAt(4, 1, Direction.west());
+        tickAndExpectEntityAt(3, 1, Direction.west(), true);
+    };
+
+    for (let entity of ["bug", "blob", "ball", "fireball", "glider", "paramecium", "teeth", "walker"]) {
+        it("should cause " + entity + " to slide", function () {
+            expectEntityToSlide(entity);
+        });
+    }
+
     it.skip("should cause blocks to slide");
     it.skip("should let player override if involuntary");
     it.skip("should let player override in ANY direction if sliding from ice");
