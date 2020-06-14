@@ -81,6 +81,11 @@ export class Entity {
                 newTile.directionForEntityToSlip(this, direction, gameState),
                 newTile.slipTypeForPlayer(this, gameState)
             );
+
+            // Slipping might cause the entity tile to change direction, for entities which are affected
+            // directionally by slipping (including player). Set the tile again just in case the entity has
+            // a new direction after starting to slip.
+            gameState.tileMap.set(newCoord.x, newCoord.y, this.getTile(), 1);
         } else if (gameState.isEntitySlipping(this)) {
             gameState.setEntityNotSlipping(this);
         }

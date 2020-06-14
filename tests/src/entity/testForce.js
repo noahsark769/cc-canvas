@@ -156,15 +156,45 @@ describe("Force floors", () => {
         engine.tick();
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 2, 0);
+        expectations.expectTileAt(engine.gameState, 2, 0, "player-east-normal");
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 2, 0);
+        expectations.expectTileAt(engine.gameState, 2, 0, "player-east-normal");
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 2, 0);
+        expectations.expectTileAt(engine.gameState, 2, 0, "player-east-normal");
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 2, 0);
+        expectations.expectTileAt(engine.gameState, 2, 0, "player-east-normal");
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 2, 0);
+        expectations.expectTileAt(engine.gameState, 2, 0, "player-east-normal");
     });
+
+    it("should direct player the direction of the force at a wall", function() {
+        let engine = GameEngine.fromTestSchematic(`
+        . floor
+        ^ force_up
+        P player-south-normal
+        W wall
+        ===
+        ...W...
+        ..P^...
+    `);
+    engine.enqueuePlayerMovement("right");
+    engine.tick();
+    engine.tick();
+    engine.tick();
+    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+    engine.tick();
+    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+    engine.tick();
+    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+    engine.tick();
+    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+    engine.tick();
+    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+    })
 
     it.skip("should cause blocks to slide");
     it.skip("should let player override if involuntary");
