@@ -153,33 +153,20 @@ export class GameState {
      */
     movePlayer(controlString) {
         for (let char of controlString) {
-            switch (char.toUpperCase()) {
-                case "U":
-                    this.movePlayerByDirection(Direction.north());
-                    break;
-                case "R":
-                    this.movePlayerByDirection(Direction.east());
-                    break;
-                case "L":
-                    this.movePlayerByDirection(Direction.west());
-                    break;
-                case "D":
-                    this.movePlayerByDirection(Direction.south());
-                    break;
-                default:
-            }
+            const direction = Direction.fromControlString(char);
+            this.movePlayerByDirection(direction);
         }
     }
 
     /**
      * If the player is not slipping, do nothing. Otherwise, move the player based on the slip direction.
-     * @param {String|null} The direction that the player was requested to move in for this tick. This
+     * @param {Direction|null} The direction that the player was requested to move in for this tick. This
      *   function can process that direction to move the player if it can step off a force floor, etc.
      * @param {Boolean} playerMovedByInputOnLastTick Whether the player was moved by user input on last tick.
      *   This is provided so we can make sure the player can't immediately step onto a sliding surface then
      *   cancel out sideways the next tick.
      */
-    movePlayerBySlip(requestedPlayerMovement, playerMovedByInputOnLastTick) {
+    movePlayerBySlip(requestedPlayerMovementDirection, playerMovedByInputOnLastTick) {
         if (!this.player.isSlipping() || !this.player.slipDirection) {
             console.warn("Tried to slip a player when it was not slipping!");
             return;
@@ -187,7 +174,12 @@ export class GameState {
         let prevPlayerPosition = this.player.position;
         let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
 
-        if (!playerMovedByInputOnLastTick && this.player.slipType.shouldAllowPlayerToCancelSideways() && requestedPlayerMovement !== null) {
+        if (
+            !playerMovedByInputOnLastTick &&
+            requestedPlayerMovementDirection &&
+            this.player.slipType.directionsPlayerCanCancel().includes(requestedPlayerMovementDirection) &&
+            requestedPlayerMovementDirection !== null
+        ) {
             this.movePlayer(requestedPlayerMovement);
         } else if (newCoordForSlip) {
             this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip

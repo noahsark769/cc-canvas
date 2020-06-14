@@ -225,7 +225,7 @@ export class GameEngine {
             this.gameState.advanceEntities(shouldAdvanceEntities);
             this.gameState.toggleWallsIfNeeded();
             if (this.gameState.shouldSlipPlayer()) {
-                let pendingMovement = this.pendingPlayerMovement && this.pendingPlayerMovement.charAt(0);
+                let pendingMovement = this.pendingPlayerMovement && Direction.fromControlString(this.pendingPlayerMovement.charAt(0));
                 this.gameState.movePlayerBySlip(pendingMovement, this.playerMovedByInputOnLastTick);
                 this.pendingPlayerMovement = null;
                 this.playerMovedOnLastTick = true;

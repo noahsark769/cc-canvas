@@ -120,9 +120,20 @@ export class Direction {
 }
 
 /*
-   Defined directions. 
+   Defined directions.
  */
 Direction.south = function() { return new Direction(SOUTH); }
 Direction.north = function() { return new Direction(NORTH); }
 Direction.east = function() { return new Direction(EAST); }
 Direction.west = function() { return new Direction(WEST); }
+
+Direction.fromControlString = function(string) {
+    const char = string.charAt(0).toUpperCase();
+    switch (char) {
+        case "U": return Direction.north();
+        case "D": return Direction.south();
+        case "L": return Direction.west();
+        case "R": return Direction.east();
+        default: return null;
+    }
+}

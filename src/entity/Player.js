@@ -22,8 +22,11 @@ export class PlayerSlipType {
         return this.value === PlayerSlipTypeRaw.ICE;
     }
 
-    shouldAllowPlayerToCancelSideways() {
-        return this.value === PlayerSlipTypeRaw.FORCE;
+    directionsPlayerCanCancel(currentSlipDirection) {
+        if (this.value === PlayerSlipTypeRaw.FORCE) {
+            return [currentSlipDirection.clockwise(), currentSlipDirection.counterclockwise()];
+        }
+        return [];
     }
 }
 

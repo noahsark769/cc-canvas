@@ -173,31 +173,50 @@ describe("Force floors", () => {
 
     it("should direct player the direction of the force at a wall", function() {
         let engine = GameEngine.fromTestSchematic(`
-        . floor
-        ^ force_up
-        P player-south-normal
-        W wall
-        ===
-        ...W...
-        ..P^...
-    `);
-    engine.enqueuePlayerMovement("right");
-    engine.tick();
-    engine.tick();
-    engine.tick();
-    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
-    engine.tick();
-    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
-    engine.tick();
-    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
-    engine.tick();
-    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
-    engine.tick();
-    expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+            . floor
+            ^ force_up
+            P player-south-normal
+            W wall
+            ===
+            ...W...
+            ..P^...
+        `);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
     })
 
     it.skip("should cause blocks to slide");
-    it.skip("should let player override if involuntary");
+
+    it.skip("should let player override if involuntary", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            > force_right
+            P player-south-normal
+            W wall
+            ===
+            P>>>>.
+            ......
+        `);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.enqueuePlayerMovement("down");
+        engine.tick();
+        engine.enqueuePlayerMovement("down");
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 1);    
+    });
+
     it.skip("should not let player override backwards");
     it.skip("should let player override in ANY direction if sliding from ice");
     it.skip("should let player override if stuck at wall");
