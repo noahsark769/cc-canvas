@@ -205,10 +205,11 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         _ force_down
         ^ force_up
         @ block
+        W wall
         ===
-        ._<<<<..
-        ._.P.^..
-        ._..@...
+        ._<<<<.W
+        ._.P.^.^
+        ._..@..^
         ._....^.
         ._....^.
         ._....^.

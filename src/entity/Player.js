@@ -1,6 +1,35 @@
 let {Entity} = require("./Entity");
 let {Tile} = require("../tile/Tile");
 
+const enumValue = (name) => Object.freeze({toString: () => name});
+
+function makeEnum(name, values) {
+    var obj = {};
+    for (let value of values) {
+        obj[value] = enumValue(`${name}.${value}`);
+    }
+    return Object.freeze(obj);
+}
+
+const PlayerSlipTypeRaw = makeEnum("PlayerSlipType", ["ICE", "FORCE"]);
+
+export class PlayerSlipType {
+    constructor(raw) {
+        this.value = raw;
+    }
+
+    shouldBounceBackward() {
+        return this.value === PlayerSlipTypeRaw.ICE;
+    }
+
+    shouldAllowPlayerToCancelSideways() {
+        return this.value === PlayerSlipTypeRaw.FORCE;
+    }
+}
+
+PlayerSlipType.force = function() { return new PlayerSlipType(PlayerSlipTypeRaw.FORCE); }
+PlayerSlipType.ice = function() { return new PlayerSlipType(PlayerSlipTypeRaw.ICE); }
+
 export class PlayerTile extends Tile {
     shouldBlockEntity(entity, direction, gameState) {
         return entity.name === "player";
@@ -191,8 +220,9 @@ export class Player extends Entity {
      * Cause the player to start slipping in the given direction annd type.
      */
     startSlipping(direction, type) {
-        self.slipDirection = direction;
-        selt.slipType = type;
+        this.slipDirection = direction;
+        this.direction = direction;
+        this.slipType = type;
     }
 
     /**

@@ -140,13 +140,41 @@ describe("Force floors", () => {
         });
     }
 
+    it("should not bounce player", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            > force_right
+            P player-south-normal
+            W wall
+            ===
+            P>>W...
+            .......
+        `);
+        expectations.expectPlayerAt(engine.gameState, 0, 0);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 2, 0);
+    });
+
     it.skip("should cause blocks to slide");
     it.skip("should let player override if involuntary");
+    it.skip("should not let player override backwards");
     it.skip("should let player override in ANY direction if sliding from ice");
     it.skip("should let player override if stuck at wall");
     it.skip(": overriding the same way as sliding should have no effect");
     it.skip("should support slide delay");
     it.skip("should support headbanger rule"); // http://chipschallenge.wikia.com/wiki/Headbanger_Rule
+
     describe("(random force floor tile)", () => {
         it.skip("should not slide player with force boots");
         it.skip("should move player");

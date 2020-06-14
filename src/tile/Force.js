@@ -1,5 +1,6 @@
 let { Tile } = require("./Tile");
 let { Direction } = require("../core/2d/directions");
+let { PlayerSlipType } = require("../entity/player");
 
 export class Force extends Tile {
     constructor(...args) {
@@ -12,6 +13,10 @@ export class Force extends Tile {
             return null;
         }
         return this.direction;
+    }
+
+    slipTypeForPlayer(entity, gameState) {
+        return PlayerSlipType.force();
     }
 }
 

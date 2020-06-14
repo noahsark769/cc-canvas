@@ -72,7 +72,15 @@ export class Entity {
         }
 
         if (newTile && newTile.directionForEntityToSlip(this, direction, gameState)) {
-            gameState.setEntitySlipping(this, newTile.directionForEntityToSlip(this, direction, gameState));
+            const slipType = newTile.slipTypeForPlayer(this, gameState);
+            if (slipType === null) {
+                console.warn(`A tile ${newTile} with a null sliptype told us that entity ${this} should slip.`);
+            }
+            gameState.setEntitySlipping(
+                this,
+                newTile.directionForEntityToSlip(this, direction, gameState),
+                newTile.slipTypeForPlayer(this, gameState)
+            );
         } else if (gameState.isEntitySlipping(this)) {
             gameState.setEntityNotSlipping(this);
         }

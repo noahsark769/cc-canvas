@@ -4,7 +4,7 @@ import { CoordinateTileMap } from "./2d/CoordinateTileMap";
 import { CoordinateMap } from "./2d/CoordinateMap";
 import { TwoLayerCoordinateMap } from "./2d/TwoLayerCoordinateMap";
 import { Viewport } from "./2d/Viewport";
-import { Player } from "../entity/Player";
+import { Player, PlayerSlipType } from "../entity/Player";
 import { Direction } from "./2d/directions";
 import { EntityManager } from "../entity/EntityManager";
 import { Block } from "../entity/Block";
@@ -173,20 +173,25 @@ export class GameState {
 
     /**
      * If the player is not slipping, do nothing. Otherwise, move the player based on the slip direction.
-     * @param {Direction|null} The direction that the player was requested to move in for this tick. This
+     * @param {String|null} The direction that the player was requested to move in for this tick. This
      *   function can process that direction to move the player if it can step off a force floor, etc.
-     * @todo(force floors) take advangate of requested player movement here.
+     * @param {Boolean} playerMovedByInputOnLastTick Whether the player was moved by user input on last tick.
+     *   This is provided so we can make sure the player can't immediately step onto a sliding surface then
+     *   cancel out sideways the next tick.
      */
-    movePlayerBySlip(requestedPlayerMovement) {
+    movePlayerBySlip(requestedPlayerMovement, playerMovedByInputOnLastTick) {
         if (!this.player.isSlipping() || !this.player.slipDirection) {
             console.warn("Tried to slip a player when it was not slipping!");
             return;
         }
         let prevPlayerPosition = this.player.position;
-        let newCoord = this.player.chooseMove(this.player.slipDirection, this);
-        if (newCoord) {
-            this.movePlayerToCoordinate(newCoord, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
-        } else {
+        let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
+
+        if (!playerMovedByInputOnLastTick && this.player.slipType.shouldAllowPlayerToCancelSideways() && requestedPlayerMovement !== null) {
+            this.movePlayer(requestedPlayerMovement);
+        } else if (newCoordForSlip) {
+            this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
+        } else if (this.player.slipType.shouldBounceBackward()) {
             this.player.slipDirection = this.player.slipDirection.opposite();
             let oppositeCoord = this.player.chooseMove(this.player.slipDirection, this);
             if (oppositeCoord) {
@@ -255,10 +260,9 @@ export class GameState {
      * differently for monsters and player).
      * @param {Entity} entity Entity to slip
      */
-    setEntitySlipping(entity, direction) {
+    setEntitySlipping(entity, direction, typeIfPlayer) {
         if (entity.name === "player") {
-            entity.slipDirection = direction;
-            entity.direction = entity.slipDirection;
+            entity.startSlipping(direction, typeIfPlayer);
         } else {
             if (this.slipList.contains(entity)) {
                 this.slipDirections.set(entity.id, direction);

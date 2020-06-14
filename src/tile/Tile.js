@@ -17,6 +17,10 @@ export class Tile {
         return null;
     }
 
+    slipTypeForPlayer(entity, gameState) {
+        return null;
+    }
+
     /**
      * Will be called when the entity moves into this tile.
      */

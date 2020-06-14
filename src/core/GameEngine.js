@@ -62,12 +62,18 @@ export class GameEngine {
 
         this.pendingPlayerMovement = null;
         this.playerMovedOnLastTick = false;
+        this.playerMovedByInputOnLastTick = false;
         this.ticksSincePlayerMove = 0;
 
         this.levelSet = null;
         this.currentLevelInSet = 0;
 
         SINGLETON_INSTANCE = this;
+    }
+
+    _resetPlayerMovementOnLastTick() {
+        this.playerMovedOnLastTick = false;
+        this.playerMovedByInputOnLastTick = false;
     }
 
     /**
@@ -125,7 +131,7 @@ export class GameEngine {
 
         this.state = LEVEL_READY;
         this.ticksSincePlayerMove = 0;
-        this.playerMovedOnLastTick = false;
+        this._resetPlayerMovementOnLastTick();
         this.drawFrame();
         this.interface("update")
         return this; // for testing
@@ -143,7 +149,7 @@ export class GameEngine {
             this.currentLevelInSet++;
             this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
             this.ticksSincePlayerMove = 0;
-            this.playerMovedOnLastTick = false;
+            this._resetPlayerMovementOnLastTick();
             this.state = LEVEL_READY;
             this.drawFrame();
         }
@@ -162,7 +168,7 @@ export class GameEngine {
         this.currentLevelInSet--;
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.ticksSincePlayerMove = 0;
-        this.playerMovedOnLastTick = false;
+        this._resetPlayerMovementOnLastTick();
         this.state = LEVEL_READY;
         this.drawFrame();
         this.interface("update")
@@ -176,7 +182,7 @@ export class GameEngine {
         this.gameState.reset();
         this.gameState.setLevel(this.levelSet.levels[this.currentLevelInSet]);
         this.ticksSincePlayerMove = 0;
-        this.playerMovedOnLastTick = false;
+        this._resetPlayerMovementOnLastTick();
         this.state = LEVEL_READY;
         this.drawFrame();
         this.interface("update");
@@ -219,13 +225,15 @@ export class GameEngine {
             this.gameState.advanceEntities(shouldAdvanceEntities);
             this.gameState.toggleWallsIfNeeded();
             if (this.gameState.shouldSlipPlayer()) {
-                this.gameState.movePlayerBySlip(this.pendingPlayerMovement);
+                let pendingMovement = this.pendingPlayerMovement && this.pendingPlayerMovement.charAt(0);
+                this.gameState.movePlayerBySlip(pendingMovement, this.playerMovedByInputOnLastTick);
                 this.pendingPlayerMovement = null;
                 this.playerMovedOnLastTick = true;
+                this.playerMovedByInputOnLastTick = false;
                 this.ticksSincePlayerMove = 0;
             } else {
                 if (this.pendingPlayerMovement === null) {
-                    this.playerMovedOnLastTick = false;
+                    this._resetPlayerMovementOnLastTick();
                     this.ticksSincePlayerMove++;
                     if (this.ticksSincePlayerMove >= 4 && this.gameState.player && !this.gameState.isOver) {
                         this.gameState.player.direction = Direction.south();
@@ -236,9 +244,10 @@ export class GameEngine {
                         this.gameState.movePlayer(this.pendingPlayerMovement.charAt(0));
                         this.pendingPlayerMovement = null;
                         this.playerMovedOnLastTick = true;
+                        this.playerMovedByInputOnLastTick = true;
                         this.ticksSincePlayerMove = 0;
                     } else {
-                        this.playerMovedOnLastTick = false;
+                        this._resetPlayerMovementOnLastTick();
                     }
                 }
             }

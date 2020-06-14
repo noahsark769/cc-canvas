@@ -1,5 +1,6 @@
 let { Tile } = require("./Tile");
 let {Direction} = require("../core/2d/directions");
+let { PlayerSlipType } = require("../entity/player");
 
 export class Ice extends Tile {
     constructor(...args) {
@@ -33,6 +34,10 @@ export class Ice extends Tile {
             return null;
         }
         return this.propellingDirectionFromMovementDirection(direction);
+    }
+
+    slipTypeForPlayer(entity, gameState) {
+        return PlayerSlipType.ice();
     }
 
     shouldBlockEntity(entity, direction, gameState, coordinate) {
