@@ -39,6 +39,7 @@ let { BlobNorth, BlobSouth, BlobEast, BlobWest } = require("../entity/enemy/Blob
 let { WalkerNorth, WalkerSouth, WalkerEast, WalkerWest } = require("../entity/enemy/Walker");
 let { TeethNorth, TeethSouth, TeethEast, TeethWest } = require("../entity/enemy/Teeth");
 import { BlockTile } from "../entity/Block";
+import { ForceRandom } from "./Force";
 
 let INSTANCE = null;
 
@@ -115,7 +116,7 @@ export class TileManager {
         for (let tileClass of [TeethNorth, TeethSouth, TeethEast, TeethWest]) {
             this.map.set((new tileClass()).name, tileClass);
         }
-        for (let tileClass of [ForceUp, ForceDown, ForceLeft, ForceRight]) {
+        for (let tileClass of [ForceUp, ForceDown, ForceLeft, ForceRight, ForceRandom]) {
             this.map.set((new tileClass()).name, tileClass);
         }
     }

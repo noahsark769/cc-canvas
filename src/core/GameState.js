@@ -174,7 +174,6 @@ export class GameState {
         let prevPlayerPosition = this.player.position;
         let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
 
-        console.log(`Slip dir: ${this.player.slipDirection}, requested ${requestedPlayerMovementDirection}, valid ${requestedPlayerMovementDirection && this.player.slipType.directionsPlayerCanCancel(this.player.slipDirection).includes(requestedPlayerMovementDirection)}`)
         if (
             !playerMovedByInputOnLastTick &&
             requestedPlayerMovementDirection &&

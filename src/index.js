@@ -204,6 +204,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         < force_left
         _ force_down
         ^ force_up
+        R force_random
         @ block
         W wall
         ===
@@ -211,7 +212,7 @@ let mainRenderer = new CCClassicImageRenderer(Image, (renderer) => {
         ._.P.^.^
         ._..@..^
         ._....^.
-        ._....^.
+        ._.R..^.
         ._....^.
         .>>>>>^.
         ........

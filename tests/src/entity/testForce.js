@@ -1,7 +1,7 @@
 let reqlib = require("app-root-path").require;
 let { expect } = require("chai");
 let expectations = reqlib("/testing/expectations")(expect);
-let { ForceLeft, ForceRight, ForceUp, ForceDown } = reqlib("/src/tile/Force");
+let { ForceLeft, ForceRight, ForceUp, ForceDown, ForceRandom } = reqlib("/src/tile/Force");
 let { GameState } = reqlib("/src/core/GameState");
 let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
@@ -197,6 +197,7 @@ describe("Force floors", () => {
     })
 
     it.skip("should cause blocks to slide");
+    it.skip(": blocks should not bounce off of walls on force floors");
 
     it("should let player override if involuntary", function() {
         let engine = GameEngine.fromTestSchematic(`
@@ -242,8 +243,64 @@ describe("Force floors", () => {
     it.skip("should support headbanger rule"); // http://chipschallenge.wikia.com/wiki/Headbanger_Rule
 
     describe("(random force floor tile)", () => {
-        it.skip("should not slide player with force boots");
-        it.skip("should move player");
-        it.skip("should move blocks");
+        it("should move player", function() {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                R force_random
+                P player-south-normal
+                ===
+                P..
+                .R.
+                ...
+            `);
+            ForceRandom.overrideDirection = Direction.east();
+            engine.enqueuePlayerMovement("right");
+            engine.tick();
+            engine.enqueuePlayerMovement("down");
+            engine.tick();
+            engine.tick();
+            expectations.expectPlayerAt(engine.gameState, 2, 1);
+        });
+
+        it("should not slide player with force boots", function() {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                R force_random
+                P player-south-normal
+                B boots_force
+                ===
+                PB.
+                .R.
+                ...
+            `);
+            ForceRandom.overrideDirection = Direction.east();
+            engine.enqueuePlayerMovement("right");
+            engine.tick();
+            engine.enqueuePlayerMovement("down");
+            engine.tick();
+            engine.tick();
+            expectations.expectPlayerAt(engine.gameState, 1, 1);
+        });
+
+        it("should move blocks", function() {
+            let engine = GameEngine.fromTestSchematic(`
+                . floor
+                R force_random
+                P player-south-normal
+                B block
+                ===
+                P..
+                .B.
+                .R.
+                ...
+            `);
+            ForceRandom.overrideDirection = Direction.east();
+            engine.enqueuePlayerMovement("right");
+            engine.tick();
+            engine.enqueuePlayerMovement("down");
+            engine.tick();
+            engine.tick();
+            expectations.expectTileAt(engine.gameState, 2, 2, "block");
+        });
     });
 });

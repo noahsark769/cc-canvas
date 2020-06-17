@@ -8,11 +8,15 @@ export class Force extends Tile {
         this.direction = null;
     }
 
+    directionToPush() {
+        return this.direction;
+    }
+
     directionForEntityToSlip(entity, direction, gameState) {
         if (entity.name === "player" && gameState.boots.force) {
             return null;
         }
-        return this.direction;
+        return this.directionToPush();
     }
 
     slipTypeForPlayer(entity, gameState) {
@@ -49,5 +53,21 @@ export class ForceDown extends Force {
         super(...args);
         this.direction = Direction.south();
         this.name = "force_down";
+    }
+}
+
+export class ForceRandom extends Force {
+    constructor(...args) {
+        super(...args);
+        this.name = "force_random";
+    }
+
+    directionToPush() {
+        if (ForceRandom.overrideDirection) {
+            return ForceRandom.overrideDirection;
+        }
+        return [Direction.north(), Direction.south(), Direction.east(), Direction.west()][
+            Math.floor(Math.random() * 4)
+        ];
     }
 }
