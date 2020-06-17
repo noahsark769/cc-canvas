@@ -196,7 +196,25 @@ describe("Force floors", () => {
         expectations.expectTileAt(engine.gameState, 3, 1, "player-north-normal");
     })
 
-    it.skip("should cause blocks to slide");
+    it("should cause blocks to slide", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            > force_right
+            _ force_down
+            P player-south-normal
+            B block
+            ===
+            PB>_>>
+            ...>..
+        `);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectTileAt(engine.gameState, 4, 1, "block");
+    });
+
     it.skip(": blocks should not bounce off of walls on force floors");
 
     it("should let player override if involuntary", function() {
