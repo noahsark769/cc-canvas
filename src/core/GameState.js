@@ -234,7 +234,7 @@ export class GameState {
             if (entity.name === "block") {
                 if (entity.canMove(slipDirection, this)) {
                     entity.move(slipDirection, this);
-                } else if (entity.canMove(slipDirection.opposite(), this)) {
+                } else if (entity.canMove(slipDirection.opposite(), this) && entity.slipType.shouldBounceBackward()) {
                     entity.move(slipDirection.opposite(), this);
                 }
             } else {
@@ -252,13 +252,14 @@ export class GameState {
      * differently for monsters and player).
      * @param {Entity} entity Entity to slip
      */
-    setEntitySlipping(entity, direction, typeIfPlayer) {
+    setEntitySlipping(entity, direction, slipType) {
         if (entity.name === "player") {
-            entity.startSlipping(direction, typeIfPlayer);
+            entity.startSlipping(direction, slipType);
         } else {
             if (this.slipList.contains(entity)) {
                 this.slipDirections.set(entity.id, direction);
                 entity.direction = direction;
+                entity.slipType = slipType;
                 return;
             }
             // TODO: just use a SlipList object instead of having two linked lists
