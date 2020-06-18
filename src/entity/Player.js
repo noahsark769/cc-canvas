@@ -1,37 +1,6 @@
 let {Entity} = require("./Entity");
 let {Tile} = require("../tile/Tile");
-
-const enumValue = (name) => Object.freeze({toString: () => name});
-
-function makeEnum(name, values) {
-    var obj = {};
-    for (let value of values) {
-        obj[value] = enumValue(`${name}.${value}`);
-    }
-    return Object.freeze(obj);
-}
-
-const PlayerSlipTypeRaw = makeEnum("PlayerSlipType", ["ICE", "FORCE"]);
-
-export class PlayerSlipType {
-    constructor(raw) {
-        this.value = raw;
-    }
-
-    shouldBounceBackward() {
-        return this.value === PlayerSlipTypeRaw.ICE;
-    }
-
-    directionsPlayerCanCancel(currentSlipDirection) {
-        if (this.value === PlayerSlipTypeRaw.FORCE) {
-            return [currentSlipDirection.clockwise(), currentSlipDirection.counterclockwise()];
-        }
-        return [];
-    }
-}
-
-PlayerSlipType.force = function() { return new PlayerSlipType(PlayerSlipTypeRaw.FORCE); }
-PlayerSlipType.ice = function() { return new PlayerSlipType(PlayerSlipTypeRaw.ICE); }
+let { SlipType } = require("./SlipType");
 
 export class PlayerTile extends Tile {
     shouldBlockEntity(entity, direction, gameState) {

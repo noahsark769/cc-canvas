@@ -1,6 +1,6 @@
 let { Tile } = require("./Tile");
 let {Direction} = require("../core/2d/directions");
-let { PlayerSlipType } = require("../entity/player");
+import { SlipType } from "../entity/SlipType";
 
 export class Ice extends Tile {
     constructor(...args) {
@@ -37,7 +37,7 @@ export class Ice extends Tile {
     }
 
     slipTypeForPlayer(entity, gameState) {
-        return PlayerSlipType.ice();
+        return SlipType.ice();
     }
 
     shouldBlockEntity(entity, direction, gameState, coordinate) {

@@ -141,7 +141,7 @@ describe("GameEngine", () => {
         engine.enqueuePlayerMovement("down");
         expect(engine.state).to.equal(LEVEL_ACTIVE);
     });
-    it.skip("should move onto the next level after escape", () => {
+    it("should move onto the next level after escape", () => {
         let set = new LevelSet();
         let level1 = Level.buildFromSchematic(`
             . floor
