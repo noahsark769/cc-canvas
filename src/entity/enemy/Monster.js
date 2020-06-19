@@ -6,16 +6,15 @@ export class Monster extends Entity {
         super(...args);
     }
 
-    _chooseMove(gameState, directions) {
+    _chooseMoveFromPossibleTargetPositions(gameState, currentPosition, positionsAndDirections) {
         let tileMap = gameState.tileMap;
-        let dirsToTry = directions;
 
-        let newCoord, newTileFirstLayer, newTileSecondLayer, oldTileSecondLayer;
-        for (let dir of dirsToTry) {
-            newCoord = dir.coordinateFor(this.position, 1);
+        let newCoord, newTileFirstLayer, newTileSecondLayer, oldTileSecondLayer, dir;
+        for (let target of positionsAndDirections) {
+            [newCoord, dir] = target;
             newTileFirstLayer = tileMap.get(newCoord.x, newCoord.y, 1);
             newTileSecondLayer = tileMap.get(newCoord.x, newCoord.y, 2);
-            oldTileSecondLayer = tileMap.get(this.position.x, this.position.y, 2);
+            oldTileSecondLayer = tileMap.get(currentPosition.x, currentPosition.y, 2);
             if (
                 (oldTileSecondLayer && oldTileSecondLayer.shouldBlockEntityExit(this, dir, gameState)) ||
                 (newTileFirstLayer && newTileFirstLayer.shouldBlockEntity(this, dir, gameState, newCoord)) ||
@@ -36,19 +35,30 @@ export class Monster extends Entity {
         return [false, false];
     }
 
+    _chooseMove(gameState, currentPosition, directions) {
+        let targets = directions.map((direction) => {
+            return [direction.coordinateFor(currentPosition, 1), direction]
+        });
+        return this._chooseMoveFromPossibleTargetPositions(gameState, currentPosition, targets);
+    }
+
     chooseMove(gameState) {
-        return this._chooseMove(gameState, this.getDirectionsInOrder(gameState));
+        return this._chooseMove(gameState, this.position, this.getDirectionsInOrder(gameState));
     }
 
     chooseMoveSlippingInDirection(dir, gameState) {
-        let directions = [dir, dir.opposite()];
-        return this._chooseMove(gameState, directions);
+        return this.chooseMoveSlippingFromPosition(this.position, dir, gameState);
     }
 
-    advance(newDir, newCoord, gameState) {
+    chooseMoveSlippingFromPosition(fromPosition, direction, gameState) {
+        let directions = [direction, direction.opposite()];
+        return this._chooseMove(gameState, fromPosition, directions);
+    }
+
+    advanceFromPosition(currentPosition, newDir, newCoord, gameState) {
         let newTile = gameState.tileMap.get(newCoord.x, newCoord.y, 1);
         let newTileSecondLayer = gameState.tileMap.get(newCoord.x, newCoord.y, 2);
-        let oldTileSecondLayer = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        let oldTileSecondLayer = gameState.tileMap.get(currentPosition.x, currentPosition.y, 2);
         if (
             (newTile && newTile.isLethalToEntity(this)) ||
             (newTile && newTile.name.indexOf("player") !== -1 && newTileSecondLayer && newTileSecondLayer.isLethalToEntity(this))
@@ -57,10 +67,10 @@ export class Monster extends Entity {
             gameState.monsterList.remove(this);
             // if there was a tile under us, move it up. otherwise, replace us with floor
             if (oldTileSecondLayer) {
-                gameState.tileMap.set(this.position.x, this.position.y, oldTileSecondLayer, 1);
+                gameState.tileMap.set(currentPosition.x, currentPosition.y, oldTileSecondLayer, 1);
                 oldTileSecondLayer.entityWillUnpress(this, newDir, gameState, newCoord, gameState.engine);
             } else {
-                gameState.tileMap.setTileByName(this.position.x, this.position.y, "floor", 1);
+                gameState.tileMap.setTileByName(currentPosition.x, currentPosition.y, "floor", 1);
             }
             return;
         }
@@ -68,6 +78,10 @@ export class Monster extends Entity {
         this.direction = newDir;
         this.performMove(newCoord, this.direction, gameState);
         this.position = newCoord;
+    }
+
+    advance(newDir, newCoord, gameState) {
+        return this.advanceFromPosition(this.position, newDir, newCoord, gameState);
     }
 }
 

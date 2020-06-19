@@ -6,15 +6,16 @@ export class Block extends Entity {
         super(...args);
         this.name = "block";
     }
-    canMove(direction, gameState) {
+
+    canMoveFromPosition(fromPosition, direction, gameState) {
         // block's direction is null unless sliding
         // this method determines whether the block can be pushed in the given direction
-        let target = direction.coordinateFor(this.position, 1);
+        let target = direction.coordinateFor(fromPosition, 1);
         if (!target.isWithinBoundsOfLevel(gameState.level)) { return false; }
 
         let targetTileUpper = gameState.tileMap.get(target.x, target.y, 1);
         let targetTileLower = gameState.tileMap.get(target.x, target.y, 2);
-        let thisTileLower = gameState.tileMap.get(this.position.x, this.position.y, 2);
+        let thisTileLower = gameState.tileMap.get(fromPosition.x, fromPosition.y, 2);
         if (
             (targetTileUpper && targetTileUpper.shouldBlockEntity(this, direction, gameState)) ||
             ((!targetTileUpper || targetTileUpper.isTransparent()) && targetTileLower && targetTileLower.shouldBlockEntity(this, direction, gameState)) ||
@@ -24,9 +25,12 @@ export class Block extends Entity {
         }
         return true;
     }
-    // this should NEVER be called if the block tile is on the lower layer!!
-    move(direction, gameState) {
-        let target = direction.coordinateFor(this.position, 1);
+
+    canMove(direction, gameState) {
+        return this.canMoveFromPosition(this.position, direction, gameState);
+    }
+
+    moveToPosition(target, direction, gameState) {
         let sourceTile = gameState.tileMap.get(target.x, target.y, 1);
         if (sourceTile && sourceTile.isLethalToEntity(this)) {
             sourceTile.entityWillOccupy(this, direction, gameState, target, gameState.engine);
@@ -38,6 +42,13 @@ export class Block extends Entity {
         gameState.blockMap.set(target, target, this, 1);
         this.position = target;
     }
+
+    // this should NEVER be called if the block tile is on the lower layer!!
+    move(direction, gameState) {
+        let target = direction.coordinateFor(this.position, 1);
+        this.moveToPosition(target, direction, gameState);
+    }
+
     getTile() {
         let tile = new BlockTile();
         tile.entity = this;

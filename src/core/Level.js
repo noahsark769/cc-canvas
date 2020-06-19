@@ -6,13 +6,25 @@ import { Block } from "../entity/Block";
 
 class TrapWiring {} // later
 
+function sortCompare(first, second) {
+    if (first < second) {
+        return -1;
+    }
+    if (first > second) {
+        return 1;
+    }
+    return 0;
+}
+
 export class Level {
     constructor(width, height) {
         this.width = width;
         this.height = height;
         this.tileMap = new CoordinateTileMap();
         this.movements = []; // array of coordinates indicating where the monsters are, in order
-        this.blockCoordinates = []; // array of coordinates of blocks
+        this.blockCoordinates = []; // array of [coordinate, level] of blocks
+        this.teleportTopLevelCoordinates = []; // array of coordinate of teleports
+        this.teleportBottomLevelCoordinates = []; // array of coordinate of teleports
         this.chips = 0;
         this.chipsNeeded = 0;
         this.title = "";
@@ -39,6 +51,42 @@ export class Level {
             }
         }
         return new Coordinate(0, 0); // http://chipschallenge.wikia.com/wiki/Non-Existence_Glitch
+    }
+
+    addTeleportCoordinate(coordinate, level) {
+        if (level === 1) {
+            this.teleportTopLevelCoordinates.push(coordinate);
+        } else {
+            this.teleportBottomLevelCoordinates.push(coordinate);
+        }
+    }
+
+    /**
+     * Returns the position of the next teleport in reverse writable reading order. This does not check things
+     * that need to be checked to see if an entity can move from the given position to the resulting teleport
+     * position
+     * @param {*} fromCoordinate 
+     */
+    nextEffectiveTeleportPosition(fromCoordinate) {
+        let sortedTeleportCoordinates = this.teleportTopLevelCoordinates.sort((first, second) => {
+            if (first[1] === second[1]) {
+                return sortCompare(first[0], second[0]);
+            }
+            return sortCompare(first[1], second[1]);
+        })
+        let indexOfFromCoordinate = sortedTeleportCoordinates.findIndex((object) => {
+            // console.log(`Tryna findIndex for ${object} comparing to ${fromCoordinate}`);
+            return object.equals(fromCoordinate);
+        });
+        if (indexOfFromCoordinate === -1) {
+            console.warn(`Unable to find coordinate ${fromCoordinate} in teleport sort position array ${sortedTeleportCoordinates}`);
+            return null;
+        }
+        if (indexOfFromCoordinate === 0) {
+            return sortedTeleportCoordinates[sortedTeleportCoordinates.length - 1];
+        } else {
+            return sortedTeleportCoordinates[indexOfFromCoordinate - 1];
+        }
     }
 }
 
@@ -98,6 +146,9 @@ Level.buildFromSchematic = function(schematic) {
                     }
                     if (charToTileType.get(char) === "block") {
                         level.blockCoordinates.push([new Coordinate(i, j), layerNum]);
+                    }
+                    if (charToTileType.get(char) === "teleport") {
+                        level.addTeleportCoordinate(new Coordinate(i, j), layerNum);
                     }
                 } else {
                     console.warn("When building level, char " + char + " could not find an associated tile type on layer " + layerNum + ".");

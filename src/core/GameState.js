@@ -172,23 +172,34 @@ export class GameState {
             console.warn("Tried to slip a player when it was not slipping!");
             return;
         }
-        let prevPlayerPosition = this.player.position;
-        let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
 
-        if (
-            !playerMovedByInputOnLastTick &&
-            requestedPlayerMovementDirection &&
-            this.player.slipType.directionsPlayerCanCancel(this.player.slipDirection).includes(requestedPlayerMovementDirection) &&
-            requestedPlayerMovementDirection !== null
-        ) {
-            this.movePlayerByDirection(requestedPlayerMovementDirection);
-        } else if (newCoordForSlip) {
-            this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
-        } else if (this.player.slipType.shouldBounceBackward()) {
-            this.player.slipDirection = this.player.slipDirection.opposite();
-            let oppositeCoord = this.player.chooseMove(this.player.slipDirection, this);
-            if (oppositeCoord) {
-                this.movePlayerToCoordinate(oppositeCoord, this.player.slipDirection, prevPlayerPosition);
+        let slippedByTeleportLastTick = this.player.slippedByTeleportLastTick || false;
+        let playerShouldTeleport = (this.player.slipType === SlipType.teleport()) && !slippedByTeleportLastTick;
+
+        if (playerShouldTeleport) {
+            this.moveEntityToNextTeleport(this.player, this.player.slipDirection);
+            this.player.slippedByTeleportLastTick = true;
+        } else {
+            this.player.slippedByTeleportLastTick = false;
+            let prevPlayerPosition = this.player.position;
+            let newCoordForSlip = this.player.chooseMove(this.player.slipDirection, this);
+
+            if (
+                !playerMovedByInputOnLastTick &&
+                requestedPlayerMovementDirection &&
+                this.player.slipType.directionsPlayerCanCancel(this.player.slipDirection).includes(requestedPlayerMovementDirection) &&
+                requestedPlayerMovementDirection !== null
+            ) {
+                this.movePlayerByDirection(requestedPlayerMovementDirection);
+            } else if (newCoordForSlip) {
+                console.log(`Slipping non-teleport to ${newCoordForSlip}`);
+                this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
+            } else if (this.player.slipType.shouldBounceBackward()) {
+                this.player.slipDirection = this.player.slipDirection.opposite();
+                let oppositeCoord = this.player.chooseMove(this.player.slipDirection, this);
+                if (oppositeCoord) {
+                    this.movePlayerToCoordinate(oppositeCoord, this.player.slipDirection, prevPlayerPosition);
+                }
             }
         }
     }
@@ -231,19 +242,73 @@ export class GameState {
             if (!slipDirection) {
                 console.warn("Entity " + entity + " had no slip direction when slipping!");
             }
-            // TODO: this logic is hella dirty
-            if (entity.name === "block") {
-                if (entity.canMove(slipDirection, this)) {
-                    entity.move(slipDirection, this);
-                } else if (entity.canMove(slipDirection.opposite(), this) && entity.slipType.shouldBounceBackward()) {
-                    entity.move(slipDirection.opposite(), this);
-                }
+
+            let slippedByTeleportLastTick = entity.slippedByTeleportLastTick || false;
+            var entityShouldTeleport = entity.slipType === SlipType.teleport() && !slippedByTeleportLastTick;
+
+            if (entityShouldTeleport) {
+                this.moveEntityToNextTeleport(entity, slipDirection);
+                entity.slippedByTeleportLastTick = true;
             } else {
-                let [newCoord, newDir] = entity.chooseMoveSlippingInDirection(slipDirection, this);
-                if (newCoord) {
-                    entity.advance(newDir, newCoord, this);
+                entity.slippedByTeleportLastTick = false;
+                // TODO: this logic is hella dirty
+                if (entity.name === "block") {
+                    if (entity.canMove(slipDirection, this)) {
+                        entity.move(slipDirection, this);
+                    } else if (entity.canMove(slipDirection.opposite(), this) && entity.slipType.shouldBounceBackward()) {
+                        entity.move(slipDirection.opposite(), this);
+                    }
+                } else {
+                    let [newCoord, newDir] = entity.chooseMoveSlippingInDirection(slipDirection, this);
+                    if (newCoord) {
+                        entity.advance(newDir, newCoord, this);
+                    }
                 }
             }
+        }
+    }
+
+    moveEntityToNextTeleport(entity, slipDirection) {
+        var effectiveNextPosition = this.level.nextEffectiveTeleportPosition(entity.position);
+
+        let _this = this;
+        function moveEntityIfPossibleAndReturnWhetherMoved(toNewPosition) {
+            console.log(`Maybe teleport entity ${entity} to ${toNewPosition}`);
+            let possibleBounce = effectiveNextPosition.equals(entity.position);
+            if (entity.name === "block") {
+                if (entity.canMoveFromPosition(toNewPosition, slipDirection, _this)) {
+                    entity.move(slipDirection, _this);
+                    return true;
+                } else if (
+                    possibleBounce &&
+                    entity.canMove(slipDirection.opposite(), _this)
+                ) {
+                    entity.move(slipDirection.opposite(), _this);
+                    return true;
+                }
+                return false;
+            } else if (entity.name === "player") {
+                let prevPlayerPosition = entity.position;
+                let newCoordForSlip = entity.chooseMoveForDestinationCoordinate(
+                    toNewPosition,
+                    entity.slipDirection,
+                    _this
+                );
+                _this.movePlayerToCoordinate(newCoordForSlip, slipDirection, prevPlayerPosition);
+                return true; // handle bouncing??
+            } else {
+                let [newCoord, newDir] = entity.chooseMoveSlippingFromPosition(toNewPosition, slipDirection, _this);
+                if (newCoord) {
+                    // We've determined that the monster will be able to move once it exists the teleport.
+                    // Transport it to the next teleport, then (NOT to the newCoord).
+                    entity.advance(newDir, toNewPosition, _this);
+                }
+                return false; // TODO: handle bouncing?
+            }
+        }
+
+        while (!moveEntityIfPossibleAndReturnWhetherMoved(effectiveNextPosition)) {
+            effectiveNextPosition = this.level.nextEffectiveTeleportPosition(effectiveNextPosition);
         }
     }
 
@@ -293,6 +358,8 @@ export class GameState {
      * @param {Entity} entity Entity to unslip.
      */
     setEntityNotSlipping(entity) {
+        console.log(`Setting entity ${entity} to not slip anymore`);
+        entity.slipType = null;
         if (entity.name === "player") {
             entity.slipDirection = null;
         } else {

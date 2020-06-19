@@ -25,8 +25,17 @@ export class SlipType {
         }
         return [];
     }
+
+    toString() {
+        return `<SlipType ${this.value}>`;
+    }
 }
 
-SlipType.force = function() { return new SlipType(SlipTypeRaw.FORCE); }
-SlipType.ice = function() { return new SlipType(SlipTypeRaw.ICE); }
-SlipType.teleport = function() { return new SlipType(SlipTypeRaw.TELEPORT); }
+let singletons = {};
+singletons[SlipTypeRaw.FORCE] = new SlipType(SlipTypeRaw.FORCE);
+singletons[SlipTypeRaw.TELEPORT] = new SlipType(SlipTypeRaw.TELEPORT);
+singletons[SlipTypeRaw.ICE] = new SlipType(SlipTypeRaw.ICE);
+
+SlipType.force = function() { return singletons[SlipTypeRaw.FORCE] }
+SlipType.ice = function() { return singletons[SlipTypeRaw.ICE] }
+SlipType.teleport = function() { return singletons[SlipTypeRaw.TELEPORT] }

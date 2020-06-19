@@ -26,9 +26,13 @@ describe("Teleport", () => {
         engine.tick();
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 0, 2);
+
         engine.enqueuePlayerMovement("right");
+        console.log(`First tick now:`);
         engine.tick();
+        console.log(`Second tick now:`);
         engine.tick();
+        console.log(`Third tick now:`);
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 5, 1);
         engine.enqueuePlayerMovement("left");
@@ -69,19 +73,36 @@ describe("Teleport", () => {
 
         engineExpectations.stepTickAWhileAndExpectPlayerAt("dlu", 1, 2);
         engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 4, 0);
-        engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 2, 0);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 1, 0);
         engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 4, 2);
-        engineExpectations.stepTickAWhileAndExpectPlayerAt("d", 2, 4);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("d", 1, 4);
         engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 4, 2);
-        engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 2, 2);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 1, 2);
         engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 4, 4);
-    })
+    });
+
+    it(": one teleport then another", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            T teleport
+            ===
+            ......
+            ....T.
+            ......
+            .TT.TP
+            ......
+        `);
+        let engineExpectations = expectations.engine(engine);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("l", 3, 1);
+    });
 
     it.skip("should work in RWRO for blocks");
     it.skip("should work in RWRO for monsters");
     it.skip("should wrap to next teleport if move is blocked");
     it.skip("should function as ice, with bouncing, for player/blocks if all other teleports are blocked");
     it.skip("should function as ice, with bouncing, for player/blocks if it's the only teleport");
+    it.skip(": Pushing a block into a teleport, then at the next second a bug comes in on a force floor to block it");
     it.skip("should trap monsters instead of bouncing back on blocked teleport");
     it.skip("should function as ice always when revealed from the lower layer");
     it.skip("should support partial posting");

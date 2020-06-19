@@ -10,6 +10,7 @@ export class Entity {
         this.position = position;
         this.state = "normal";
         this.id = CURR_ID;
+        this.slipType = null;
         CURR_ID++;
         ENTITY_MASTER_MAP.set(this.id, this);
     }
@@ -79,7 +80,7 @@ export class Entity {
             gameState.setEntitySlipping(
                 this,
                 newTile.directionForEntityToSlip(this, direction, gameState),
-                newTile.slipTypeForPlayer(this, gameState)
+                slipType
             );
 
             // Slipping might cause the entity tile to change direction, for entities which are affected

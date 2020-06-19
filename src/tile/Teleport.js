@@ -1,4 +1,5 @@
 let { Tile } = require("./Tile");
+import { SlipType } from "../entity/SlipType";
 
 export class Teleport extends Tile {
     constructor(...args) {

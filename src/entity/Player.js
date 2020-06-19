@@ -122,7 +122,7 @@ export class PlayerSwimWest extends PlayerSwimTile {
  * slipping (e.g. on force floors) with canCancelSlipWithStepInDirection(). You can cause a player to start
  * slipping with .startSlipping(direction, type)
  *
- * GameState has a method called tickPlayerSlip() which looks at the player, assumes it's slipping, and
+ * GameState has a method called movePlayerBySlip() which looks at the player, assumes it's slipping, and
  * moves it for one tick based on the slip direction.
  *
  * Note that monsters slip in an entirely different fashion, using the sliplist.
@@ -133,15 +133,18 @@ export class Player extends Entity {
         this.state = state;
         this.name = "player";
         this.slipDirection = null;
-        this.slipType = null;
     }
 
     chooseMove(direction, gameState) {
+        return this.chooseMoveForDestinationCoordinate(direction.coordinateFor(this.position, 1), direction, gameState);
+    }
+
+    chooseMoveForDestinationCoordinate(target, direction, gameState) {
         let lowerLayerSourceTile = gameState.tileMap.get(this.position.x, this.position.y, 2);
         if (lowerLayerSourceTile && lowerLayerSourceTile.shouldBlockEntityExit(this, direction, gameState)) {
             return false;
         }
-        let newCoord = direction.coordinateFor(this.position, 1);
+        let newCoord = target;
         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= gameState.level.width || newCoord.y >= gameState.level.height) {
             return false;
         }
@@ -170,6 +173,7 @@ export class Player extends Entity {
         this.direction = direction;
         this.performMove(newCoord, direction, gameState);
         this.position = newCoord;
+        console.log(`Confirmed player's new coordinate at ${newCoord}`);
     }
 
     /**
