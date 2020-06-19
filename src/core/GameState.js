@@ -124,15 +124,18 @@ export class GameState {
      */
     movePlayerToCoordinate(newCoord, direction, prevPlayerPosition) {
         this.player.move(direction, newCoord, this);
-        if (direction.isSouth() && prevPlayerPosition.y >= this.viewport.getCenter().y) {
-            this.viewport.shiftDownBounded(1, this.level.height);
-        } else if (direction.isNorth() && prevPlayerPosition.y <= this.viewport.getCenter().y) {
-            this.viewport.shiftUpBounded(1, -1);
-        } else if (direction.isWest() && prevPlayerPosition.x <= this.viewport.getCenter().x) {
-            this.viewport.shiftLeftBounded(1, -1);
-        } else if (direction.isEast() && prevPlayerPosition.x >= this.viewport.getCenter().x) {
-            this.viewport.shiftRightBounded(1, this.level.width);
-        }
+
+        this.viewport = Viewport.constructFromPlayerPosition(newCoord, this.level.width, this.level.height);
+
+        // if (direction.isSouth() && prevPlayerPosition.y >= this.viewport.getCenter().y) {
+        //     this.viewport.shiftDownBounded(1, this.level.height);
+        // } else if (direction.isNorth() && prevPlayerPosition.y <= this.viewport.getCenter().y) {
+        //     this.viewport.shiftUpBounded(1, -1);
+        // } else if (direction.isWest() && prevPlayerPosition.x <= this.viewport.getCenter().x) {
+        //     this.viewport.shiftLeftBounded(1, -1);
+        // } else if (direction.isEast() && prevPlayerPosition.x >= this.viewport.getCenter().x) {
+        //     this.viewport.shiftRightBounded(1, this.level.width);
+        // }
     }
 
     /**
@@ -292,7 +295,9 @@ export class GameState {
                     entity.slipDirection,
                     _this
                 );
-                _this.movePlayerToCoordinate(newCoordForSlip, slipDirection, prevPlayerPosition);
+                if (newCoordForSlip) {
+                    _this.movePlayerToCoordinate(toNewPosition, slipDirection, prevPlayerPosition);
+                }
                 return true; // handle bouncing??
             } else {
                 let [newCoord, newDir] = entity.chooseMoveSlippingFromPosition(toNewPosition, slipDirection, _this);
