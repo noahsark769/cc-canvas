@@ -3,8 +3,41 @@ let sinon = require("sinon");
 let {Coordinate} = reqlib("/src/core/2d/Coordinate");
 let {GameEngine} = reqlib("/src/core/GameEngine");
 
+class EngineExpectations {
+    constructor(engine, expectations) {
+        this.engine = engine;
+        this.expectations = expectations;
+    }
+
+    enqueueAndStep(movement) {
+        this.engine.enqueuePlayerMovement(movement);
+        this.engine.step();
+    }
+
+    enqueueControlString(control) {
+        for (let letter of control) {
+            this.enqueueAndStep(letter);
+        }
+    }
+
+    enqueueControlStringAndTickAWhile(control) {
+        this.enqueueControlString(control);
+        for (let i = 0; i < 10; i++) {
+            this.engine.tick();
+        }
+    }
+
+    stepTickAWhileAndExpectPlayerAt(controlString, x, y) {
+        this.enqueueControlStringAndTickAWhile(controlString);
+        this.expectations.expectPlayerAt(this.engine.gameState, x, y);
+    }
+}
+
 export default function expectations(expect) {
     return {
+        engine: function(engine) {
+            return new EngineExpectations(engine, this);
+        },
         withResetLevelStub: function(fn) {
             let stub = sinon.stub(GameEngine.getInstance(), "resetCurrentLevel");
             fn();

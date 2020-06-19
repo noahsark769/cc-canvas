@@ -7,10 +7,76 @@ let { GameEngine } = reqlib("/src/core/GameEngine");
 let { Level } = reqlib("/src/core/Level");
 let { LevelSet } = reqlib("/src/core/LevelSet");
 let { buildLevelFromSchematic } = reqlib("/testing/utils");
+let { Teleport } = reqlib("/src/tile/Teleport");
 
 describe("Teleport", () => {
-    it.skip("should import correctly");
-    it.skip("should work in RWRO for player");
+    it("should import correctly", () => {});
+
+    it("should work in RWRO for player", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            T teleport
+            ===
+            .T..T.
+            .T..T.
+            .T..TP
+        `);
+        engine.enqueuePlayerMovement("left");
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 0, 2);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 5, 1);
+        engine.enqueuePlayerMovement("left");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 0, 1);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 5, 0);
+        engine.enqueuePlayerMovement("left");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 0, 0);
+        engine.enqueuePlayerMovement("right");
+        engine.tick();
+        engine.tick();
+        engine.tick();
+        expectations.expectPlayerAt(engine.gameState, 5, 2);
+    });
+
+    it(": vertical/horizontal movements", function() {
+        let engine = GameEngine.fromTestSchematic(`
+            . floor
+            P player-south-normal
+            T teleport
+            ===
+            ......
+            .T..T.
+            ......
+            .T..TP
+            ......
+        `);
+        let engineExpectations = expectations.engine(engine);
+
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("dlu", 1, 2);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 4, 0);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 2, 0);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("lddru", 4, 2);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("d", 2, 4);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 4, 2);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 2, 2);
+        engineExpectations.stepTickAWhileAndExpectPlayerAt("luurd", 4, 4);
+    })
+
     it.skip("should work in RWRO for blocks");
     it.skip("should work in RWRO for monsters");
     it.skip("should wrap to next teleport if move is blocked");
