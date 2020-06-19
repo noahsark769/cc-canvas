@@ -206,7 +206,6 @@ export class GameEngine {
      * @return {GameEngine} Self, for purposes of engine.tick().tick().tick()
      */
     tick() {
-        console.log(`--- tick start`);
         // for tests, if we're idle and we tick, then we make ourselves LEVEL_ACTIVE
         if (this.state === IDLE || this.state == LEVEL_READY) { this.state = LEVEL_ACTIVE; }
         if (this.gameState.isOver) {
@@ -258,7 +257,6 @@ export class GameEngine {
             this.gameState.tick();
         }
         this.interface("update");
-        console.log(`--- tick end`);
         return this;
     }
 

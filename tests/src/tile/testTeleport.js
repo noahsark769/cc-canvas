@@ -28,11 +28,8 @@ describe("Teleport", () => {
         expectations.expectPlayerAt(engine.gameState, 0, 2);
 
         engine.enqueuePlayerMovement("right");
-        console.log(`First tick now:`);
         engine.tick();
-        console.log(`Second tick now:`);
         engine.tick();
-        console.log(`Third tick now:`);
         engine.tick();
         expectations.expectPlayerAt(engine.gameState, 5, 1);
         engine.enqueuePlayerMovement("left");

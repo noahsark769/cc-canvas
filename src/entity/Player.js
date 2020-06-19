@@ -173,7 +173,6 @@ export class Player extends Entity {
         this.direction = direction;
         this.performMove(newCoord, direction, gameState);
         this.position = newCoord;
-        console.log(`Confirmed player's new coordinate at ${newCoord}`);
     }
 
     /**

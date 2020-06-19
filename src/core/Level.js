@@ -75,7 +75,6 @@ export class Level {
             return sortCompare(first[1], second[1]);
         })
         let indexOfFromCoordinate = sortedTeleportCoordinates.findIndex((object) => {
-            // console.log(`Tryna findIndex for ${object} comparing to ${fromCoordinate}`);
             return object.equals(fromCoordinate);
         });
         if (indexOfFromCoordinate === -1) {

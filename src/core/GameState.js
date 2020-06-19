@@ -192,7 +192,6 @@ export class GameState {
             ) {
                 this.movePlayerByDirection(requestedPlayerMovementDirection);
             } else if (newCoordForSlip) {
-                console.log(`Slipping non-teleport to ${newCoordForSlip}`);
                 this.movePlayerToCoordinate(newCoordForSlip, this.player.slipDirection, prevPlayerPosition); // this will take care of whether or not they should slip
             } else if (this.player.slipType.shouldBounceBackward()) {
                 this.player.slipDirection = this.player.slipDirection.opposite();
@@ -273,7 +272,6 @@ export class GameState {
 
         let _this = this;
         function moveEntityIfPossibleAndReturnWhetherMoved(toNewPosition) {
-            console.log(`Maybe teleport entity ${entity} to ${toNewPosition}`);
             let possibleBounce = effectiveNextPosition.equals(entity.position);
             if (entity.name === "block") {
                 if (entity.canMoveFromPosition(toNewPosition, slipDirection, _this)) {
@@ -358,7 +356,6 @@ export class GameState {
      * @param {Entity} entity Entity to unslip.
      */
     setEntityNotSlipping(entity) {
-        console.log(`Setting entity ${entity} to not slip anymore`);
         entity.slipType = null;
         if (entity.name === "player") {
             entity.slipDirection = null;
