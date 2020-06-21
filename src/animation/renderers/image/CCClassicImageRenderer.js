@@ -247,7 +247,7 @@ export class CCClassicImageRenderer extends ImageRenderer {
      */
     constructor(...args) {
         super(...args);
-        this.tilesetFilename = "/images/cc-classic-color-tileset.png";
+        this.tilesetFilename = "/images/kayu-tileset.png";
         this.tileSideLength = 32; // pixels
         this.tilesetHeight = 16 * this.tileSideLength;
         this.tilesetWidth = 13 * this.tileSideLength;
