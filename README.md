@@ -1,5 +1,7 @@
 # cc-canvas
-Implementation of the game Chip's Challenge in HTML5 canvas.
+Half-done re-implementation of the game [Chip's Challenge](https://en.wikipedia.org/wiki/Chip%27s_Challenge) in HTML5 canvas.
+
+Edit, 2025: I started to write this many years ago as an exercise and for fun, but I only got half-done with it. If you'd like to take it over or fork it feel free to reach out, I'm open-sourcing it in case it's somehow useful to someone. If you're looking for a more complete implementation, see [Lexy's Labyrinth](https://github.com/eevee/lexys-labyrinth)
 
 ## Development/installation
 1. Clone the repo
